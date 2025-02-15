@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homesite Mortgage | Trusted Home Loan Solutions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
+        .container { max-width: 800px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: #007bff; }
+        .hero { background: url('https://source.unsplash.com/1600x900/?house,mortgage') center/cover; padding: 80px 20px; color: white; text-align: center; }
+        .hero h1 { font-size: 2.5em; }
+        .services { margin: 30px 0; }
+        .services h2 { color: #007bff; }
+        .form-container { margin: 30px 0; }
+        input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 30px; }
+        
+        /* ADA Compliance Styles */
+        a { color: #007bff; }
+        a:focus, button:focus, input:focus, textarea:focus { outline: 3px solid #ffcc00; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="hero" role="banner">
+        <h1 tabindex="0">Homesite Mortgage</h1>
+        <p tabindex="0">Your Trusted Partner in Home Loans</p>
+    </div>
+
+    <div class="container" role="main">
+        <h1 tabindex="0">Make Your Dream Home a Reality</h1>
+        <p tabindex="0">Looking for the right mortgage solution? Homesite Mortgage is here to provide expert guidance and personalized loan options tailored to your needs.</p>
+
+        <div class="form-container">
+            <h2 tabindex="0">Get in Touch</h2>
+            <form action=“https://formsubmit.co/tcloans1@gmail.com” method="POST" aria-label="Contact Form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" placeholder="Tell us about your mortgage needs..." required></textarea>
+                
+                <input type="hidden" name="_subject" value="New Contact Form Submission">
+                <input type="hidden" name="_captcha" value="false">
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="services">
+            <h2 tabindex="0">Why Choose Us?</h2>
+            <ul>
+                <li tabindex="0">✔ Competitive Mortgage Rates</li>
+                <li tabindex="0">✔ Fast & Easy Pre-Approval Process</li>
+                <li tabindex="0">✔ Personalized Loan Solutions</li>
+                <li tabindex="0">✔ Expert Guidance Every Step of the Way</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p tabindex="0">📞 Call us: (321) 432-6611 | 📧 Email: tcloans1@gmail.com</p>
+        <p tabindex="0">🏡 Homesite Mortgage NMLS: 353790 | Culpepper NMLS: 353539</p>
+        <p tabindex="0">© 2024 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
+    </footer>
+
+</body>
+</html>
