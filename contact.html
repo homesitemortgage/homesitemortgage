@@ -6,52 +6,44 @@
     <title>Contact Us | Homesite Mortgage</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5faff; color: #333; }
-        .container { max-width: 800px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
+        .container { max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
         .header { background: #002D62; color: white; padding: 20px; text-align: center; }
-        .header h1 { font-size: 2em; margin: 0; }
-        .form-container { text-align: left; }
-        input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        footer { background: #002D62; color: white; text-align: center; padding: 20px; margin-top: 30px; }
+        .header h1 { margin: 0; font-size: 2em; }
+        form { display: flex; flex-direction: column; text-align: left; }
+        label { font-weight: bold; margin-top: 10px; }
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .cta-button { background-color: #007bff; color: white; padding: 12px; border: none; font-size: 16px; cursor: pointer; border-radius: 5px; margin-top: 15px; }
+        .cta-button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>Contact Homesite Mortgage</h1>
-        <p>We’re here to help with your home loan needs.</p>
+        <p>We're here to help with your mortgage needs!</p>
     </div>
 
     <div class="container">
-        <h2>Get in Touch</h2>
-        <div class="form-container">
-            <form action=“https://formsubmit.co/tcloans1@gmail.com” method="POST">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" placeholder="Your Name" required>
-                
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Your Email" required>
-                
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
-                
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" placeholder="Tell us about your mortgage needs..." required></textarea>
-                
-                <input type="hidden" name="_subject" value="New Contact Form Submission">
-                <input type="hidden" name="_captcha" value="false">
-                
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
+        <form action="https://formsubmit.co/tcloans1@gmail.com" method="POST">
+            <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
+            <input type="hidden" name="_subject" value="New Contact Form Submission!">
+            <input type="hidden" name="_captcha" value="false">
 
-    <footer>
-        <p>📞 Call us: 321-432-6611 | 📧 Email: tcloans1@gmail.com</p>
-        <p>🏡 Homesite Mortgage NMLS: 353790 | Tom Culpepper NMLS: 353539</p>
-        <p>© 2024 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
-    </footer>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+
+            <button type="submit" class="cta-button">Submit</button>
+        </form>
+    </div>
 
 </body>
 </html>
