@@ -10,7 +10,7 @@
         .header { background: white; color: #002D62; padding: 30px; display: flex; align-items: center; justify-content: space-between; }
         .header h1 { font-size: 1.8em; margin: 10px 0; text-align: center; flex-grow: 1; }
         .header p { font-size: 1em; color: #004080; }
-        .logo { max-width: 250px; display: block; margin-left: 20px; } /* Smaller & shifted left */
+        .logo { max-width: 250px; display: block; margin-left: 20px; }
         .contact-button { background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-size: 16px; margin-right: 20px; }
         .contact-button:hover { background: #0056b3; }
         .cta-button { background-color: #007bff; color: white; padding: 15px 25px; border: none; font-size: 18px; cursor: pointer; border-radius: 5px; margin-top: 20px; text-decoration: none; display: inline-block; }
@@ -23,33 +23,49 @@
         .footer-links { margin-top: 10px; }
         .footer-links a { color: #ffffff; text-decoration: none; font-weight: bold; }
         .footer-links a:hover { text-decoration: underline; }
+        a:focus, button:focus { outline: 3px solid #ffcc00; } /* High contrast focus for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 10px;
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+        }
+        .skip-link:focus { top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <!-- Skip Navigation for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="header" role="banner">
         <img src="https://homesitemortgage.online/images/Homesitelogo.png" alt="Homesite Mortgage Logo" class="logo">
         <h1>Your Trusted Mortgage Loan Provider!</h1>
-        <a href="contact.html" class="contact-button">Contact Us</a>
-    </div>
+        <a href="contact.html" class="contact-button" aria-label="Contact Homesite Mortgage for inquiries">Contact Us</a>
+    </header>
 
-    <div class="container">
-        <img src="https://homesitemortgage.online/images/homesitecontact.png" alt="Unlock Your Dream Home">
-        <h2>Unlock Your Dream Home Today</h2>
-        <p class="content-box">We make the home loan process easy, transparent, and stress-free. Let’s get you pre-approved today.</p>
-        <a href="contact.html" class="cta-button">Get Pre-Approved Now</a>
-    </div>
+    <main role="main" id="main-content">
+        <div class="container">
+            <img src="https://homesitemortgage.online/images/homesitecontact.png" alt="Unlock Your Dream Home">
+            <h2>Unlock Your Dream Home Today</h2>
+            <p class="content-box">We make the home loan process easy, transparent, and stress-free. Let’s get you pre-approved today.</p>
+            <a href="contact.html" class="cta-button" aria-label="Start the pre-approval process with Homesite Mortgage">Get Pre-Approved Now</a>
+        </div>
 
-    <center><div class="container">
-        <img src="https://homesitemortgage.online/images/BuildingFutures.png" alt="Turning Keys, Building Futures">
-        <h2>Why Choose Homesite Mortgage?</h2>
-        <p class="content-box">✔ Competitive Rates & Flexible Loan Options</p>
-        <p class="content-box">✔ Fast & Easy Pre-Approval Process</p>
-        <p class="content-box">✔ Personalized Loan Solutions</p>
-        <p class="content-box">✔ Trusted Experts with Over 30 Years in Business</p>
-    </div></center>
+        <div class="container">
+            <img src="https://homesitemortgage.online/images/BuildingFutures.png" alt="Turning Keys, Building Futures">
+            <h2>Why Choose Homesite Mortgage?</h2>
+            <p class="content-box">✔ Competitive Rates & Flexible Loan Options</p>
+            <p class="content-box">✔ Fast & Easy Pre-Approval Process</p>
+            <p class="content-box">✔ Personalized Loan Solutions</p>
+            <p class="content-box">✔ Trusted Experts with Over 30 Years in Business</p>
+        </div>
+    </main>
 
-    <footer>
+    <footer role="contentinfo">
         <p>📞 Call us: 321-432-6611 | 📧 Email: tcloans1@gmail.com</p>
         <p>🏡 Homesite Mortgage NMLS: 353790 | Culpepper NMLS: 353539</p>
         <p>© 2024 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
@@ -60,4 +76,3 @@
 
 </body>
 </html>
-
