@@ -7,10 +7,12 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5faff; color: #333; }
         .container { max-width: 1100px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
-        .header { background: white; color: #002D62; padding: 30px; text-align: center; }
-        .header h1 { font-size: 1.8em; margin: 10px 0; }
+        .header { background: white; color: #002D62; padding: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .header h1 { font-size: 1.8em; margin: 10px 0; text-align: center; flex-grow: 1; }
         .header p { font-size: 1em; color: #004080; }
-        .logo { max-width: 400px; display: block; margin: 0 auto 20px; }
+        .logo { max-width: 250px; display: block; margin-left: 20px; } /* Smaller & shifted left */
+        .contact-button { background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-size: 16px; margin-right: 20px; }
+        .contact-button:hover { background: #0056b3; }
         .cta-button { background-color: #007bff; color: white; padding: 15px 25px; border: none; font-size: 18px; cursor: pointer; border-radius: 5px; margin-top: 20px; text-decoration: none; display: inline-block; }
         .cta-button:hover { background-color: #0056b3; }
         .services { margin: 40px 0; text-align: center; }
@@ -18,53 +20,17 @@
         .content-box { text-align: center; margin: 0 auto; max-width: 800px; font-size: 0.9em; }
         footer { background: #002D62; color: white; text-align: center; padding: 20px; margin-top: 30px; font-size: 0.8em; }
         img { max-width: 100%; height: auto; border-radius: 10px; }
+        .footer-links { margin-top: 10px; }
+        .footer-links a { color: #ffffff; text-decoration: none; font-weight: bold; }
+        .footer-links a:hover { text-decoration: underline; }
     </style>
-    
-    <!-- Facebook Pixel Code -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window,document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '560701972154813'); 
-  fbq('track', 'PageView');
-</script>
-<noscript>
-  <img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"/>
-</noscript>
-<!-- End Facebook Pixel Code -->
-
-    <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '560701972154813');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-
 </head>
 <body>
 
     <div class="header">
         <img src="https://homesitemortgage.online/images/Homesitelogo.png" alt="Homesite Mortgage Logo" class="logo">
-        <img src="https://homesitemortgage.online/images/banner.png" alt="Your Trusted Mortgage Loan Provider.">
         <h1>Homesite Mortgage - Turning Keys, Building Futures!</h1>
+        <a href="contact.html" class="contact-button">Contact Us</a>
     </div>
 
     <div class="container">
@@ -85,8 +51,11 @@ src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
 
     <footer>
         <p>📞 Call us: 321-432-6611 | 📧 Email: tcloans1@gmail.com</p>
-        <p>🏡 Homesite Mortgage NMLS: 353790 | Tom Culpepper NMLS: 353539</p>
+        <p>🏡 Homesite Mortgage NMLS: 353790 | Culpepper NMLS: 353539</p>
         <p>© 2024 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
+        <div class="footer-links">
+            <a href="privacy-policy.html">Privacy Policy</a>
+        </div>
     </footer>
 
 </body>
