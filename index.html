@@ -3,27 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Homesite Mortgage, your trusted mortgage loan provider, offers competitive rates and personalized home financing solutions. Get pre-approved today!">
+    <meta name="keywords" content="mortgage, home loan, pre-approval, Homesite Mortgage, trusted lender, competitive rates, Florida mortgage">
+    <meta name="author" content="Homesite Mortgage">
+    <meta name="robots" content="index, follow">
     <title>Homesite Mortgage | Your Trusted Mortgage Partner</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5faff; color: #333; }
-        .container { max-width: 1100px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
-        .header { background: white; color: #002D62; padding: 30px; display: flex; align-items: center; justify-content: space-between; }
-        .header h1 { font-size: 1.8em; margin: 10px 0; text-align: center; flex-grow: 1; }
-        .header p { font-size: 1em; color: #004080; }
-        .logo { max-width: 250px; display: block; margin-left: 20px; }
-        .contact-button { background: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-size: 16px; margin-right: 20px; }
-        .contact-button:hover { background: #0056b3; }
-        .cta-button { background-color: #007bff; color: white; padding: 15px 25px; border: none; font-size: 18px; cursor: pointer; border-radius: 5px; margin-top: 20px; text-decoration: none; display: inline-block; }
-        .cta-button:hover { background-color: #0056b3; }
-        .services { margin: 40px 0; text-align: center; }
-        .services h2 { color: #002D62; font-size: 1.6em; }
-        .content-box { text-align: center; margin: 0 auto; max-width: 800px; font-size: 0.9em; }
-        footer { background: #002D62; color: white; text-align: center; padding: 20px; margin-top: 30px; font-size: 0.8em; }
-        img { max-width: 100%; height: auto; border-radius: 10px; }
-        .footer-links { margin-top: 10px; }
-        .footer-links a { color: #ffffff; text-decoration: none; font-weight: bold; }
-        .footer-links a:hover { text-decoration: underline; }
-        a:focus, button:focus { outline: 3px solid #ffcc00; } /* High contrast focus for accessibility */
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5faff;
+            color: #333;
+            overflow-x: hidden; /* Prevents horizontal scrolling */
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            overflow: hidden; /* Clips image overflow */
+        }
+
+        .container img {
+            display: block; /* Removes bottom gap */
+            width: 100%; /* Scales to container */
+            height: auto; /* Maintains aspect ratio */
+            max-width: 100%; /* Prevents exceeding container */
+            border-radius: 10px;
+            margin: 0 auto; /* Centers image */
+        }
+
+        .header {
+            background: white;
+            color: #002D62;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Wraps on small screens */
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin: 10px 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .header p {
+            font-size: 1em;
+            color: #004080;
+        }
+
+        .logo {
+            max-width: 250px;
+            display: block;
+            margin-left: 20px;
+        }
+
+        .contact-button {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 20px;
+            transition: background 0.3s ease; /* Smooth hover */
+        }
+
+        .contact-button:hover {
+            background: #0056b3;
+        }
+
+        .cta-button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s ease; /* Smooth hover */
+        }
+
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+
+        .services {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .services h2 {
+            color: #002D62;
+            font-size: 1.6em;
+        }
+
+        .content-box {
+            text-align: center;
+            margin: 0 auto;
+            max-width: 800px;
+            font-size: 0.9em;
+        }
+
+        footer {
+            background: #002D62;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 0.8em;
+        }
+
+        .footer-links {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        a:focus, button:focus {
+            outline: 3px solid #ffcc00; /* High contrast focus for accessibility */
+        }
+
         .skip-link {
             position: absolute;
             top: -40px;
@@ -32,29 +159,66 @@
             color: white;
             padding: 10px;
             text-decoration: none;
+            z-index: 1000;
         }
-        .skip-link:focus { top: 10px; }
+
+        .skip-link:focus {
+            top: 10px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .logo {
+                margin: 10px auto;
+            }
+
+            .contact-button {
+                margin: 10px auto;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .services h2 {
+                font-size: 1.4em;
+            }
+
+            .cta-button {
+                font-size: 16px;
+                padding: 12px 20px;
+            }
+        }
     </style>
     <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '560701972154813');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '560701972154813');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 <body>
-
     <!-- Skip Navigation for Accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -65,19 +229,19 @@ src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
     </header>
 
     <main role="main" id="main-content">
- <div class="container">
-            <img src="https://homesitemortgage.online/images/personal.png" alt="Personal Statement">
+        <div class="container">
+            <img src="https://homesitemortgage.online/images/personal.png" alt="Personalized Mortgage Services">
         </div>
         
         <div class="container">
-            <img src="https://homesitemortgage.online/images/homesitecontact.png" alt="Unlock Your Dream Home">
+            <img src="https://homesitemortgage.online/images/homesitecontact.png" alt="Unlock Your Dream Home with Homesite Mortgage">
             <h2>Unlock Your Dream Home Today</h2>
             <p class="content-box">We make the home loan process easy, transparent, and stress-free. Let’s get you pre-approved today.</p>
             <a href="contact.html" class="cta-button" aria-label="Start the pre-approval process with Homesite Mortgage">Get Pre-Approved Now</a>
         </div>
 
         <div class="container">
-            <img src="https://homesitemortgage.online/images/BuildingFutures.png" alt="Turning Keys, Building Futures">
+            <img src="https://homesitemortgage.online/images/BuildingFutures.png" alt="Building Futures with Homesite Mortgage">
             <h2>Why Choose Homesite Mortgage?</h2>
             <p class="content-box">✔ Competitive Rates & Flexible Loan Options</p>
             <p class="content-box">✔ Fast & Easy Pre-Approval Process</p>
@@ -94,6 +258,5 @@ src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
             <a href="privacy-policy.html">Privacy Policy</a>
         </div>
     </footer>
-
 </body>
 </html>
