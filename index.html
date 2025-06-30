@@ -313,6 +313,62 @@
   }
 </style>
 
+<!-- Prequalification Popup Styles -->
+<style>
+  #prequal-popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+  }
+  #prequal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  }
+  #prequal-close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  #prequal-close:hover {
+    color: #333;
+  }
+  #prequal-content input,
+  #prequal-content select,
+  #prequal-content textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  #prequal-content button {
+    background-color: #2E86C1;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+  }
+  #prequal-content button:hover {
+    background-color: #1B4F72;
+  }
+</style>
+
 <!-- Prequalification Popup -->
 <div id="prequal-popup">
   <div id="prequal-content">
@@ -322,29 +378,51 @@
       <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
       <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
       <input type="hidden" name="_template" value="table">
-      
+
       <label for="name">Full Name</label>
       <input type="text" name="name" required>
-      
+
       <label for="email">Email</label>
       <input type="email" name="email" required>
-      
+
       <label for="phone">Phone Number</label>
       <input type="tel" name="phone" required>
-      
+
       <label for="loanType">Loan Type</label>
       <select name="loanType" required>
         <option value="">Select</option>
         <option value="purchase">Purchase</option>
         <option value="refinance">Refinance</option>
       </select>
-      
+
+      <label for="propertyType">Property Type</label>
+      <select name="propertyType" required>
+        <option value="">Select</option>
+        <option value="single_family">Single Family Home</option>
+        <option value="condo">Condominium</option>
+        <option value="townhome">Townhome</option>
+        <option value="multi_family">Multi-Family</option>
+        <option value="vacant_land">Vacant Land</option>
+      </select>
+
       <label for="amount">Estimated Loan Amount</label>
       <input type="number" name="amount" required>
-      
+
+      <label for="income">Estimated Annual Income</label>
+      <input type="number" name="income" required>
+
+      <label for="credit">Estimated Credit Score</label>
+      <select name="credit" required>
+        <option value="">Select</option>
+        <option value="excellent">Excellent (720+)</option>
+        <option value="good">Good (680-719)</option>
+        <option value="fair">Fair (620-679)</option>
+        <option value="poor">Poor (below 620)</option>
+      </select>
+
       <label for="message">Additional Details</label>
       <textarea name="message" rows="4"></textarea>
-      
+
       <button type="submit">Submit</button>
     </form>
   </div>
