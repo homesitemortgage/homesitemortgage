@@ -2,212 +2,379 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Homesite Mortgage Prequalification</title>
+  <title>Get Prequalified | Homesite Mortgage</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
+    /* --- Reset and Variables --- */
+    :root {
+        --primary-navy: #0a2540;     /* Deep Luxury Navy */
+        --accent-gold: #c5a059;      /* Muted Gold */
+        --accent-gold-hover: #b08d4b;
+        --bg-offwhite: #f9f9fb;
+        --text-dark: #333333;
+        --card-radius: 24px;         /* Consistent Roundness */
+        --btn-radius: 50px;          /* Pill-shaped buttons */
+        --input-radius: 12px;
+        --shadow-soft: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f4f8;
-      margin: 0;
-      padding: 0;
+        font-family: 'Lato', sans-serif;
+        background: var(--bg-offwhite);
+        color: var(--text-dark);
+        line-height: 1.6;
+        overflow-x: hidden;
     }
 
+    /* --- Typography --- */
+    h1, h2, h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-navy);
+        font-weight: 700;
+    }
+
+    /* --- Header --- */
+    .header {
+        background: white;
+        padding: 20px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        position: relative;
+        z-index: 100;
+    }
+
+    .header h1 {
+        font-size: 1.5em;
+        text-align: center;
+        flex-grow: 1;
+        margin: 0 20px;
+    }
+
+    /* --- Main Container --- */
     .container {
-      max-width: 720px;
-      margin: 40px auto;
-      background-color: #ffffff;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        max-width: 800px;
+        margin: 50px auto;
+        background: white;
+        padding: 50px;
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow-soft);
+        border-top: 5px solid var(--accent-gold); /* Gold Accent Top */
     }
 
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 30px;
+    .container h2 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2em;
     }
 
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1em;
+    }
+
+    /* --- Form Styling --- */
     label {
-      font-weight: bold;
-      margin-top: 20px;
-      display: block;
-      color: #34495e;
+        font-weight: 700;
+        margin-top: 25px;
+        display: block;
+        color: var(--primary-navy);
+        font-size: 0.95em;
     }
 
     input[type="text"],
     input[type="email"],
     input[type="tel"],
     select {
-      width: 100%;
-      padding: 10px 12px;
-      margin-top: 6px;
-      border: 1px solid #ccd1d9;
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 1rem;
-      background-color: #fdfdfd;
+        width: 100%;
+        padding: 15px;
+        margin-top: 8px;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--input-radius);
+        font-size: 1rem;
+        background: #fafafa;
+        font-family: 'Lato', sans-serif;
+        transition: all 0.3s ease;
+        appearance: none; /* Removes default browser styling for a cleaner look */
+        -webkit-appearance: none;
+    }
+
+    /* Custom arrow for Select boxes */
+    .select-wrapper {
+        position: relative;
+    }
+    .select-wrapper::after {
+        content: '▼';
+        font-size: 0.8rem;
+        color: var(--accent-gold);
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-20%);
+        pointer-events: none;
+    }
+
+    input:focus, select:focus {
+        border-color: var(--primary-navy);
+        background: white;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(10, 37, 64, 0.1);
     }
 
     button {
-      width: 100%;
-      background-color: #27ae60;
-      color: white;
-      padding: 14px;
-      margin-top: 30px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1.1rem;
-      cursor: pointer;
+        width: 100%;
+        background-color: var(--accent-gold);
+        color: white;
+        padding: 18px;
+        margin-top: 40px;
+        border: none;
+        border-radius: var(--btn-radius);
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     button:hover {
-      background-color: #219150;
+        background-color: var(--accent-gold-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(197, 160, 89, 0.6);
     }
 
+    /* Section divider */
+    .form-section-title {
+        margin-top: 40px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        color: #888;
+        font-size: 0.85em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: bold;
+    }
+
+    /* --- Footer --- */
+    footer {
+        background: var(--primary-navy);
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        margin-top: 60px;
+        font-size: 0.9em;
+    }
+
+    .footer-links a {
+        color: var(--accent-gold);
+        text-decoration: none;
+        font-weight: bold;
+        margin: 0 10px;
+    }
+
+    .footer-links a:hover { text-decoration: underline; }
+
+    /* --- Mobile --- */
     @media screen and (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
+        .header { flex-direction: column; padding: 20px; }
+        .header h1 { margin-top: 10px; font-size: 1.3em; }
+        .container { margin: 20px; padding: 25px; }
     }
   </style>
 </head>
 <body>
 
+  <header class="header" role="banner">
+    <a href="index.html">
+        <img src="https://homesitemortgage.online/images/Homesitelogo.png" alt="Homesite Mortgage Logo" style="max-width: 200px;">
+    </a>
+    <h1>Prequalification Request</h1>
+  </header>
+
   <main role="main" id="main-content">
     <div class="container">
-  <form action="https://formsubmit.co/tcloans1@gmail.com" method="POST">
-  <!-- Hidden fields for consistent functionality -->
-  <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
-  <input type="hidden" name="_subject" value="New Prequalification Submission!">
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
+      <h2>Let's Get Started 🏠</h2>
+      <p class="subtitle">Complete this secure form to start your journey toward home ownership.</p>
 
-  <h2>🏡 Homesite Mortgage Prequalification</h2>
+      <form action="https://formsubmit.co/tcloans1@gmail.com" method="POST">
+        <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
+        <input type="hidden" name="_subject" value="New Prequalification Submission!">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
 
-  <label for="name">Full Name</label>
-  <input type="text" id="name" name="Full Name" required>
+        <div class="form-section-title">Contact Information</div>
+        
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="Full Name" placeholder="e.g. John Smith" required>
 
-  <label for="email">Email Address</label>
-  <input type="email" id="email" name="Email Address" required>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="Email Address" placeholder="e.g. john@example.com" required>
 
-  <label for="phone">Phone Number</label>
-  <input type="tel" id="phone" name="Phone Number" required>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="Phone Number" placeholder="(555) 123-4567" required>
 
-  <label for="loan_type">1. What type of loan are you looking for?</label>
-  <select id="loan_type" name="Loan Type" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>First-time home purchase</option>
-    <option>Second home or vacation home</option>
-    <option>Refinance</option>
-    <option>Investment property</option>
-    <option>Renovation / construction</option>
-    <option>Not sure yet</option>
-  </select>
+        <div class="form-section-title">Loan Details</div>
 
-  <label for="property_type">2. What type of property are you interested in?</label>
-  <select id="property_type" name="Property Type" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Single-family home</option>
-    <option>Condo or townhouse</option>
-    <option>Duplex or multi-unit</option>
-    <option>Mobile or manufactured home</option>
-    <option>Other</option>
-  </select>
+        <label for="loan_type">1. What type of loan are you looking for?</label>
+        <div class="select-wrapper">
+            <select id="loan_type" name="Loan Type" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>First-time home purchase</option>
+            <option>Second home or vacation home</option>
+            <option>Refinance</option>
+            <option>Investment property</option>
+            <option>Renovation / construction</option>
+            <option>Not sure yet</option>
+            </select>
+        </div>
 
-  <label for="timeline">3. How soon are you looking to buy or refinance?</label>
-  <select id="timeline" name="Timeline" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Within 30 days</option>
-    <option>1–3 months</option>
-    <option>3–6 months</option>
-    <option>6–12 months</option>
-    <option>Just researching for now</option>
-  </select>
+        <label for="property_type">2. What type of property are you interested in?</label>
+        <div class="select-wrapper">
+            <select id="property_type" name="Property Type" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Single-family home</option>
+            <option>Condo or townhouse</option>
+            <option>Duplex or multi-unit</option>
+            <option>Mobile or manufactured home</option>
+            <option>Other</option>
+            </select>
+        </div>
 
-  <label for="credit_score">4. What’s your estimated credit score?</label>
-  <select id="credit_score" name="Estimated Credit Score" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Excellent (740+)</option>
-    <option>Good (680–739)</option>
-    <option>Fair (620–679)</option>
-    <option>Poor (below 620)</option>
-    <option>I’m not sure</option>
-  </select>
+        <label for="timeline">3. How soon are you looking to buy or refinance?</label>
+        <div class="select-wrapper">
+            <select id="timeline" name="Timeline" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Within 30 days</option>
+            <option>1–3 months</option>
+            <option>3–6 months</option>
+            <option>6–12 months</option>
+            <option>Just researching for now</option>
+            </select>
+        </div>
 
-  <label for="income">5. Approximate annual income (before taxes)?</label>
-  <select id="income" name="Annual Income" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Under $40,000</option>
-    <option>$40,000 – $74,999</option>
-    <option>$75,000 – $124,999</option>
-    <option>$125,000 – $199,999</option>
-    <option>$200,000+</option>
-  </select>
+        <div class="form-section-title">Financial Overview</div>
 
-  <label for="down_payment">6. How much are you planning to put down?</label>
-  <select id="down_payment" name="Down Payment" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>0% (looking for down payment assistance)</option>
-    <option>3%–5%</option>
-    <option>6%–10%</option>
-    <option>11%–20%</option>
-    <option>20%+</option>
-  </select>
+        <label for="credit_score">4. What’s your estimated credit score?</label>
+        <div class="select-wrapper">
+            <select id="credit_score" name="Estimated Credit Score" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Excellent (740+)</option>
+            <option>Good (680–739)</option>
+            <option>Fair (620–679)</option>
+            <option>Poor (below 620)</option>
+            <option>I’m not sure</option>
+            </select>
+        </div>
 
-  <label for="property_in_mind">7. Do you already have a property in mind?</label>
-  <select id="property_in_mind" name="Have Property In Mind?" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Yes</option>
-    <option>No</option>
-    <option>Working with a realtor</option>
-    <option>Not yet</option>
-  </select>
+        <label for="income">5. Approximate annual income (before taxes)?</label>
+        <div class="select-wrapper">
+            <select id="income" name="Annual Income" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Under $40,000</option>
+            <option>$40,000 – $74,999</option>
+            <option>$75,000 – $124,999</option>
+            <option>$125,000 – $199,999</option>
+            <option>$200,000+</option>
+            </select>
+        </div>
 
-  <label for="state">8. What state is the property located in?</label>
-  <input type="text" id="state" name="Property State" value="Florida" required>
+        <label for="down_payment">6. How much are you planning to put down?</label>
+        <div class="select-wrapper">
+            <select id="down_payment" name="Down Payment" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>0% (looking for down payment assistance)</option>
+            <option>3%–5%</option>
+            <option>6%–10%</option>
+            <option>11%–20%</option>
+            <option>20%+</option>
+            </select>
+        </div>
 
-  <label for="agent">9. Are you currently working with a real estate agent?</label>
-  <select id="agent" name="Working with Agent?" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Yes</option>
-    <option>No</option>
-    <option>I am the agent</option>
-  </select>
+        <label for="property_in_mind">7. Do you already have a property in mind?</label>
+        <div class="select-wrapper">
+            <select id="property_in_mind" name="Have Property In Mind?" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>Working with a realtor</option>
+            <option>Not yet</option>
+            </select>
+        </div>
 
-  <label for="bankruptcy">10. Have you ever filed for bankruptcy or had a foreclosure?</label>
-  <select id="bankruptcy" name="Bankruptcy/Foreclosure" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>No</option>
-    <option>Bankruptcy</option>
-    <option>Foreclosure</option>
-    <option>Both</option>
-    <option>Prefer not to say</option>
-  </select>
+        <label for="state">8. What state is the property located in?</label>
+        <input type="text" id="state" name="Property State" value="Florida" required>
 
-  <label for="employment">11. Are you self-employed or W-2 employed?</label>
-  <select id="employment" name="Employment Type" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>W-2 employee</option>
-    <option>Self-employed</option>
-    <option>Retired</option>
-    <option>Other</option>
-  </select>
+        <label for="agent">9. Are you currently working with a real estate agent?</label>
+        <div class="select-wrapper">
+            <select id="agent" name="Working with Agent?" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>I am the agent</option>
+            </select>
+        </div>
 
-  <label for="debt">12. Estimated monthly debt?</label>
-  <select id="debt" name="Monthly Debt" required>
-    <option disabled selected value="">Choose an option</option>
-    <option>Under $500</option>
-    <option>$500–$999</option>
-    <option>$1,000–$1,999</option>
-    <option>$2,000+</option>
-    <option>Not sure</option>
-  </select>
+        <label for="bankruptcy">10. Have you ever filed for bankruptcy or had a foreclosure?</label>
+        <div class="select-wrapper">
+            <select id="bankruptcy" name="Bankruptcy/Foreclosure" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>No</option>
+            <option>Bankruptcy</option>
+            <option>Foreclosure</option>
+            <option>Both</option>
+            <option>Prefer not to say</option>
+            </select>
+        </div>
 
-  <button type="submit">✅ Get Prequalified Now</button>
-</form>
+        <label for="employment">11. Are you self-employed or W-2 employed?</label>
+        <div class="select-wrapper">
+            <select id="employment" name="Employment Type" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>W-2 employee</option>
+            <option>Self-employed</option>
+            <option>Retired</option>
+            <option>Other</option>
+            </select>
+        </div>
+
+        <label for="debt">12. Estimated monthly debt?</label>
+        <div class="select-wrapper">
+            <select id="debt" name="Monthly Debt" required>
+            <option disabled selected value="">Choose an option</option>
+            <option>Under $500</option>
+            <option>$500–$999</option>
+            <option>$1,000–$1,999</option>
+            <option>$2,000+</option>
+            <option>Not sure</option>
+            </select>
+        </div>
+
+        <button type="submit">Submit for Prequalification</button>
+      </form>
     </div>
   </main>
+
+  <footer role="contentinfo">
+    <p>🏡 Homesite Mortgage NMLS: 353790 | Culpepper NMLS: 353539</p>
+    <p>© 2024 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
+    <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="index.html">Back to Home</a>
+    </div>
+  </footer>
 
 </body>
 </html>
