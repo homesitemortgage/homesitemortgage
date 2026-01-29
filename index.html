@@ -8,199 +8,288 @@
     <meta name="author" content="Homesite Mortgage">
     <meta name="robots" content="index, follow">
     <title>Homesite Mortgage | Your Trusted Mortgage Partner</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Reset and Base Styles */
+        /* --- Reset and Variables --- */
+        :root {
+            --primary-navy: #0a2540;     /* Deep Luxury Navy */
+            --accent-gold: #c5a059;      /* Muted Gold */
+            --accent-gold-hover: #b08d4b;
+            --bg-offwhite: #f9f9fb;
+            --text-dark: #333333;
+            --card-radius: 24px;         /* The "HowToLive30" Roundness */
+            --btn-radius: 50px;          /* Pill-shaped buttons */
+            --shadow-soft: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f5faff;
-            color: #333;
-            overflow-x: hidden; /* Prevents horizontal scrolling */
+            font-family: 'Lato', sans-serif;
+            background: var(--bg-offwhite);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: center;
-            overflow: hidden; /* Clips image overflow */
+        /* --- Typography --- */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif; /* Luxury Serif Font */
+            color: var(--primary-navy);
+            font-weight: 700;
         }
 
-        .container img {
-            display: block; /* Removes bottom gap */
-            width: 100%; /* Scales to container */
-            height: auto; /* Maintains aspect ratio */
-            max-width: 100%; /* Prevents exceeding container */
-            border-radius: 10px;
-            margin: 0 auto; /* Centers image */
-        }
-
+        /* --- Layout --- */
         .header {
             background: white;
-            color: #002D62;
-            padding: 30px;
+            padding: 20px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap; /* Wraps on small screens */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 100;
         }
 
         .header h1 {
-            font-size: 1.8em;
-            margin: 10px 0;
+            font-size: 1.5em;
             text-align: center;
             flex-grow: 1;
-        }
-
-        .header p {
-            font-size: 1em;
-            color: #004080;
+            margin: 0 20px;
         }
 
         .logo {
-            max-width: 250px;
-            display: block;
-            margin-left: 20px;
+            max-width: 220px;
+            height: auto;
+        }
+
+        /* --- Components --- */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: var(--card-radius); /* Rounded Corners */
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px); /* Subtle lift on hover */
+        }
+
+        .container img {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        /* --- Buttons (Luxury Style) --- */
+        .btn-gold {
+            background-color: var(--accent-gold);
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: var(--btn-radius); /* Pill shape */
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+        }
+
+        .btn-gold:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.6);
         }
 
         .contact-button {
-            background: #007bff;
-            color: white;
-            padding: 10px 15px;
+            color: var(--primary-navy);
             text-decoration: none;
-            border-radius: 5px;
+            font-weight: 700;
             font-size: 16px;
-            margin-right: 20px;
-            transition: background 0.3s ease; /* Smooth hover */
+            border: 2px solid var(--primary-navy);
+            padding: 10px 25px;
+            border-radius: var(--btn-radius);
+            transition: all 0.3s ease;
         }
 
         .contact-button:hover {
-            background: #0056b3;
-        }
-
-        .cta-button {
-            background-color: #007bff;
+            background: var(--primary-navy);
             color: white;
-            padding: 15px 25px;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 20px;
-            text-decoration: none;
-            display: inline-block;
-            transition: background 0.3s ease; /* Smooth hover */
         }
 
-        .cta-button:hover {
-            background-color: #0056b3;
-        }
-
-        .services {
-            margin: 40px 0;
-            text-align: center;
-        }
-
+        /* --- Content Styling --- */
         .services h2 {
-            color: #002D62;
-            font-size: 1.6em;
+            font-size: 2em;
+            margin-bottom: 10px;
         }
 
         .content-box {
-            text-align: center;
-            margin: 0 auto;
+            font-size: 1.1em;
+            color: #555;
+            margin: 10px auto;
             max-width: 800px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--primary-navy);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
             font-size: 0.9em;
         }
 
-        footer {
-            background: #002D62;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 30px;
-            font-size: 0.8em;
-        }
-
-        .footer-links {
-            margin-top: 10px;
-        }
-
         .footer-links a {
-            color: #ffffff;
+            color: var(--accent-gold);
             text-decoration: none;
-            font-weight: bold;
+            margin: 0 10px;
         }
 
         .footer-links a:hover {
             text-decoration: underline;
         }
 
-        a:focus, button:focus {
-            outline: 3px solid #ffcc00; /* High contrast focus for accessibility */
-        }
-
+        /* --- Accessibility --- */
         .skip-link {
             position: absolute;
             top: -40px;
             left: 10px;
-            background: #007bff;
+            background: var(--primary-navy);
             color: white;
             padding: 10px;
-            text-decoration: none;
             z-index: 1000;
+            transition: top 0.3s;
         }
+        .skip-link:focus { top: 10px; }
 
-        .skip-link:focus {
-            top: 10px;
-        }
-
-        /* Mobile Responsiveness */
+        /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
+                gap: 15px;
                 padding: 20px;
             }
-
             .header h1 {
-                font-size: 1.5em;
+                font-size: 1.2em;
+                margin: 10px 0;
             }
-
-            .logo {
-                margin: 10px auto;
-            }
-
-            .contact-button {
-                margin: 10px auto;
-            }
-
             .container {
                 margin: 20px;
-                padding: 20px;
-            }
-
-            .services h2 {
-                font-size: 1.4em;
-            }
-
-            .cta-button {
-                font-size: 16px;
-                padding: 12px 20px;
+                padding: 25px;
             }
         }
+        
+        /* --- Popup Styles --- */
+        #prequal-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(10, 37, 64, 0.85); /* Navy transparent background */
+            backdrop-filter: blur(5px);
+        }
+
+        #prequal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: var(--card-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            position: relative;
+            animation: floatUp 0.4s ease-out;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #prequal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        #prequal-close:hover { color: var(--primary-navy); }
+
+        /* Form Elements */
+        #prequal-content label {
+            font-weight: 700;
+            font-size: 0.9em;
+            color: var(--primary-navy);
+            display: block;
+            margin-top: 15px;
+        }
+
+        #prequal-content input,
+        #prequal-content select,
+        #prequal-content textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            background: #fafafa;
+        }
+        
+        #prequal-content input:focus,
+        #prequal-content select:focus,
+        #prequal-content textarea:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            background: white;
+        }
+
+        #prequal-content button {
+            background-color: var(--primary-navy);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: var(--btn-radius);
+            width: 100%;
+            cursor: pointer;
+            margin-top: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        #prequal-content button:hover {
+            background-color: #163b61;
+        }
+
     </style>
-    <!-- Meta Pixel Code -->
+    
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -216,10 +305,8 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=560701972154813&ev=PageView&noscript=1"
     /></noscript>
-    <!-- End Meta Pixel Code -->
-</head>
+    </head>
 <body>
-    <!-- Skip Navigation for Accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <header class="header" role="banner">
@@ -237,7 +324,7 @@
             <img src="https://homesitemortgage.online/images/homesitecontact.png" alt="Unlock Your Dream Home with Homesite Mortgage">
             <h2>Unlock Your Dream Home Today</h2>
             <p class="content-box">We make the home loan process easy, transparent, and stress-free. Let’s get you pre-approved today.</p>
-            <a href="prequal.html" class="cta-button" aria-label="Start the pre-approval process with Homesite Mortgage">Get Pre-Approved Now</a>
+            <a href="prequal.html" class="btn-gold" aria-label="Start the pre-approval process with Homesite Mortgage">Get Pre-Approved Now</a>
         </div>
 
         <div class="container">
@@ -259,195 +346,84 @@
         </div>
     </footer>
 
-<!-- Prequalification Popup Styles -->
-<style>
-  #prequal-popup {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-  }
-  #prequal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  }
-  #prequal-close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  #prequal-close:hover {
-    color: #333;
-  }
-  #prequal-content input,
-  #prequal-content select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  #prequal-content button {
-    background-color: #2E86C1;
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 6px;
-    width: 100%;
-    cursor: pointer;
-  }
-  #prequal-content button:hover {
-    background-color: #1B4F72;
-  }
-</style>
+    <div id="prequal-popup">
+      <div id="prequal-content">
+        <span id="prequal-close">&times;</span>
+        <h2 style="text-align:center;">Homesite Mortgage 🏠</h2>
+        <h3 style="text-align:center; font-size: 1.2em; color:#555; font-family:'Lato', sans-serif;">Get Prequalified Today</h3>
+        
+        <form action="https://formsubmit.co/tcloans1@gmail.com" method="POST">
+          <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
+          <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
+          <input type="hidden" name="_template" value="table">
 
-<!-- Prequalification Popup Styles -->
-<style>
-  #prequal-popup {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-  }
-  #prequal-content {
-    background-color: #fff;
-    margin: 5% auto;
-    padding: 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  }
-  #prequal-close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  #prequal-close:hover {
-    color: #333;
-  }
-  #prequal-content input,
-  #prequal-content select,
-  #prequal-content textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-  }
-  #prequal-content button {
-    background-color: #2E86C1;
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 6px;
-    width: 100%;
-    cursor: pointer;
-  }
-  #prequal-content button:hover {
-    background-color: #1B4F72;
-  }
-</style>
+          <label for="name">Full Name</label>
+          <input type="text" name="name" required>
 
-<!-- Prequalification Popup -->
-<div id="prequal-popup">
-  <div id="prequal-content">
-    <span id="prequal-close">&times;</span>
-      <h2>Homesite Mortgage 🏠💸</h2><br>
-    <h2>Get Prequalified Today</h2><br>
-    <form action="https://formsubmit.co/tcloans1@gmail.com" method="POST">
-      <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
-      <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
-      <input type="hidden" name="_template" value="table">
+          <label for="email">Email</label>
+          <input type="email" name="email" required>
 
-      <label for="name">Full Name</label>
-      <input type="text" name="name" required>
+          <label for="phone">Phone Number</label>
+          <input type="tel" name="phone" required>
 
-      <label for="email">Email</label>
-      <input type="email" name="email" required>
+          <label for="loanType">Loan Type</label>
+          <select name="loanType" required>
+            <option value="">Select</option>
+            <option value="purchase">Purchase</option>
+            <option value="refinance">Refinance</option>
+          </select>
 
-      <label for="phone">Phone Number</label>
-      <input type="tel" name="phone" required>
+          <label for="propertyType">Property Type</label>
+          <select name="propertyType" required>
+            <option value="">Select</option>
+            <option value="single_family">Single Family Home</option>
+            <option value="condo">Condominium</option>
+            <option value="townhome">Townhome</option>
+            <option value="multi_family">Multi-Family</option>
+            <option value="vacant_land">Vacant Land</option>
+          </select>
 
-      <label for="loanType">Loan Type</label>
-      <select name="loanType" required>
-        <option value="">Select</option>
-        <option value="purchase">Purchase</option>
-        <option value="refinance">Refinance</option>
-      </select>
+          <label for="amount">Estimated Loan Amount</label>
+          <input type="number" name="amount" required>
 
-      <label for="propertyType">Property Type</label>
-      <select name="propertyType" required>
-        <option value="">Select</option>
-        <option value="single_family">Single Family Home</option>
-        <option value="condo">Condominium</option>
-        <option value="townhome">Townhome</option>
-        <option value="multi_family">Multi-Family</option>
-        <option value="vacant_land">Vacant Land</option>
-      </select>
+          <label for="income">Estimated Annual Income</label>
+          <input type="number" name="income" required>
 
-      <label for="amount">Estimated Loan Amount</label>
-      <input type="number" name="amount" required>
+          <label for="credit">Estimated Credit Score</label>
+          <select name="credit" required>
+            <option value="">Select</option>
+            <option value="excellent">Excellent (720+)</option>
+            <option value="good">Good (680-719)</option>
+            <option value="fair">Fair (620-679)</option>
+            <option value="poor">Poor (below 620)</option>
+          </select>
 
-      <label for="income">Estimated Annual Income</label>
-      <input type="number" name="income" required>
+          <label for="message">Additional Details</label>
+          <textarea name="message" rows="4"></textarea>
 
-      <label for="credit">Estimated Credit Score</label>
-      <select name="credit" required>
-        <option value="">Select</option>
-        <option value="excellent">Excellent (720+)</option>
-        <option value="good">Good (680-719)</option>
-        <option value="fair">Fair (620-679)</option>
-        <option value="poor">Poor (below 620)</option>
-      </select>
+          <button type="submit">Submit Request</button>
+        </form>
+      </div>
+    </div>
 
-      <label for="message">Additional Details</label>
-      <textarea name="message" rows="4"></textarea>
+    <script>
+      // open popup after 3 seconds
+      window.onload = function() {
+        setTimeout(function() {
+          document.getElementById("prequal-popup").style.display = "block";
+        }, 3000);
+      };
+      // close button
+      document.getElementById("prequal-close").onclick = function() {
+        document.getElementById("prequal-popup").style.display = "none";
+      };
+      // click outside to close
+      window.onclick = function(event) {
+        if (event.target == document.getElementById("prequal-popup")) {
+          document.getElementById("prequal-popup").style.display = "none";
+        }
+      };
+    </script>
 
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-</div>
-
-<!-- Popup Script -->
-<script>
-  // open popup after 3 seconds
-  window.onload = function() {
-    setTimeout(function() {
-      document.getElementById("prequal-popup").style.display = "block";
-    }, 3000);
-  };
-  // close button
-  document.getElementById("prequal-close").onclick = function() {
-    document.getElementById("prequal-popup").style.display = "none";
-  };
-  // click outside to close
-  window.onclick = function(event) {
-    if (event.target == document.getElementById("prequal-popup")) {
-      document.getElementById("prequal-popup").style.display = "none";
-    }
-  };
-</script>
-    
 </body>
 </html>
