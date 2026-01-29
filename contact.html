@@ -8,50 +8,96 @@
     <meta name="author" content="Homesite Mortgage">
     <meta name="robots" content="index, follow">
     <title>Contact Us | Homesite Mortgage - Your Trusted Lender</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Reset and Base Styles */
+        /* --- Reset and Variables --- */
+        :root {
+            --primary-navy: #0a2540;     /* Deep Luxury Navy */
+            --accent-gold: #c5a059;      /* Muted Gold */
+            --accent-gold-hover: #b08d4b;
+            --bg-offwhite: #f9f9fb;
+            --text-dark: #333333;
+            --card-radius: 24px;         /* Consistent Roundness */
+            --btn-radius: 50px;          /* Pill-shaped buttons */
+            --shadow-soft: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background: #f5faff;
-            color: #333;
-            overflow-x: hidden; /* Prevents horizontal scrolling */
+            font-family: 'Lato', sans-serif;
+            background: var(--bg-offwhite);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
+        /* --- Typography --- */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        /* --- Header --- */
         .header {
-            background: #002D62;
-            color: white;
-            padding: 20px;
-            text-align: center;
+            background: white;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 100;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 2em;
+            font-size: 1.5em;
+            text-align: center;
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+        
+        /* Using text if image fails, or you can swap this back to the img tag if you prefer */
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-navy);
+            font-weight: bold;
+            text-decoration: none;
         }
 
-        .header p {
-            font-size: 1.1em;
-            margin-top: 5px;
-        }
-
+        /* --- Main Layout --- */
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 50px auto;
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 50px;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-soft);
             text-align: center;
+            transition: transform 0.3s ease;
         }
 
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .container p.intro {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        /* --- Form Styling --- */
         form {
             display: flex;
             flex-direction: column;
@@ -59,130 +105,155 @@
         }
 
         label {
-            font-weight: bold;
-            margin-top: 15px;
-            color: #002D62;
+            font-weight: 700;
+            margin-top: 20px;
+            color: var(--primary-navy);
+            font-size: 0.95em;
         }
 
         input, textarea {
             width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 15px;
+            margin-top: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 1rem;
-            transition: border-color 0.3s ease; /* Smooth focus effect */
+            background: #fafafa;
+            font-family: 'Lato', sans-serif;
+            transition: all 0.3s ease;
         }
 
         input:focus, textarea:focus {
-            border-color: #007bff;
+            border-color: var(--primary-navy);
+            background: white;
             outline: none;
+            box-shadow: 0 0 0 4px rgba(10, 37, 64, 0.1);
         }
 
         textarea {
-            resize: vertical; /* Allows vertical resizing only */
+            resize: vertical;
+            min-height: 120px;
         }
 
-        .cta-button {
-            background-color: #007bff;
+        .btn-gold {
+            background-color: var(--accent-gold);
             color: white;
-            padding: 12px;
+            padding: 18px;
             border: none;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: var(--btn-radius);
+            margin-top: 30px;
             cursor: pointer;
-            border-radius: 5px;
-            margin-top: 20px;
-            transition: background-color 0.3s ease; /* Smooth hover */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+            width: 100%;
         }
 
-        .cta-button:hover {
-            background-color: #0056b3;
+        .btn-gold:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.6);
         }
 
-        .trust {
+        /* --- Trust Badge / Info Section --- */
+        .trust-card {
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-soft);
             text-align: center;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            margin: 20px auto;
-            max-width: 600px;
+            border-left: 5px solid var(--accent-gold); /* Gold Accent Stripe */
         }
 
-        .trust p {
+        .trust-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .trust-card p {
             margin: 8px 0;
-            font-size: 0.95em;
+            font-size: 1.1em;
+            color: #555;
         }
 
+        .trust-card a {
+            color: var(--primary-navy);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* --- Footer --- */
         footer {
-            background: #002D62;
+            background: var(--primary-navy);
             color: white;
             text-align: center;
-            padding: 20px;
-            margin-top: 30px;
-            font-size: 0.8em;
+            padding: 40px 20px;
+            margin-top: 60px;
+            font-size: 0.9em;
         }
 
         .footer-links a {
-            color: #ffffff;
+            color: var(--accent-gold);
             text-decoration: none;
             font-weight: bold;
+            margin: 0 10px;
         }
 
         .footer-links a:hover {
             text-decoration: underline;
         }
 
-        a:focus, button:focus {
-            outline: 3px solid #ffcc00; /* High contrast focus */
-        }
-
+        /* --- Accessibility --- */
         .skip-link {
             position: absolute;
             top: -40px;
             left: 10px;
-            background: #007bff;
+            background: var(--primary-navy);
             color: white;
             padding: 10px;
-            text-decoration: none;
             z-index: 1000;
+            transition: top 0.3s;
         }
+        .skip-link:focus { top: 10px; }
 
-        .skip-link:focus {
-            top: 10px;
-        }
-
-        /* Mobile Responsiveness */
+        /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.5em;
-            }
-
-            .header p {
-                font-size: 1em;
-            }
-
-            .container {
-                margin: 20px;
+            .header {
+                flex-direction: column;
                 padding: 20px;
             }
-
-            .trust {
+            .header h1 {
+                font-size: 1.4em;
+                margin-top: 10px;
+            }
+            .container, .trust-card {
                 margin: 20px;
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Skip Navigation for Accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <header class="header" role="banner">
-        <h1>Contact Homesite Mortgage</h1>
-        <p>We're here to help with your mortgage needs!</p>
-    </header>
+        <a href="index.html">
+            <img src="https://homesitemortgage.online/images/Homesitelogo.png" alt="Homesite Mortgage Logo" style="max-width: 200px;">
+        </a>
+        <h1>Contact Us</h1>
+        </header>
 
     <main role="main" id="main-content">
+        
         <div class="container">
+            <h2>Get in Touch</h2>
+            <p class="intro">Have a question about your mortgage options? We are here to help you every step of the way.</p>
+            
             <form action="https://formsubmit.co/tcloans1@gmail.com" method="POST">
                 <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
                 <input type="hidden" name="_subject" value="New Contact Form Submission!">
@@ -198,18 +269,20 @@
                 <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number" aria-label="Your Phone Number">
 
                 <label for="message">Message</label>
-                <textarea id="message" name="message" rows="4" required placeholder="How can we assist you?" aria-label="Your Message"></textarea>
+                <textarea id="message" name="message" rows="4" required placeholder="How can we assist you today?" aria-label="Your Message"></textarea>
 
-                <button type="submit" class="cta-button">Submit</button>
+                <button type="submit" class="btn-gold">Send Message</button>
             </form>
         </div>
 
-        <div class="trust">
-            <p><strong>Call Us:</strong> 321-432-6611</p>
-            <p><strong>Email:</strong> tcloans1@gmail.com</p>
-            <p>Homesite Mortgage, Licensed Lender</p>
-            <p><em>“Trusted Experts with Over 30 Years in Business”</em></p>
+        <div class="trust-card">
+            <h3>Direct Contact Info</h3>
+            <p><strong>📞 Call Us:</strong> <a href="tel:3214326611">321-432-6611</a></p>
+            <p><strong>📧 Email:</strong> <a href="mailto:tcloans1@gmail.com">tcloans1@gmail.com</a></p>
+            <br>
+            <p style="font-style: italic; color: var(--primary-navy);">“Trusted Experts with Over 30 Years in Business”</p>
         </div>
+
     </main>
 
     <footer role="contentinfo">
@@ -217,6 +290,7 @@
         <p>© 2024 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
         <div class="footer-links">
             <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="index.html">Back to Home</a>
         </div>
     </footer>
 </body>
