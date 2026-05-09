@@ -194,5 +194,36 @@
         });
       })();
     </script>
+
+    <!-- HubSpot tracking — gated behind CookieYes "Analytics" consent (PTRACK) -->
+    <script>
+      document.addEventListener("cookieyes_consent_update", function(eventData) {
+        var data = eventData.detail;
+        if (data.accepted && data.accepted.indexOf("analytics") > -1) {
+          loadHubSpot();
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function() {
+        if (typeof CookieYes !== "undefined") {
+          var consent = CookieYes.getConsent();
+          if (consent && consent.analytics === "yes") {
+            loadHubSpot();
+          }
+        }
+      });
+
+      function loadHubSpot() {
+        if (window.hsLoaded) return;
+        window.hsLoaded = true;
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.id = 'hs-script-loader';
+        s.async = true;
+        s.defer = true;
+        s.src = '//js-na2.hs-scripts.com/246135299.js';
+        document.body.appendChild(s);
+      }
+    </script>
 </body>
 </html>
