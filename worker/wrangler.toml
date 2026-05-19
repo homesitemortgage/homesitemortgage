@@ -1,0 +1,17 @@
+# Cloudflare Worker config for the unified form pipeline (P1.6.2).
+#
+# Deploy from this directory:
+#   wrangler deploy
+#
+# Secrets (set once per environment; never committed):
+#   wrangler secret put RESEND_API_KEY
+#   wrangler secret put HUBSPOT_TOKEN
+
+name = "homesite-form-handler"
+main = "src/index.js"
+compatibility_date = "2026-05-01"
+
+# Production logs (errors only). Tail with:
+#   wrangler tail
+[observability]
+enabled = true
