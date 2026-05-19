@@ -218,6 +218,11 @@
       <h2>Let's Get Started 🏠</h2>
       <p class="subtitle">Complete this secure form to start your journey toward home ownership.</p>
 
+      <!-- Pre-fill banner shown when ?type= param is present -->
+      <div id="program-banner" role="status" aria-live="polite" style="display:none;background:#fff7e6;border:1px solid #c5a059;border-radius:12px;padding:14px 18px;margin:18px 0 6px;font-size:0.95em;color:var(--primary-navy);">
+        You're starting a <strong><span id="program-banner-name"></span></strong> prequal — <a href="?" id="program-banner-change" style="color:var(--primary-navy);text-decoration:underline;font-weight:600;">change if needed</a>.
+      </div>
+
       <form action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="e6e06fa9-3277-42a0-95ff-6c649c03ed0a">
         <input type="hidden" name="subject" value="New Lead — Homesite Mortgage">
@@ -228,6 +233,8 @@
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
         <input type="hidden" name="_cc" value="brandonjculpepper@gmail.com">
+        <!-- Loan program captured from ?type= URL param; populated by inline script below -->
+        <input type="hidden" id="loan_program" name="Loan Program" value="">
 
         <div class="form-section-title">Contact Information</div>
         
@@ -407,9 +414,51 @@
     <div class="footer-links">
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="index.html">Back to Home</a>
-        <a href="#" class="cky-banner-element">Cookie Settings</a>
+        <a href="javascript:void(0);" class="cky-banner-element">Cookie Settings</a>
     </div>
   </footer>
+
+  <!-- Pre-fill loan program from ?type= URL param -->
+  <script>
+    (function() {
+      var LABELS = {
+        purchase: 'Home Purchase',
+        refi: 'Refinance',
+        fha: 'FHA Loan',
+        va: 'VA Loan',
+        conventional: 'Conventional Loan',
+        dscr: 'DSCR / Investment',
+        nonqm: 'Non-QM (Self-Employed)'
+      };
+      // Best-effort mapping into the existing transaction-type select.
+      // Programs without a direct transaction-type analogue (FHA / VA / Conventional / Non-QM) leave the select alone.
+      var TX_MAP = {
+        purchase: 'First-time home purchase',
+        refi: 'Refinance',
+        dscr: 'Investment property'
+      };
+      var type = new URLSearchParams(window.location.search).get('type');
+      if (!type || !LABELS[type]) return;
+      var label = LABELS[type];
+      var hidden = document.getElementById('loan_program');
+      if (hidden) hidden.value = label;
+      var banner = document.getElementById('program-banner');
+      var nameEl = document.getElementById('program-banner-name');
+      if (banner && nameEl) {
+        nameEl.textContent = label;
+        banner.style.display = 'block';
+      }
+      var txValue = TX_MAP[type];
+      if (txValue) {
+        var sel = document.getElementById('loan_type');
+        if (sel) {
+          for (var i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].text === txValue) { sel.selectedIndex = i; break; }
+          }
+        }
+      }
+    })();
+  </script>
 
   <!-- HubSpot tracking — gated behind CookieYes "Analytics" consent (PTRACK) -->
   <script>

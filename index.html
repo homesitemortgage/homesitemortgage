@@ -110,6 +110,43 @@
       white-space: nowrap;
     }
     .nav-phone svg { flex-shrink: 0; }
+
+    /* Loan Options dropdown */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .nav-dropdown-trigger {
+      cursor: pointer; color: var(--navy);
+      font-weight: 600; font-size: 0.95rem;
+      padding: 8px 12px; list-style: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      border-radius: 6px; user-select: none;
+    }
+    .nav-dropdown-trigger::-webkit-details-marker { display: none; }
+    .nav-dropdown-trigger::marker { content: ''; }
+    .nav-dropdown-trigger:hover { background: rgba(10,31,60,0.04); }
+    .nav-dropdown-trigger:focus { outline: none; }
+    .nav-dropdown-trigger:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
+    .nav-dropdown[open] .nav-dropdown-trigger { background: rgba(10,31,60,0.04); }
+    .nav-dropdown-caret { width: 10px; height: 10px; transition: transform 0.15s; }
+    .nav-dropdown[open] .nav-dropdown-caret { transform: rotate(180deg); }
+    .nav-dropdown-menu {
+      position: absolute; top: calc(100% + 6px); left: 0;
+      background: #ffffff;
+      border: 1px solid rgba(10,31,60,0.08);
+      border-radius: 10px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+      min-width: 240px;
+      list-style: none; padding: 8px 0; margin: 0;
+      z-index: 200;
+    }
+    .nav-dropdown-menu li a {
+      display: flex; align-items: center;
+      padding: 12px 16px;
+      color: var(--navy); font-size: 0.92rem;
+      min-height: 48px;
+    }
+    .nav-dropdown-menu li a:hover { background: rgba(197,160,89,0.10); }
+    .nav-dropdown-menu li a:focus { outline: none; background: rgba(197,160,89,0.10); }
+    .nav-dropdown-menu li a:focus-visible { box-shadow: inset 0 0 0 2px var(--gold); }
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
       padding: 10px 22px; border-radius: 8px;
@@ -290,45 +327,62 @@
       inset: 0;
     }
 
-    /* ── ABOUT TOM ────────────────────────────────── */
+    /* ── ABOUT / TEAM ─────────────────────────────── */
     .about-section { background: var(--white); }
-    .about-inner {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 64px; align-items: center;
+
+    .team-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-bottom: 40px;
     }
-    .about-photo-wrap {
-      position: relative;
-    }
-    .about-photo-placeholder {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      border-radius: 16px; aspect-ratio: 4/5;
+    .team-card {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid #e8e4dc; overflow: hidden;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 16px; color: var(--white);
-      border: 2px solid rgba(197,160,89,0.3);
-      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .about-photo-placeholder::before {
+    .team-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .team-photo-placeholder {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      aspect-ratio: 4/5;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      border-bottom: 2px solid rgba(197,160,89,0.3);
+    }
+    .team-photo-placeholder::before {
       content: '';
       position: absolute; inset: 0;
       background: radial-gradient(ellipse at center, rgba(197,160,89,0.1) 0%, transparent 70%);
     }
-
-    /* SWAP THIS: replace .about-photo-placeholder with <img> when Tom's photo is ready */
-    /* <img src="images/tom-culpepper.jpg" alt="Tom Culpepper, Licensed Mortgage Loan Officer NMLS #353539" class="about-photo" /> */
-    /* .about-photo { width: 100%; border-radius: 16px; object-fit: cover; aspect-ratio: 4/5; } */
-
-    .about-photo-icon { font-size: 4rem; position: relative; z-index: 1; }
-    .about-photo-name {
-      font-family: var(--font-display); font-size: 1.3rem;
-      color: var(--white); position: relative; z-index: 1; text-align: center;
+    .team-photo-caption {
+      position: absolute; bottom: 14px; left: 0; right: 0;
+      font-size: 0.66rem; color: rgba(197,160,89,0.7);
+      letter-spacing: 0.08em; text-align: center;
     }
-    .about-photo-nmls {
-      font-size: 0.8rem; color: var(--gold); position: relative; z-index: 1;
-      letter-spacing: 0.05em;
+    .team-photo {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;
+      border-bottom: 2px solid rgba(197,160,89,0.3);
+    }
+    .team-info { padding: 22px 22px 26px; text-align: center; }
+    .team-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem; color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .team-title { font-size: 0.92rem; color: var(--gray-600); margin-bottom: 6px; }
+    .team-nmls {
+      font-size: 0.78rem; color: var(--gold);
+      letter-spacing: 0.04em; font-weight: 600;
+    }
+
+    .team-meta-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 48px; flex-wrap: wrap; margin-top: 8px;
     }
     .about-badge {
-      position: absolute; bottom: -20px; right: -20px;
       background: var(--gold); color: var(--navy);
       border-radius: 12px; padding: 16px 20px;
       font-weight: 700; text-align: center; box-shadow: var(--shadow);
@@ -336,10 +390,7 @@
     }
     .about-badge-num  { font-size: 2rem; font-family: var(--font-display); line-height: 1; }
     .about-badge-label{ font-size: 0.68rem; letter-spacing: 0.04em; margin-top: 4px; line-height: 1.3; }
-
-    .about-content .section-sub { max-width: 100%; margin-bottom: 24px; }
-    .about-stat-row { display: flex; gap: 32px; margin: 32px 0; flex-wrap: wrap; }
-    .about-stat { }
+    .about-stat-row { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; }
     .about-stat-num { font-family: var(--font-display); font-size: 2rem; color: var(--navy); font-weight: 700; line-height: 1; }
     .about-stat-label { font-size: 0.82rem; color: var(--gray-600); margin-top: 4px; }
 
@@ -417,8 +468,8 @@
       .florida-map-wrap { max-width: 280px; }
       .map-card-top { top: 5%; right: 0; }
       .map-card-bottom { bottom: 10%; left: 0; }
-      .about-inner { grid-template-columns: 1fr; gap: 40px; }
-      .about-photo-wrap { max-width: 320px; margin: 0 auto; }
+      .team-grid { grid-template-columns: 1fr; gap: 20px; max-width: 360px; margin-left: auto; margin-right: auto; margin-bottom: 32px; }
+      .team-meta-row { gap: 24px; }
       .steps { grid-template-columns: 1fr; }
       .steps::before { display: none; }
       .loans-grid { grid-template-columns: repeat(2, 1fr); }
@@ -427,6 +478,7 @@
       .trust-item:last-child { border-bottom: none; }
       .trust-strip-inner { flex-direction: column; align-items: stretch; }
       .nav-phone span { display: none; }
+      .nav-dropdown { display: none; }
     }
     @media (max-width: 600px) {
       section { padding: 56px 20px; }
@@ -466,14 +518,20 @@
           {
             "@type": "Person",
             "name": "Tom Culpepper",
-            "jobTitle": "Mortgage Broker / Owner",
+            "jobTitle": "Principal Broker",
             "identifier": "NMLS #353539"
           },
           {
             "@type": "Person",
             "name": "Tracy Cody",
-            "jobTitle": "Loan Processor",
+            "jobTitle": "Loan Processing & Closing",
             "identifier": "NMLS #886861"
+          },
+          {
+            "@type": "Person",
+            "name": "Brandon Culpepper",
+            "jobTitle": "Mortgage Loan Originator",
+            "identifier": "NMLS #1577726"
           }
         ],
         "hasOfferCatalog": {
@@ -485,7 +543,8 @@
             {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "FHA Loans"}},
             {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "VA Loans"}},
             {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Conventional Loans"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Investment Property Loans"}}
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "DSCR / Investment Property Loans"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Non-QM / Self-Employed Loans"}}
           ]
         },
         "sameAs": [
@@ -514,6 +573,21 @@
       <a href="/" class="nav-logo" aria-label="Homesite Mortgage — Home">
         <img src="images/Homesitelogo.png" alt="Homesite Mortgage Logo" width="160" height="44" />
       </a>
+      <details class="nav-dropdown" id="loan-options-menu">
+        <summary class="nav-dropdown-trigger" aria-haspopup="true">
+          Loan Options
+          <svg class="nav-dropdown-caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 4l3 3 3-3"/></svg>
+        </summary>
+        <ul class="nav-dropdown-menu" role="menu">
+          <li role="none"><a role="menuitem" href="prequal.html?type=purchase">Purchase</a></li>
+          <li role="none"><a role="menuitem" href="prequal.html?type=refi">Refinance</a></li>
+          <li role="none"><a role="menuitem" href="prequal.html?type=fha">FHA</a></li>
+          <li role="none"><a role="menuitem" href="prequal.html?type=va">VA</a></li>
+          <li role="none"><a role="menuitem" href="prequal.html?type=conventional">Conventional</a></li>
+          <li role="none"><a role="menuitem" href="prequal.html?type=dscr">DSCR / Investment</a></li>
+          <li role="none"><a role="menuitem" href="prequal.html?type=nonqm">Non-QM (Self-Employed)</a></li>
+        </ul>
+      </details>
       <div class="nav-actions">
         <a href="tel:3214326611" class="nav-phone" aria-label="Call us at 321-432-6611">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -590,7 +664,7 @@
           <span class="trust-icon" aria-hidden="true">🏠</span>
           <div>
             <div class="trust-label">Family-Owned Since 1999</div>
-            <div class="trust-sub">Founded by Tom Culpepper, NMLS #353539</div>
+            <div class="trust-sub">Homesite Mortgage · NMLS #353790</div>
           </div>
         </div>
         <div class="trust-item">
@@ -698,72 +772,116 @@
             <div class="loan-icon">
               <svg viewBox="0 0 32 32" fill="none" stroke="#c5a059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="11" height="20"/><rect x="18" y="3" width="11" height="25"/><path d="M3 28h26"/></svg>
             </div>
-            <h3 class="loan-title">Investment Property</h3>
-            <p class="loan-desc">Growing your Florida portfolio? We've been financing investment properties since 1999.</p>
-            <a href="prequal.html?type=investment" class="loan-link loan-card-link">Get started →</a>
+            <h3 class="loan-title">DSCR / Investment</h3>
+            <p class="loan-desc">Financing qualified by the property's rental income — built for real estate investors growing a Florida portfolio.</p>
+            <a href="prequal.html?type=dscr" class="loan-link loan-card-link">Get started →</a>
+          </article>
+          <article class="loan-card">
+            <div class="loan-icon">
+              <svg viewBox="0 0 32 32" fill="none" stroke="#c5a059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h16v22H8z"/><path d="M12 12h8M12 16h8M12 20h5"/></svg>
+            </div>
+            <h3 class="loan-title">Non-QM (Self-Employed)</h3>
+            <p class="loan-desc">Self-employed or non-traditional income? Flexible documentation options for borrowers who don't fit the standard mold.</p>
+            <a href="prequal.html?type=nonqm" class="loan-link loan-card-link">Get started →</a>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ── ABOUT TOM ── -->
+    <!-- ── ABOUT / TEAM ── -->
     <section class="about-section" aria-labelledby="about-heading">
       <div class="section-inner">
-        <div class="about-inner">
+        <div class="section-eyebrow" style="text-align:center;">Who You're Working With</div>
+        <h2 class="section-title" id="about-heading" style="text-align:center;">Three Licensed Professionals. No Call Centers.</h2>
+        <p class="section-sub" style="text-align:center;max-width:680px;margin:0 auto 14px;">
+          Homesite Mortgage was founded in 1999 with one goal: to give Florida borrowers the same honest, personal guidance we'd want for our own family. In <span class="years-in-business">27</span> years, that hasn't changed.
+        </p>
+        <p class="section-sub" style="text-align:center;max-width:680px;margin:0 auto 48px;">
+          When you submit a prequal, Tom reviews it personally. Tracy handles your processing and closing with the same care. A small team of licensed professionals — no call centers, no handoffs to juniors, same names start to finish.
+        </p>
 
-          <div class="about-photo-wrap">
+        <div class="team-grid">
+          <article class="team-card">
             <!--
-              PHOTO PLACEHOLDER — swap this entire block with:
-              <img src="images/tom-culpepper.jpg"
-                   alt="Tom Culpepper, Broker/Owner, Homesite Mortgage — NMLS #353539"
-                   class="about-photo" width="480" height="600" />
-              when Tom's portrait is ready.
+              PHOTO PLACEHOLDER (Tom) — swap the entire <div class="team-photo-placeholder"> with:
+              <img src="images/tom-culpepper.jpg" alt="Tom Culpepper, Principal Broker, Homesite Mortgage — NMLS #353539" class="team-photo" />
             -->
-            <div class="about-photo-placeholder" role="img" aria-label="Portrait placeholder for Tom Culpepper">
-              <svg width="120" height="140" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
+            <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Tom Culpepper">
+              <svg width="100" height="115" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
                 <circle cx="60" cy="45" r="32" fill="rgba(197,160,89,0.3)" stroke="rgba(197,160,89,0.5)" stroke-width="2"/>
                 <path d="M 5 140 C 5 100 25 82 60 82 C 95 82 115 100 115 140" fill="rgba(197,160,89,0.2)" stroke="rgba(197,160,89,0.4)" stroke-width="2"/>
               </svg>
-              <div style="position:relative;z-index:1;text-align:center;">
-                <div class="about-photo-name">Tom Culpepper</div>
-                <div class="about-photo-nmls">Broker / Owner · NMLS #353539</div>
-                <div style="margin-top:10px;font-size:0.72rem;color:rgba(197,160,89,0.6);letter-spacing:0.06em;">PORTRAIT COMING SOON</div>
-              </div>
+              <div class="team-photo-caption">PORTRAIT COMING SOON</div>
             </div>
-            <div class="about-badge" aria-label="Family-owned since 1999">
-              <div class="about-badge-num">1999</div>
-              <div class="about-badge-label">FOUNDED IN<br/>FLORIDA</div>
+            <div class="team-info">
+              <h3 class="team-name">Tom Culpepper</h3>
+              <div class="team-title">Principal Broker</div>
+              <div class="team-nmls">NMLS #353539</div>
+            </div>
+          </article>
+
+          <article class="team-card">
+            <!--
+              PHOTO PLACEHOLDER (Tracy) — swap the entire <div class="team-photo-placeholder"> with:
+              <img src="images/tracy-cody.jpg" alt="Tracy Cody, Loan Processing &amp; Closing, Homesite Mortgage — NMLS #886861" class="team-photo" />
+            -->
+            <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Tracy Cody">
+              <svg width="100" height="115" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
+                <circle cx="60" cy="45" r="32" fill="rgba(197,160,89,0.3)" stroke="rgba(197,160,89,0.5)" stroke-width="2"/>
+                <path d="M 5 140 C 5 100 25 82 60 82 C 95 82 115 100 115 140" fill="rgba(197,160,89,0.2)" stroke="rgba(197,160,89,0.4)" stroke-width="2"/>
+              </svg>
+              <div class="team-photo-caption">PORTRAIT COMING SOON</div>
+            </div>
+            <div class="team-info">
+              <h3 class="team-name">Tracy Cody</h3>
+              <div class="team-title">Loan Processing &amp; Closing</div>
+              <div class="team-nmls">NMLS #886861</div>
+            </div>
+          </article>
+
+          <article class="team-card">
+            <!--
+              PHOTO PLACEHOLDER (Brandon) — swap the entire <div class="team-photo-placeholder"> with:
+              <img src="images/brandon-culpepper.jpg" alt="Brandon Culpepper, Mortgage Loan Originator, Homesite Mortgage — NMLS #1577726" class="team-photo" />
+            -->
+            <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Brandon Culpepper">
+              <svg width="100" height="115" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
+                <circle cx="60" cy="45" r="32" fill="rgba(197,160,89,0.3)" stroke="rgba(197,160,89,0.5)" stroke-width="2"/>
+                <path d="M 5 140 C 5 100 25 82 60 82 C 95 82 115 100 115 140" fill="rgba(197,160,89,0.2)" stroke="rgba(197,160,89,0.4)" stroke-width="2"/>
+              </svg>
+              <div class="team-photo-caption">PORTRAIT COMING SOON</div>
+            </div>
+            <div class="team-info">
+              <h3 class="team-name">Brandon Culpepper</h3>
+              <div class="team-title">Mortgage Loan Originator</div>
+              <div class="team-nmls">NMLS #1577726</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="team-meta-row">
+          <div class="about-badge about-badge-static" aria-label="Family-owned since 1999">
+            <div class="about-badge-num">1999</div>
+            <div class="about-badge-label">FOUNDED IN<br/>FLORIDA</div>
+          </div>
+          <div class="about-stat-row" style="margin:0;">
+            <div class="about-stat">
+              <div class="about-stat-num"><span class="years-in-business">27</span>+</div>
+              <div class="about-stat-label">Years in business</div>
+            </div>
+            <div class="about-stat">
+              <div class="about-stat-num">FL</div>
+              <div class="about-stat-label">Licensed statewide</div>
+            </div>
+            <div class="about-stat">
+              <div class="about-stat-num">3</div>
+              <div class="about-stat-label">Licensed MLOs on staff</div>
             </div>
           </div>
+        </div>
 
-          <div class="about-content">
-            <div class="section-eyebrow">Who You're Working With</div>
-            <h2 class="section-title" id="about-heading">A Broker Who Has Seen Every Situation</h2>
-            <p class="section-sub">
-              Tom Culpepper founded Homesite Mortgage in 1999 with one goal: give Florida borrowers the same honest, personal guidance he'd want for his own family. In <span class="years-in-business">27</span> years, that hasn't changed.
-            </p>
-            <p class="section-sub" style="margin-top:14px;">
-              When you submit a prequal, Tom sees it personally. He calls you personally. He doesn't hand you off to a call center or a junior processor. Tracy Cody handles your closing with the same care — she's been with Homesite Mortgage for years and knows what it takes to get a loan to the finish line.
-            </p>
-
-            <div class="about-stat-row">
-              <div class="about-stat">
-                <div class="about-stat-num"><span class="years-in-business">27</span>+</div>
-                <div class="about-stat-label">Years in business</div>
-              </div>
-              <div class="about-stat">
-                <div class="about-stat-num">FL</div>
-                <div class="about-stat-label">Licensed statewide</div>
-              </div>
-              <div class="about-stat">
-                <div class="about-stat-num">3</div>
-                <div class="about-stat-label">Licensed MLOs on staff</div>
-              </div>
-            </div>
-
-            <a href="prequal.html" class="btn btn-gold btn-lg">Start Your Pre-Approval</a>
-          </div>
-
+        <div style="text-align:center;margin-top:40px;">
+          <a href="prequal.html" class="btn btn-gold btn-lg">Start Your Pre-Approval</a>
         </div>
       </div>
     </section>
@@ -800,7 +918,7 @@
             <li><a href="prequal.html">Get Pre-Approved</a></li>
             <li><a href="contact.html">Contact Us</a></li>
             <li><a href="privacy-policy.html">Privacy Policy</a></li>
-            <li><a href="#" class="cky-banner-element">Cookie Settings</a></li>
+            <li><a href="javascript:void(0);" class="cky-banner-element">Cookie Settings</a></li>
             <li><a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener">NMLS Consumer Access ↗</a></li>
           </ul>
         </div>
@@ -861,6 +979,17 @@
       });
       var cy = document.getElementById('copy-year');
       if (cy) cy.textContent = new Date().getFullYear();
+
+      // Close Loan Options dropdown on outside click / Escape
+      var dd = document.getElementById('loan-options-menu');
+      if (dd) {
+        document.addEventListener('click', function(e) {
+          if (dd.open && !dd.contains(e.target)) dd.open = false;
+        });
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && dd.open) dd.open = false;
+        });
+      }
     })();
   </script>
 
