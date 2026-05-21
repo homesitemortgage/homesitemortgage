@@ -258,7 +258,16 @@
             <h2>Get in Touch</h2>
             <p class="intro">Have a question about your mortgage options? We are here to help you every step of the way.</p>
             
-            <form action="https://api.web3forms.com/submit" method="POST">
+            <!--
+              P1.6.2 — Form action points to the homesite-form-handler Cloudflare Worker.
+              Update the URL below if your workers.dev subdomain differs, or swap for a custom domain route.
+            -->
+            <form action="https://homesite-form-handler.brandonjculpepper.workers.dev/" method="POST">
+                <!--
+                  Web3Forms hidden config — preserved as unwired fallback per P1.6.2 rollback plan.
+                  The Worker drops every field starting with "_" plus "access_key" / "subject" / "redirect",
+                  so these are inert against the new pipeline. Remove in follow-up task 1.6.3 after 1 week of stability.
+                -->
                 <input type="hidden" name="access_key" value="e6e06fa9-3277-42a0-95ff-6c649c03ed0a">
                 <input type="hidden" name="subject" value="New Lead — Homesite Mortgage">
                 <input type="hidden" name="redirect" value="https://homesitemortgage.online/thank-you.html">
@@ -266,6 +275,16 @@
                 <input type="hidden" name="_subject" value="New Contact Form Submission!">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_cc" value="brandonjculpepper@gmail.com">
+
+                <!-- Honeypot — must remain empty; bots fill it, real users never see it. -->
+                <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+
+                <!-- Lead-source page + UTM attribution (populated by inline JS below). -->
+                <input type="hidden" name="lead_source_page" value="contact">
+                <input type="hidden" id="utm_source" name="utm_source" value="">
+                <input type="hidden" id="utm_medium" name="utm_medium" value="">
+                <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
+                <input type="hidden" id="ref" name="ref" value="">
 
                 <label for="name">Full Name</label>
                 <input type="text" id="name" name="name" required placeholder="Enter your full name" aria-label="Your Full Name">
@@ -330,6 +349,37 @@
         document.querySelectorAll('.years-in-business').forEach(function(el) {
           el.textContent = yr;
         });
+      })();
+    </script>
+
+    <!-- P1.6.2 attribution capture — reads UTM / ref params on load, stores in
+         sessionStorage so they persist across navigation within the visit,
+         and populates the hidden form fields so the Worker receives them. -->
+    <script>
+      (function() {
+        var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'ref'];
+        try {
+          var url = new URLSearchParams(window.location.search);
+          keys.forEach(function(k) {
+            var v = url.get(k);
+            if (v) sessionStorage.setItem(k, v);
+          });
+        } catch (e) { /* sessionStorage blocked; best-effort */ }
+        function fill() {
+          keys.forEach(function(k) {
+            var el = document.getElementById(k);
+            if (!el) return;
+            try {
+              var v = sessionStorage.getItem(k);
+              if (v) el.value = v;
+            } catch (e) { /* noop */ }
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', fill);
+        } else {
+          fill();
+        }
       })();
     </script>
 
