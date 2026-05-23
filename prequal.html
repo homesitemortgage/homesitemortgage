@@ -473,7 +473,7 @@
     (function() {
       var LABELS = {
         purchase: 'Home Purchase',
-        refi: 'Refinance',
+        refinance: 'Refinance',
         fha: 'FHA Loan',
         va: 'VA Loan',
         conventional: 'Conventional Loan',
@@ -484,7 +484,7 @@
       // Programs without a direct transaction-type analogue (FHA / VA / Conventional / Non-QM) leave the select alone.
       var TX_MAP = {
         purchase: 'First-time home purchase',
-        refi: 'Refinance',
+        refinance: 'Refinance',
         dscr: 'Investment property'
       };
       var type = new URLSearchParams(window.location.search).get('type');
