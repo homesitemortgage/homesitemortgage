@@ -202,6 +202,196 @@
         .header h1 { margin-top: 10px; font-size: 1.3em; }
         .container { margin: 20px; padding: 25px; }
     }
+
+    /* === P3 — 3-step progressive form === */
+
+    .progress { margin-bottom: 28px; }
+    .progress-track {
+        position: relative; height: 6px;
+        background: rgba(10, 37, 64, 0.08);
+        border-radius: 3px; overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%; background: var(--accent-gold);
+        width: 33.3333%; transition: width 0.3s ease;
+    }
+    .step-labels {
+        display: flex; justify-content: space-between;
+        margin-top: 10px; font-size: 0.78em; color: #888;
+        gap: 8px; flex-wrap: wrap;
+    }
+    .step-label.is-current { color: var(--primary-navy); font-weight: 700; }
+
+    .step { border: 0; padding: 0; margin: 0; }
+    .step[hidden] { display: none; }
+    .step-q {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-navy); font-weight: 700;
+        font-size: 1.2rem; margin: 28px 0 12px;
+        line-height: 1.35;
+    }
+    .step .step-q:first-child { margin-top: 4px; }
+
+    .radio-cards {
+        display: grid; grid-template-columns: 1fr; gap: 12px;
+        margin-top: 4px;
+    }
+    @media (min-width: 600px) {
+        .radio-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+    .radio-card {
+        position: relative;
+        display: flex; align-items: center;
+        min-height: 56px; padding: 14px 18px;
+        border: 2px solid #e0e0e0; border-radius: 12px;
+        background: #fafafa; cursor: pointer;
+        font-size: 1rem; color: var(--text-dark);
+        margin: 0; font-weight: 400;
+        transition: all 0.15s ease;
+    }
+    .radio-card input[type="radio"] {
+        position: absolute; opacity: 0; pointer-events: none;
+    }
+    .radio-card:hover { border-color: var(--accent-gold); }
+    .radio-card:has(input:checked) {
+        border-color: var(--primary-navy);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(10, 37, 64, 0.08);
+    }
+    .radio-card:focus-within {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.45);
+    }
+    .radio-card .radio-label { line-height: 1.3; }
+    .radio-cards.is-invalid .radio-card { border-color: #cc2200; }
+
+    .state-wrap { margin-top: 4px; position: relative; }
+    .state-wrap::after {
+        content: '▼'; position: absolute;
+        right: 18px; top: 50%; transform: translateY(-50%);
+        font-size: 0.8rem; color: var(--accent-gold);
+        pointer-events: none;
+    }
+    #property-state {
+        width: 100%; min-height: 52px;
+        padding: 14px 44px 14px 16px;
+        border: 1px solid #e0e0e0; border-radius: var(--input-radius);
+        background: #fafafa; font-size: 16px;
+        font-family: 'Lato', sans-serif;
+        appearance: none; -webkit-appearance: none;
+        color: var(--text-dark);
+        margin-top: 0;
+    }
+    #property-state:focus {
+        outline: none; border-color: var(--primary-navy);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(10, 37, 64, 0.1);
+    }
+
+    .non-fl-msg {
+        margin-top: 12px;
+        background: #fff7e6;
+        border: 1px solid var(--accent-gold);
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: var(--primary-navy);
+        font-size: 0.92rem; line-height: 1.5;
+    }
+
+    .step input[type="text"],
+    .step input[type="email"],
+    .step input[type="tel"] {
+        width: 100%; min-height: 52px;
+        padding: 14px 16px;
+        border: 1px solid #e0e0e0; border-radius: var(--input-radius);
+        background: #fafafa;
+        font-size: 16px;
+        font-family: 'Lato', sans-serif;
+        margin-top: 8px;
+        appearance: none; -webkit-appearance: none;
+    }
+    .step input[type="text"]:focus,
+    .step input[type="email"]:focus,
+    .step input[type="tel"]:focus {
+        outline: none; border-color: var(--primary-navy);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(10, 37, 64, 0.1);
+    }
+    .step .contact-label {
+        display: block; font-weight: 700;
+        color: var(--primary-navy); font-size: 0.95em;
+        margin-top: 20px;
+    }
+    .step input.is-invalid,
+    #property-state.is-invalid { border-color: #cc2200; }
+
+    .tcpa-box {
+        margin: 24px 0 8px;
+        background: #f5f5f7;
+        border-radius: 12px;
+        padding: 16px 18px;
+    }
+    .tcpa-label {
+        display: flex; align-items: flex-start; gap: 12px;
+        font-weight: 400; color: #444;
+        font-size: 0.9em; line-height: 1.5; cursor: pointer;
+        margin: 0;
+    }
+    .tcpa-checkbox {
+        margin-top: 4px; flex-shrink: 0;
+        width: 18px; height: 18px;
+    }
+
+    .step-feedback {
+        margin: 24px 0 8px; padding: 16px 18px;
+        background: rgba(197, 160, 89, 0.10);
+        border: 1px solid var(--accent-gold); border-radius: 12px;
+        font-size: 0.95em; color: var(--primary-navy);
+        text-align: center;
+    }
+
+    .step-nav {
+        display: flex; gap: 12px; margin-top: 32px;
+        flex-wrap: wrap;
+    }
+    .btn-primary, .btn-secondary {
+        flex: 1; min-height: 52px;
+        padding: 14px 22px;
+        border: 0; border-radius: var(--btn-radius);
+        font-size: 1rem; font-weight: 700; cursor: pointer;
+        letter-spacing: 0.5px;
+        font-family: 'Lato', sans-serif;
+        transition: all 0.15s ease;
+        margin: 0;
+        text-transform: none;
+        width: auto;
+        box-shadow: none;
+    }
+    .btn-primary {
+        background: var(--accent-gold); color: white;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+    }
+    .btn-primary:hover:not(:disabled) {
+        background: var(--accent-gold-hover);
+        transform: translateY(-1px);
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: wait; transform: none; }
+    .btn-secondary {
+        background: transparent; color: var(--primary-navy);
+        border: 2px solid var(--primary-navy);
+        flex: 0 1 auto;
+    }
+    .btn-secondary:hover {
+        background: var(--primary-navy); color: white;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .hp-trap {
+        position: absolute; left: -10000px;
+        top: auto; width: 1px; height: 1px; overflow: hidden;
+    }
   </style>
 </head>
 <body>
@@ -216,22 +406,34 @@
   <main role="main" id="main-content">
     <div class="container">
       <h2>Let's Get Started 🏠</h2>
-      <p class="subtitle">Complete this secure form to start your journey toward home ownership.</p>
+      <p class="subtitle">A few quick questions so Tom can review your options personally.</p>
 
       <!-- Pre-fill banner shown when ?type= param is present -->
-      <div id="program-banner" role="status" aria-live="polite" style="display:none;background:#fff7e6;border:1px solid #c5a059;border-radius:12px;padding:14px 18px;margin:18px 0 6px;font-size:0.95em;color:var(--primary-navy);">
+      <div id="program-banner" role="status" aria-live="polite" hidden style="background:#fff7e6;border:1px solid var(--accent-gold);border-radius:12px;padding:14px 18px;margin:18px 0 22px;font-size:0.95em;color:var(--primary-navy);">
         You're starting a <strong><span id="program-banner-name"></span></strong> prequal — <a href="?" id="program-banner-change" style="color:var(--primary-navy);text-decoration:underline;font-weight:600;">change if needed</a>.
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress" role="group" aria-label="Form progress">
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="step-labels" aria-hidden="true">
+          <span class="step-label is-current" data-label="1">Step 1 · Intent</span>
+          <span class="step-label" data-label="2">Step 2 · Details</span>
+          <span class="step-label" data-label="3">Step 3 · Contact</span>
+        </div>
       </div>
 
       <!--
         P1.6.2 — Form action points to the homesite-form-handler Cloudflare Worker.
-        Update the URL below if your workers.dev subdomain differs, or swap for a custom domain route.
+        Worker handles email (Resend), HubSpot upsert, and 303 redirect to thank-you.html.
       -->
-      <form action="https://homesite-form-handler.brandonjculpepper.workers.dev/" method="POST">
+      <form id="prequal-form" action="https://homesite-form-handler.brandonjculpepper.workers.dev/" method="POST" novalidate>
         <!--
           Web3Forms hidden config — preserved as unwired fallback per P1.6.2 rollback plan.
-          The Worker drops every field starting with "_" plus "access_key" / "subject" / "redirect",
-          so these are inert against the new pipeline. Remove in follow-up task 1.6.3 after 1 week of stability.
+          The Worker drops every field starting with "_" plus "access_key" / "subject" / "redirect".
+          Remove in follow-up task 1.6.3 after 1 week of stability.
         -->
         <input type="hidden" name="access_key" value="e6e06fa9-3277-42a0-95ff-6c649c03ed0a">
         <input type="hidden" name="subject" value="New Lead — Homesite Mortgage">
@@ -242,176 +444,386 @@
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
         <input type="hidden" name="_cc" value="brandonjculpepper@gmail.com">
-        <!-- Loan program captured from ?type= URL param; populated by inline script below -->
-        <input type="hidden" id="loan_program" name="Loan Program" value="">
 
         <!-- Honeypot — must remain empty; bots fill it, real users never see it. -->
-        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp-trap">
 
         <!-- Lead-source page + UTM attribution (populated by inline JS at bottom of page). -->
         <input type="hidden" name="lead_source_page" value="prequal">
+        <input type="hidden" id="loan_program" name="Loan Program" value="">
         <input type="hidden" id="utm_source" name="utm_source" value="">
         <input type="hidden" id="utm_medium" name="utm_medium" value="">
         <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
         <input type="hidden" id="ref" name="ref" value="">
 
-        <div class="form-section-title">Contact Information</div>
-        
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="Full Name" placeholder="e.g. John Smith" required>
+        <!-- STEP 1 — Intent & Location -->
+        <fieldset class="step" data-step="1">
+          <h3 class="step-q">What are you looking to do?</h3>
+          <div class="radio-cards" data-name="Intent">
+            <label class="radio-card"><input type="radio" name="Intent" value="Buy a Home" required><span class="radio-label">Buy a Home</span></label>
+            <label class="radio-card"><input type="radio" name="Intent" value="Refinance"><span class="radio-label">Refinance</span></label>
+            <label class="radio-card"><input type="radio" name="Intent" value="Investment Property"><span class="radio-label">Investment Property</span></label>
+          </div>
 
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="Email Address" placeholder="e.g. john@example.com" required>
-
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="Phone Number" placeholder="(555) 123-4567" required>
-
-        <div class="form-section-title">Loan Details</div>
-
-        <label for="loan_type">1. What type of loan are you looking for?</label>
-        <div class="select-wrapper">
-            <select id="loan_type" name="Loan Type" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>First-time home purchase</option>
-            <option>Second home or vacation home</option>
-            <option>Refinance</option>
-            <option>Investment property</option>
-            <option>Renovation / construction</option>
-            <option>Not sure yet</option>
+          <h3 class="step-q">What state is the property in?</h3>
+          <div class="state-wrap">
+            <select id="property-state" name="Property State" required>
+              <option value="Florida" selected>Florida</option>
+              <option value="Alabama">Alabama</option>
+              <option value="Alaska">Alaska</option>
+              <option value="Arizona">Arizona</option>
+              <option value="Arkansas">Arkansas</option>
+              <option value="California">California</option>
+              <option value="Colorado">Colorado</option>
+              <option value="Connecticut">Connecticut</option>
+              <option value="Delaware">Delaware</option>
+              <option value="District of Columbia">District of Columbia</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Hawaii">Hawaii</option>
+              <option value="Idaho">Idaho</option>
+              <option value="Illinois">Illinois</option>
+              <option value="Indiana">Indiana</option>
+              <option value="Iowa">Iowa</option>
+              <option value="Kansas">Kansas</option>
+              <option value="Kentucky">Kentucky</option>
+              <option value="Louisiana">Louisiana</option>
+              <option value="Maine">Maine</option>
+              <option value="Maryland">Maryland</option>
+              <option value="Massachusetts">Massachusetts</option>
+              <option value="Michigan">Michigan</option>
+              <option value="Minnesota">Minnesota</option>
+              <option value="Mississippi">Mississippi</option>
+              <option value="Missouri">Missouri</option>
+              <option value="Montana">Montana</option>
+              <option value="Nebraska">Nebraska</option>
+              <option value="Nevada">Nevada</option>
+              <option value="New Hampshire">New Hampshire</option>
+              <option value="New Jersey">New Jersey</option>
+              <option value="New Mexico">New Mexico</option>
+              <option value="New York">New York</option>
+              <option value="North Carolina">North Carolina</option>
+              <option value="North Dakota">North Dakota</option>
+              <option value="Ohio">Ohio</option>
+              <option value="Oklahoma">Oklahoma</option>
+              <option value="Oregon">Oregon</option>
+              <option value="Pennsylvania">Pennsylvania</option>
+              <option value="Rhode Island">Rhode Island</option>
+              <option value="South Carolina">South Carolina</option>
+              <option value="South Dakota">South Dakota</option>
+              <option value="Tennessee">Tennessee</option>
+              <option value="Texas">Texas</option>
+              <option value="Utah">Utah</option>
+              <option value="Vermont">Vermont</option>
+              <option value="Virginia">Virginia</option>
+              <option value="Washington">Washington</option>
+              <option value="West Virginia">West Virginia</option>
+              <option value="Wisconsin">Wisconsin</option>
+              <option value="Wyoming">Wyoming</option>
             </select>
-        </div>
+          </div>
+          <div id="non-fl-message" hidden role="status" aria-live="polite" class="non-fl-msg">
+            Homesite Mortgage is licensed in Florida. Tom will personally reach out and connect you with a trusted partner in your state.
+          </div>
 
-        <label for="property_type">2. What type of property are you interested in?</label>
-        <div class="select-wrapper">
-            <select id="property_type" name="Property Type" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Single-family home</option>
-            <option>Condo or townhouse</option>
-            <option>Duplex or multi-unit</option>
-            <option>Mobile or manufactured home</option>
-            <option>Other</option>
-            </select>
-        </div>
+          <h3 class="step-q">What's your estimated credit score range?</h3>
+          <div class="radio-cards" data-name="Estimated Credit Score">
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Excellent (740+)" required><span class="radio-label"><strong>Excellent</strong> · 740+</span></label>
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Good (700–739)"><span class="radio-label"><strong>Good</strong> · 700–739</span></label>
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Fair (660–699)"><span class="radio-label"><strong>Fair</strong> · 660–699</span></label>
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Needs Work (below 660)"><span class="radio-label"><strong>Needs Work</strong> · Below 660</span></label>
+          </div>
 
-        <label for="timeline">3. How soon are you looking to buy or refinance?</label>
-        <div class="select-wrapper">
-            <select id="timeline" name="Timeline" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Within 30 days</option>
-            <option>1–3 months</option>
-            <option>3–6 months</option>
-            <option>6–12 months</option>
-            <option>Just researching for now</option>
-            </select>
-        </div>
+          <div class="step-nav">
+            <button type="button" class="btn-primary" data-next>Continue →</button>
+          </div>
+        </fieldset>
 
-        <div class="form-section-title">Financial Overview</div>
+        <!-- STEP 2 — Loan Details -->
+        <fieldset class="step" data-step="2" hidden>
+          <h3 class="step-q">What's your target loan amount?</h3>
+          <div class="radio-cards" data-name="Target Loan Amount">
+            <label class="radio-card"><input type="radio" name="Target Loan Amount" value="Under $150K" required><span class="radio-label">Under $150K</span></label>
+            <label class="radio-card"><input type="radio" name="Target Loan Amount" value="$150K – $300K"><span class="radio-label">$150K – $300K</span></label>
+            <label class="radio-card"><input type="radio" name="Target Loan Amount" value="$300K – $500K"><span class="radio-label">$300K – $500K</span></label>
+            <label class="radio-card"><input type="radio" name="Target Loan Amount" value="$500K+"><span class="radio-label">$500K+</span></label>
+          </div>
 
-        <label for="credit_score">4. What’s your estimated credit score?</label>
-        <div class="select-wrapper">
-            <select id="credit_score" name="Estimated Credit Score" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Excellent (740+)</option>
-            <option>Good (680–739)</option>
-            <option>Fair (620–679)</option>
-            <option>Poor (below 620)</option>
-            <option>I’m not sure</option>
-            </select>
-        </div>
+          <h3 class="step-q">What type of property?</h3>
+          <div class="radio-cards" data-name="Property Type">
+            <label class="radio-card"><input type="radio" name="Property Type" value="Primary Residence" required><span class="radio-label">Primary Residence</span></label>
+            <label class="radio-card"><input type="radio" name="Property Type" value="Second Home"><span class="radio-label">Second Home</span></label>
+            <label class="radio-card"><input type="radio" name="Property Type" value="Investment"><span class="radio-label">Investment</span></label>
+            <label class="radio-card"><input type="radio" name="Property Type" value="Multi-Family"><span class="radio-label">Multi-Family</span></label>
+          </div>
 
-        <label for="income">5. Approximate annual income (before taxes)?</label>
-        <div class="select-wrapper">
-            <select id="income" name="Annual Income" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Under $40,000</option>
-            <option>$40,000 – $74,999</option>
-            <option>$75,000 – $124,999</option>
-            <option>$125,000 – $199,999</option>
-            <option>$200,000+</option>
-            </select>
-        </div>
+          <h3 class="step-q">How soon are you looking to close?</h3>
+          <div class="radio-cards" data-name="Timeline">
+            <label class="radio-card"><input type="radio" name="Timeline" value="ASAP" required><span class="radio-label">ASAP</span></label>
+            <label class="radio-card"><input type="radio" name="Timeline" value="1–3 Months"><span class="radio-label">1–3 Months</span></label>
+            <label class="radio-card"><input type="radio" name="Timeline" value="3–6 Months"><span class="radio-label">3–6 Months</span></label>
+            <label class="radio-card"><input type="radio" name="Timeline" value="Just Exploring"><span class="radio-label">Just Exploring</span></label>
+          </div>
 
-        <label for="down_payment">6. How much are you planning to put down?</label>
-        <div class="select-wrapper">
-            <select id="down_payment" name="Down Payment" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>0% (looking for down payment assistance)</option>
-            <option>3%–5%</option>
-            <option>6%–10%</option>
-            <option>11%–20%</option>
-            <option>20%+</option>
-            </select>
-        </div>
+          <div id="step-2-feedback" hidden role="status" aria-live="polite" class="step-feedback">
+            Based on what you've shared, Tom will review your options personally.
+          </div>
 
-        <label for="property_in_mind">7. Do you already have a property in mind?</label>
-        <div class="select-wrapper">
-            <select id="property_in_mind" name="Have Property In Mind?" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Yes</option>
-            <option>No</option>
-            <option>Working with a realtor</option>
-            <option>Not yet</option>
-            </select>
-        </div>
+          <div class="step-nav">
+            <button type="button" class="btn-secondary" data-back>← Back</button>
+            <button type="button" class="btn-primary" data-next>Continue →</button>
+          </div>
+        </fieldset>
 
-        <label for="state">8. What state is the property located in?</label>
-        <input type="text" id="state" name="Property State" value="Florida" required>
+        <!-- STEP 3 — Contact Info -->
+        <fieldset class="step" data-step="3" hidden>
+          <h3 class="step-q">How can we reach you?</h3>
 
-        <label for="agent">9. Are you currently working with a real estate agent?</label>
-        <div class="select-wrapper">
-            <select id="agent" name="Working with Agent?" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Yes</option>
-            <option>No</option>
-            <option>I am the agent</option>
-            </select>
-        </div>
+          <label class="contact-label" for="name">Full Name</label>
+          <input type="text" id="name" name="Full Name" inputmode="text" autocomplete="name" required placeholder="e.g. John Smith">
 
-        <label for="bankruptcy">10. Have you ever filed for bankruptcy or had a foreclosure?</label>
-        <div class="select-wrapper">
-            <select id="bankruptcy" name="Bankruptcy/Foreclosure" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>No</option>
-            <option>Bankruptcy</option>
-            <option>Foreclosure</option>
-            <option>Both</option>
-            <option>Prefer not to say</option>
-            </select>
-        </div>
+          <label class="contact-label" for="email">Email Address</label>
+          <input type="email" id="email" name="Email Address" inputmode="email" autocomplete="email" required placeholder="e.g. john@example.com">
 
-        <label for="employment">11. Are you self-employed or W-2 employed?</label>
-        <div class="select-wrapper">
-            <select id="employment" name="Employment Type" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>W-2 employee</option>
-            <option>Self-employed</option>
-            <option>Retired</option>
-            <option>Other</option>
-            </select>
-        </div>
+          <label class="contact-label" for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="Phone Number" inputmode="tel" autocomplete="tel" required placeholder="(555) 123-4567">
 
-        <label for="debt">12. Estimated monthly debt?</label>
-        <div class="select-wrapper">
-            <select id="debt" name="Monthly Debt" required>
-            <option disabled selected value="">Choose an option</option>
-            <option>Under $500</option>
-            <option>$500–$999</option>
-            <option>$1,000–$1,999</option>
-            <option>$2,000+</option>
-            <option>Not sure</option>
-            </select>
-        </div>
+          <div class="tcpa-box">
+            <label class="tcpa-label">
+              <input type="checkbox" name="tcpa_consent" required class="tcpa-checkbox">
+              <span>I consent to receive calls and text messages, including via automated technology, from Homesite Mortgage at the number provided. Consent is not a condition of service. Message and data rates may apply. Reply STOP to opt out.</span>
+            </label>
+          </div>
 
-        <div style="margin-top: 30px; padding: 18px; background: #f5f5f7; border-radius: 12px;">
-          <label style="display: flex; align-items: flex-start; font-weight: 400; font-size: 0.88em; line-height: 1.5; color: #444; margin-top: 0; cursor: pointer;">
-            <input type="checkbox" name="tcpa_consent" required style="width: auto; margin: 4px 12px 0 0; flex-shrink: 0;">
-            <span>I consent to receive calls and text messages, including via automated technology, from Homesite Mortgage at the number provided. Consent is not a condition of service. Message and data rates may apply. Reply STOP to opt out.</span>
-          </label>
-        </div>
-
-        <button type="submit">Submit for Prequalification</button>
+          <div class="step-nav">
+            <button type="button" class="btn-secondary" data-back>← Back</button>
+            <button type="submit" class="btn-primary">Get My Options →</button>
+          </div>
+        </fieldset>
       </form>
     </div>
+
+    <!-- P3 — 3-step form controller: progress, validation, localStorage draft, ?type= prefill -->
+    <script>
+      (function() {
+        var STORAGE_KEY = 'homesite_prequal_draft';
+
+        // ?type= maps to a display label (used for the banner above the form)
+        var TYPE_LABELS = {
+          purchase: 'Home Purchase',
+          refinance: 'Refinance',
+          fha: 'FHA Loan',
+          va: 'VA Loan',
+          conventional: 'Conventional Loan',
+          dscr: 'DSCR / Investment',
+          nonqm: 'Non-QM (Self-Employed)'
+        };
+        // ?type= also pre-selects the matching Step 1 intent (collapses 7 -> 3)
+        var TYPE_INTENT = {
+          purchase: 'Buy a Home',
+          fha: 'Buy a Home',
+          va: 'Buy a Home',
+          conventional: 'Buy a Home',
+          nonqm: 'Buy a Home',
+          refinance: 'Refinance',
+          dscr: 'Investment Property'
+        };
+
+        var form = document.getElementById('prequal-form');
+        var steps = form.querySelectorAll('.step');
+        var totalSteps = steps.length;
+        var fill = document.getElementById('progress-fill');
+        var labels = document.querySelectorAll('.step-label');
+        var currentStep = 1;
+
+        function showStep(n) {
+          currentStep = n;
+          steps.forEach(function(s) {
+            var match = String(s.dataset.step) === String(n);
+            s.hidden = !match;
+          });
+          if (fill) fill.style.width = (n / totalSteps * 100) + '%';
+          labels.forEach(function(l) {
+            l.classList.toggle('is-current', String(l.dataset.label) === String(n));
+          });
+          // Scroll the form back into view on advance
+          var topOf = form.getBoundingClientRect().top + window.pageYOffset - 80;
+          window.scrollTo({ top: Math.max(0, topOf), behavior: 'smooth' });
+        }
+
+        function validateStep(n) {
+          var step = form.querySelector('[data-step="' + n + '"]');
+          if (!step) return true;
+          var allValid = true;
+          // Check radio groups
+          step.querySelectorAll('.radio-cards').forEach(function(group) {
+            var radios = group.querySelectorAll('input[type="radio"]');
+            var anyRequired = false;
+            var anyChecked = false;
+            radios.forEach(function(r) {
+              if (r.required) anyRequired = true;
+              if (r.checked) anyChecked = true;
+            });
+            if (anyRequired && !anyChecked) {
+              allValid = false;
+              group.classList.add('is-invalid');
+            } else {
+              group.classList.remove('is-invalid');
+            }
+          });
+          // Check text/email/tel/select/checkbox
+          step.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], select, input[type="checkbox"]').forEach(function(el) {
+            if (el.required && !el.checkValidity()) {
+              allValid = false;
+              el.classList.add('is-invalid');
+            } else {
+              el.classList.remove('is-invalid');
+            }
+          });
+          if (!allValid) {
+            var firstBad = step.querySelector('.is-invalid');
+            if (firstBad) {
+              if (firstBad.classList.contains('radio-cards')) {
+                var r = firstBad.querySelector('input[type="radio"]');
+                if (r && r.focus) r.focus();
+              } else if (firstBad.focus) {
+                firstBad.focus();
+              }
+            }
+          }
+          return allValid;
+        }
+
+        function saveDraft() {
+          try {
+            var fd = new FormData(form);
+            var obj = {};
+            fd.forEach(function(v, k) { obj[k] = v; });
+            obj.__step = currentStep;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+          } catch (e) { /* storage blocked; best-effort */ }
+        }
+
+        function restoreDraft() {
+          try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            var obj = JSON.parse(raw);
+            Object.keys(obj).forEach(function(k) {
+              if (k === '__step') return;
+              var v = obj[k];
+              // CSS.escape for safety against quotes in stored names
+              var safe = (window.CSS && CSS.escape) ? CSS.escape(k) : k.replace(/(["\\])/g, '\\$1');
+              var els = form.querySelectorAll('[name="' + safe + '"]');
+              els.forEach(function(el) {
+                if (el.type === 'radio') {
+                  if (String(el.value) === String(v)) el.checked = true;
+                } else if (el.type === 'checkbox') {
+                  if (v && v !== 'off' && v !== '') el.checked = true;
+                } else {
+                  el.value = v;
+                }
+              });
+            });
+            var s = parseInt(obj.__step, 10);
+            if (s >= 1 && s <= totalSteps) currentStep = s;
+            // Trigger non-FL message if restored a non-FL state
+            var st = document.getElementById('property-state');
+            if (st && st.value && st.value !== 'Florida') {
+              var msg = document.getElementById('non-fl-message');
+              if (msg) msg.hidden = false;
+            }
+          } catch (e) { /* noop */ }
+        }
+
+        function clearDraft() {
+          try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        }
+
+        function applyTypeParam() {
+          var t = new URLSearchParams(window.location.search).get('type');
+          if (!t || !TYPE_LABELS[t]) return;
+          var label = TYPE_LABELS[t];
+          var hidden = document.getElementById('loan_program');
+          if (hidden) hidden.value = label;
+          var banner = document.getElementById('program-banner');
+          var nameEl = document.getElementById('program-banner-name');
+          if (banner && nameEl) {
+            nameEl.textContent = label;
+            banner.hidden = false;
+          }
+          var intentValue = TYPE_INTENT[t];
+          if (intentValue) {
+            var safe = (window.CSS && CSS.escape) ? CSS.escape(intentValue) : intentValue.replace(/"/g, '\\"');
+            var radio = form.querySelector('input[name="Intent"][value="' + safe + '"]');
+            if (radio) radio.checked = true;
+          }
+        }
+
+        // Non-FL inline message
+        var state = document.getElementById('property-state');
+        var nonFlMsg = document.getElementById('non-fl-message');
+        if (state && nonFlMsg) {
+          state.addEventListener('change', function() {
+            nonFlMsg.hidden = (state.value === 'Florida' || !state.value);
+          });
+        }
+
+        // Clear .is-invalid on input + persist on every change
+        form.addEventListener('input', function(e) {
+          var t = e.target;
+          if (t.classList) t.classList.remove('is-invalid');
+          var grp = t.closest && t.closest('.radio-cards');
+          if (grp) grp.classList.remove('is-invalid');
+          saveDraft();
+        });
+        form.addEventListener('change', saveDraft);
+
+        // Next / Back navigation
+        form.addEventListener('click', function(e) {
+          var nextBtn = e.target.closest('[data-next]');
+          var backBtn = e.target.closest('[data-back]');
+          if (nextBtn) {
+            e.preventDefault();
+            if (!validateStep(currentStep)) return;
+            saveDraft();
+            if (currentStep === 2) {
+              // Soft feedback before advancing to Step 3
+              var fb = document.getElementById('step-2-feedback');
+              if (fb) {
+                fb.hidden = false;
+                nextBtn.disabled = true;
+                setTimeout(function() {
+                  fb.hidden = true;
+                  nextBtn.disabled = false;
+                  showStep(3);
+                }, 2000);
+                return;
+              }
+            }
+            if (currentStep < totalSteps) showStep(currentStep + 1);
+          }
+          if (backBtn) {
+            e.preventDefault();
+            if (currentStep > 1) showStep(currentStep - 1);
+          }
+        });
+
+        // Submission — validate, clear draft, let browser POST to Worker
+        form.addEventListener('submit', function(e) {
+          if (!validateStep(currentStep)) {
+            e.preventDefault();
+            return;
+          }
+          clearDraft();
+        });
+
+        // Init order: restore draft first (so radios are pre-checked), then
+        // apply ?type= (overrides intent + banner if present), then show step.
+        restoreDraft();
+        applyTypeParam();
+        showStep(currentStep);
+      })();
+    </script>
   </main>
 
   <footer role="contentinfo">
@@ -464,48 +876,6 @@
         document.addEventListener('DOMContentLoaded', fill);
       } else {
         fill();
-      }
-    })();
-  </script>
-
-  <!-- Pre-fill loan program from ?type= URL param -->
-  <script>
-    (function() {
-      var LABELS = {
-        purchase: 'Home Purchase',
-        refinance: 'Refinance',
-        fha: 'FHA Loan',
-        va: 'VA Loan',
-        conventional: 'Conventional Loan',
-        dscr: 'DSCR / Investment',
-        nonqm: 'Non-QM (Self-Employed)'
-      };
-      // Best-effort mapping into the existing transaction-type select.
-      // Programs without a direct transaction-type analogue (FHA / VA / Conventional / Non-QM) leave the select alone.
-      var TX_MAP = {
-        purchase: 'First-time home purchase',
-        refinance: 'Refinance',
-        dscr: 'Investment property'
-      };
-      var type = new URLSearchParams(window.location.search).get('type');
-      if (!type || !LABELS[type]) return;
-      var label = LABELS[type];
-      var hidden = document.getElementById('loan_program');
-      if (hidden) hidden.value = label;
-      var banner = document.getElementById('program-banner');
-      var nameEl = document.getElementById('program-banner-name');
-      if (banner && nameEl) {
-        nameEl.textContent = label;
-        banner.style.display = 'block';
-      }
-      var txValue = TX_MAP[type];
-      if (txValue) {
-        var sel = document.getElementById('loan_type');
-        if (sel) {
-          for (var i = 0; i < sel.options.length; i++) {
-            if (sel.options[i].text === txValue) { sel.selectedIndex = i; break; }
-          }
-        }
       }
     })();
   </script>
