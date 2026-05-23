@@ -111,42 +111,35 @@
     }
     .nav-phone svg { flex-shrink: 0; }
 
-    /* Loan Options dropdown */
-    .nav-dropdown { position: relative; display: inline-block; }
-    .nav-dropdown-trigger {
-      cursor: pointer; color: var(--navy);
-      font-weight: 600; font-size: 0.95rem;
-      padding: 8px 12px; list-style: none;
-      display: inline-flex; align-items: center; gap: 6px;
-      border-radius: 6px; user-select: none;
+    /* Nav links (anchor menu) */
+    .nav-links {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; align-items: center; gap: 28px;
+      flex: 1; justify-content: flex-end; margin-right: 12px;
     }
-    .nav-dropdown-trigger::-webkit-details-marker { display: none; }
-    .nav-dropdown-trigger::marker { content: ''; }
-    .nav-dropdown-trigger:hover { background: rgba(10,31,60,0.04); }
-    .nav-dropdown-trigger:focus { outline: none; }
-    .nav-dropdown-trigger:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
-    .nav-dropdown[open] .nav-dropdown-trigger { background: rgba(10,31,60,0.04); }
-    .nav-dropdown-caret { width: 10px; height: 10px; transition: transform 0.15s; }
-    .nav-dropdown[open] .nav-dropdown-caret { transform: rotate(180deg); }
-    .nav-dropdown-menu {
-      position: absolute; top: calc(100% + 6px); left: 0;
-      background: #ffffff;
-      border: 1px solid rgba(10,31,60,0.08);
-      border-radius: 10px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
-      min-width: 240px;
-      list-style: none; padding: 8px 0; margin: 0;
-      z-index: 200;
+    .nav-links li { margin: 0; padding: 0; }
+    .nav-links li a {
+      color: var(--navy); font-weight: 600; font-size: 0.95rem;
+      padding: 8px 4px; border-radius: 4px;
+      text-decoration: none; transition: color 0.15s;
     }
-    .nav-dropdown-menu li a {
-      display: flex; align-items: center;
-      padding: 12px 16px;
-      color: var(--navy); font-size: 0.92rem;
-      min-height: 48px;
+    .nav-links li a:hover { color: var(--gold); }
+    .nav-links li a:focus { outline: none; }
+    .nav-links li a:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
+
+    /* Hamburger toggle (mobile only) */
+    .nav-toggle {
+      display: none;
+      background: transparent; cursor: pointer;
+      width: 44px; height: 44px; padding: 0;
+      border: 1px solid rgba(10,31,60,0.15); border-radius: 8px;
+      color: var(--navy);
+      align-items: center; justify-content: center;
     }
-    .nav-dropdown-menu li a:hover { background: rgba(197,160,89,0.10); }
-    .nav-dropdown-menu li a:focus { outline: none; background: rgba(197,160,89,0.10); }
-    .nav-dropdown-menu li a:focus-visible { box-shadow: inset 0 0 0 2px var(--gold); }
+    .nav-toggle:hover { background: rgba(10,31,60,0.04); }
+    .nav-toggle:focus { outline: none; }
+    .nav-toggle:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
+    .nav-toggle-icon { font-size: 1.4rem; line-height: 1; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
       padding: 10px 22px; border-radius: 8px;
@@ -346,21 +339,26 @@
       box-shadow: var(--shadow-lg);
     }
     .team-photo-placeholder {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      background: #f5f5f5;
       aspect-ratio: 4/5;
-      display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; gap: 14px;
       border-bottom: 2px solid rgba(197,160,89,0.3);
     }
-    .team-photo-placeholder::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at center, rgba(197,160,89,0.1) 0%, transparent 70%);
+    .team-photo-initials {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: var(--gold); color: var(--navy);
+      font-family: var(--font-display);
+      font-size: 2.1rem; font-weight: 700;
+      letter-spacing: 0.04em;
+      display: flex; align-items: center; justify-content: center;
     }
     .team-photo-caption {
-      position: absolute; bottom: 14px; left: 0; right: 0;
-      font-size: 0.66rem; color: rgba(197,160,89,0.7);
-      letter-spacing: 0.08em; text-align: center;
+      font-size: 0.72rem; color: #8a8a8a;
+      letter-spacing: 0.06em; text-align: center;
+      text-transform: uppercase;
     }
     .team-photo {
       width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;
@@ -478,7 +476,27 @@
       .trust-item:last-child { border-bottom: none; }
       .trust-strip-inner { flex-direction: column; align-items: stretch; }
       .nav-phone span { display: none; }
-      .nav-dropdown { display: none; }
+      .nav-toggle { display: inline-flex; }
+      .nav-links {
+        display: none;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: #ffffff;
+        flex-direction: column; align-items: stretch;
+        gap: 0; margin: 0; padding: 8px 0;
+        border-top: 1px solid rgba(10,31,60,0.06);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        z-index: 150;
+      }
+      .nav.is-open .nav-links { display: flex; }
+      .nav-links li a {
+        display: flex; align-items: center;
+        padding: 14px 24px; min-height: 48px;
+        border-radius: 0;
+      }
+      .nav-links li a:hover {
+        background: rgba(197,160,89,0.10);
+        color: var(--navy);
+      }
     }
     @media (max-width: 600px) {
       section { padding: 56px 20px; }
@@ -573,21 +591,18 @@
       <a href="/" class="nav-logo" aria-label="Homesite Mortgage — Home">
         <img src="images/Homesitelogo.png" alt="Homesite Mortgage Logo" width="160" height="44" />
       </a>
-      <details class="nav-dropdown" id="loan-options-menu">
-        <summary class="nav-dropdown-trigger" aria-haspopup="true">
-          Loan Options
-          <svg class="nav-dropdown-caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 4l3 3 3-3"/></svg>
-        </summary>
-        <ul class="nav-dropdown-menu" role="menu">
-          <li role="none"><a role="menuitem" href="prequal.html?type=purchase">Purchase</a></li>
-          <li role="none"><a role="menuitem" href="prequal.html?type=refinance">Refinance</a></li>
-          <li role="none"><a role="menuitem" href="prequal.html?type=fha">FHA</a></li>
-          <li role="none"><a role="menuitem" href="prequal.html?type=va">VA</a></li>
-          <li role="none"><a role="menuitem" href="prequal.html?type=conventional">Conventional</a></li>
-          <li role="none"><a role="menuitem" href="prequal.html?type=dscr">DSCR / Investment</a></li>
-          <li role="none"><a role="menuitem" href="prequal.html?type=nonqm">Non-QM (Self-Employed)</a></li>
-        </ul>
-      </details>
+
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-controls="nav-menu" aria-expanded="false">
+        <span class="nav-toggle-icon" aria-hidden="true">☰</span>
+      </button>
+
+      <ul class="nav-links" id="nav-menu">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#loan-programs">Loan Programs</a></li>
+        <li><a href="#team">Our Team</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+
       <div class="nav-actions">
         <a href="tel:3214326611" class="nav-phone" aria-label="Call us at 321-432-6611">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -692,7 +707,7 @@
     </div>
 
     <!-- ── HOW IT WORKS ── -->
-    <section class="how-section" aria-labelledby="how-heading">
+    <section class="how-section" id="how-it-works" aria-labelledby="how-heading">
       <div class="section-inner">
         <div class="section-header center">
           <div class="section-eyebrow">Simple Process</div>
@@ -720,7 +735,7 @@
     </section>
 
     <!-- ── LOAN TYPES ── -->
-    <section class="loans-section" aria-labelledby="loans-heading">
+    <section class="loans-section" id="loan-programs" aria-labelledby="loans-heading">
       <div class="section-inner">
         <div class="section-header">
           <div class="section-eyebrow">Loan Programs</div>
@@ -789,7 +804,7 @@
     </section>
 
     <!-- ── ABOUT / TEAM ── -->
-    <section class="about-section" aria-labelledby="about-heading">
+    <section class="about-section" id="team" aria-labelledby="about-heading">
       <div class="section-inner">
         <div class="section-eyebrow" style="text-align:center;">Who You're Working With</div>
         <h2 class="section-title" id="about-heading" style="text-align:center;">Three Licensed Professionals. No Call Centers.</h2>
@@ -807,11 +822,8 @@
               <img src="images/tom-culpepper.jpg" alt="Tom Culpepper, Principal Broker, Homesite Mortgage — NMLS #353539" class="team-photo" />
             -->
             <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Tom Culpepper">
-              <svg width="100" height="115" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
-                <circle cx="60" cy="45" r="32" fill="rgba(197,160,89,0.3)" stroke="rgba(197,160,89,0.5)" stroke-width="2"/>
-                <path d="M 5 140 C 5 100 25 82 60 82 C 95 82 115 100 115 140" fill="rgba(197,160,89,0.2)" stroke="rgba(197,160,89,0.4)" stroke-width="2"/>
-              </svg>
-              <div class="team-photo-caption">PORTRAIT COMING SOON</div>
+              <div class="team-photo-initials" aria-hidden="true">TC</div>
+              <div class="team-photo-caption">Photo coming soon</div>
             </div>
             <div class="team-info">
               <h3 class="team-name">Tom Culpepper</h3>
@@ -826,11 +838,8 @@
               <img src="images/tracy-cody.jpg" alt="Tracy Cody, Loan Processing &amp; Closing, Homesite Mortgage — NMLS #886861" class="team-photo" />
             -->
             <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Tracy Cody">
-              <svg width="100" height="115" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
-                <circle cx="60" cy="45" r="32" fill="rgba(197,160,89,0.3)" stroke="rgba(197,160,89,0.5)" stroke-width="2"/>
-                <path d="M 5 140 C 5 100 25 82 60 82 C 95 82 115 100 115 140" fill="rgba(197,160,89,0.2)" stroke="rgba(197,160,89,0.4)" stroke-width="2"/>
-              </svg>
-              <div class="team-photo-caption">PORTRAIT COMING SOON</div>
+              <div class="team-photo-initials" aria-hidden="true">TC</div>
+              <div class="team-photo-caption">Photo coming soon</div>
             </div>
             <div class="team-info">
               <h3 class="team-name">Tracy Cody</h3>
@@ -845,11 +854,8 @@
               <img src="images/brandon-culpepper.jpg" alt="Brandon Culpepper, Mortgage Loan Originator, Homesite Mortgage — NMLS #1577726" class="team-photo" />
             -->
             <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Brandon Culpepper">
-              <svg width="100" height="115" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;opacity:0.6;">
-                <circle cx="60" cy="45" r="32" fill="rgba(197,160,89,0.3)" stroke="rgba(197,160,89,0.5)" stroke-width="2"/>
-                <path d="M 5 140 C 5 100 25 82 60 82 C 95 82 115 100 115 140" fill="rgba(197,160,89,0.2)" stroke="rgba(197,160,89,0.4)" stroke-width="2"/>
-              </svg>
-              <div class="team-photo-caption">PORTRAIT COMING SOON</div>
+              <div class="team-photo-initials" aria-hidden="true">BC</div>
+              <div class="team-photo-caption">Photo coming soon</div>
             </div>
             <div class="team-info">
               <h3 class="team-name">Brandon Culpepper</h3>
@@ -980,14 +986,25 @@
       var cy = document.getElementById('copy-year');
       if (cy) cy.textContent = new Date().getFullYear();
 
-      // Close Loan Options dropdown on outside click / Escape
-      var dd = document.getElementById('loan-options-menu');
-      if (dd) {
-        document.addEventListener('click', function(e) {
-          if (dd.open && !dd.contains(e.target)) dd.open = false;
+      // Mobile hamburger menu toggle
+      var nav = document.querySelector('.nav');
+      var toggle = nav && nav.querySelector('.nav-toggle');
+      if (nav && toggle) {
+        function setOpen(open) {
+          nav.classList.toggle('is-open', open);
+          toggle.setAttribute('aria-expanded', String(open));
+          toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        }
+        toggle.addEventListener('click', function() {
+          setOpen(!nav.classList.contains('is-open'));
         });
+        // Close on link tap (so mobile users go straight to the section)
+        nav.querySelectorAll('.nav-links a').forEach(function(a) {
+          a.addEventListener('click', function() { setOpen(false); });
+        });
+        // Close on Escape
         document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape' && dd.open) dd.open = false;
+          if (e.key === 'Escape' && nav.classList.contains('is-open')) setOpen(false);
         });
       }
     })();
