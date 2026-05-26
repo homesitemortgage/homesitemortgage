@@ -5,7 +5,7 @@
  * prequal.html POST to this Worker. On each POST it:
  *
  *   1. Validates: POST-only, Origin/Referer same-origin, honeypot empty,
- *      required fields present.
+ *      required fields present, reCAPTCHA v3 score >= 0.5 (if configured).
  *   2. Sends an email to Tom (BCC Brandon) via Resend with the full
  *      submission body — including TCPA consent status and UTM/ref
  *      attribution.
@@ -20,10 +20,14 @@
  *   - Resend fail: return 502 with a plain-text user-facing message that
  *     includes the 321-751-4403 phone fallback. The lead is surfaced to
  *     the user immediately rather than silently disappearing.
+ *   - reCAPTCHA missing/low-score: return 400 with the same phone-fallback
+ *     message so the user has a path forward. Skipped entirely when the
+ *     RECAPTCHA_SECRET binding is not set (graceful pre-rollout).
  *
  * Secrets (set via `wrangler secret put`):
- *   - RESEND_API_KEY
- *   - HUBSPOT_TOKEN
+ *   - RESEND_API_KEY (required)
+ *   - HUBSPOT_TOKEN  (required for CRM upsert; lead still emailed if missing)
+ *   - RECAPTCHA_SECRET (optional; reCAPTCHA check is skipped when unset)
  *
  * Privacy / compliance:
  *   - No persistent storage. No KV. No D1. No R2.
@@ -123,6 +127,52 @@ export default {
         status: 400,
         headers: { 'Content-Type': 'text/plain' },
       });
+    }
+
+    // ----- reCAPTCHA v3 verification (skipped if RECAPTCHA_SECRET is unset) -----
+    // Graceful degradation per task brief: if the Wrangler secret hasn't been
+    // configured yet, log a warning and let the submission through. Once the
+    // secret is set, missing token -> 400, score < 0.5 -> 400.
+    if (env.RECAPTCHA_SECRET) {
+      const recaptchaToken = String(form.get('g-recaptcha-response') || '').trim();
+      if (!recaptchaToken) {
+        return new Response(
+          `We couldn't verify your submission. Please reload the page and try again — or call us at ${PHONE_FALLBACK}.`,
+          { status: 400, headers: { 'Content-Type': 'text/plain' } }
+        );
+      }
+      try {
+        const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            secret: env.RECAPTCHA_SECRET,
+            response: recaptchaToken,
+          }),
+        });
+        const verifyData = await verifyRes.json();
+        const score = typeof verifyData.score === 'number' ? verifyData.score : null;
+        if (!verifyData.success || (score !== null && score < 0.5)) {
+          console.error('reCAPTCHA rejected:', {
+            success: verifyData.success,
+            score: score,
+            errorCodes: verifyData['error-codes'],
+            action: verifyData.action,
+          });
+          return new Response(
+            `We couldn't verify your submission. Please reload the page and try again — or call us at ${PHONE_FALLBACK}.`,
+            { status: 400, headers: { 'Content-Type': 'text/plain' } }
+          );
+        }
+      } catch (err) {
+        // Network / parse error talking to Google. Conservative choice: log
+        // and continue, so a Google API outage doesn't block legitimate
+        // leads. Bot pressure from this exact failure mode is low because
+        // the secret is still required to spoof a token in the first place.
+        console.error('reCAPTCHA verify exception (continuing):', err && err.message);
+      }
+    } else {
+      console.warn('RECAPTCHA_SECRET not set; skipping reCAPTCHA check.');
     }
 
     const formSource =
