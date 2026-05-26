@@ -18,7 +18,7 @@
  *   - HubSpot fail: logged, swallowed. Email still sends, user still
  *     redirected. We never lose a lead because of CRM trouble.
  *   - Resend fail: return 502 with a plain-text user-facing message that
- *     includes the 321-432-6611 phone fallback. The lead is surfaced to
+ *     includes the 321-751-4403 phone fallback. The lead is surfaced to
  *     the user immediately rather than silently disappearing.
  *
  * Secrets (set via `wrangler secret put`):
@@ -48,7 +48,7 @@ const TOM_EMAIL = 'tcloans1@gmail.com';
 const BRANDON_EMAIL = 'brandonjculpepper@gmail.com';
 const FROM_EMAIL = 'Homesite Mortgage <leads@homesitemortgage.online>';
 const THANK_YOU_URL = 'https://homesitemortgage.online/thank-you.html';
-const PHONE_FALLBACK = '321-432-6611';
+const PHONE_FALLBACK = '321-751-4403';
 
 export default {
   async fetch(request, env, ctx) {
