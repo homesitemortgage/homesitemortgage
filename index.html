@@ -353,28 +353,6 @@
       transform: translateY(-3px);
       box-shadow: var(--shadow-lg);
     }
-    .team-photo-placeholder {
-      background: #f5f5f5;
-      aspect-ratio: 4/5;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      position: relative; gap: 14px;
-      border-bottom: 2px solid rgba(197,160,89,0.3);
-    }
-    .team-photo-initials {
-      width: 96px; height: 96px;
-      border-radius: 50%;
-      background: var(--gold); color: var(--navy);
-      font-family: var(--font-display);
-      font-size: 2.1rem; font-weight: 700;
-      letter-spacing: 0.04em;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .team-photo-caption {
-      font-size: 0.72rem; color: #8a8a8a;
-      letter-spacing: 0.06em; text-align: center;
-      text-transform: uppercase;
-    }
     .team-photo {
       width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;
       border-bottom: 2px solid rgba(197,160,89,0.3);
@@ -558,19 +536,22 @@
             "@type": "Person",
             "name": "Tom Culpepper",
             "jobTitle": "Principal Broker",
-            "identifier": "NMLS #353539"
+            "identifier": "NMLS #353539",
+            "image": "https://homesitemortgage.online/images/tom-culpepper.webp"
           },
           {
             "@type": "Person",
             "name": "Tracy Cody",
             "jobTitle": "Loan Processing & Closing",
-            "identifier": "NMLS #886861"
+            "identifier": "NMLS #886861",
+            "image": "https://homesitemortgage.online/images/tracy-cody.webp"
           },
           {
             "@type": "Person",
             "name": "Brandon Culpepper",
             "jobTitle": "Mortgage Loan Originator",
-            "identifier": "NMLS #1577726"
+            "identifier": "NMLS #1577726",
+            "image": "https://homesitemortgage.online/images/brandon-culpepper.webp"
           }
         ],
         "hasOfferCatalog": {
@@ -838,14 +819,7 @@
 
         <div class="team-grid">
           <article class="team-card">
-            <!--
-              PHOTO PLACEHOLDER (Tom) — swap the entire <div class="team-photo-placeholder"> with:
-              <img src="images/tom-culpepper.jpg" alt="Tom Culpepper, Principal Broker, Homesite Mortgage — NMLS #353539" class="team-photo" />
-            -->
-            <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Tom Culpepper">
-              <div class="team-photo-initials" aria-hidden="true">TC</div>
-              <div class="team-photo-caption">Photo coming soon</div>
-            </div>
+            <img src="images/tom-culpepper.webp" alt="Tom Culpepper, Principal Broker at Homesite Mortgage — NMLS #353539" class="team-photo" width="718" height="900" loading="lazy" />
             <div class="team-info">
               <h3 class="team-name">Tom Culpepper</h3>
               <div class="team-title">Principal Broker</div>
@@ -854,14 +828,7 @@
           </article>
 
           <article class="team-card">
-            <!--
-              PHOTO PLACEHOLDER (Tracy) — swap the entire <div class="team-photo-placeholder"> with:
-              <img src="images/tracy-cody.jpg" alt="Tracy Cody, Loan Processing &amp; Closing, Homesite Mortgage — NMLS #886861" class="team-photo" />
-            -->
-            <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Tracy Cody">
-              <div class="team-photo-initials" aria-hidden="true">TC</div>
-              <div class="team-photo-caption">Photo coming soon</div>
-            </div>
+            <img src="images/tracy-cody.webp" alt="Tracy Cody, Loan Processing &amp; Closing at Homesite Mortgage — NMLS #886861" class="team-photo" width="900" height="720" loading="lazy" />
             <div class="team-info">
               <h3 class="team-name">Tracy Cody</h3>
               <div class="team-title">Loan Processing &amp; Closing</div>
@@ -870,14 +837,7 @@
           </article>
 
           <article class="team-card">
-            <!--
-              PHOTO PLACEHOLDER (Brandon) — swap the entire <div class="team-photo-placeholder"> with:
-              <img src="images/brandon-culpepper.jpg" alt="Brandon Culpepper, Mortgage Loan Originator, Homesite Mortgage — NMLS #1577726" class="team-photo" />
-            -->
-            <div class="team-photo-placeholder" role="img" aria-label="Portrait placeholder for Brandon Culpepper">
-              <div class="team-photo-initials" aria-hidden="true">BC</div>
-              <div class="team-photo-caption">Photo coming soon</div>
-            </div>
+            <img src="images/brandon-culpepper.webp" alt="Brandon Culpepper, Mortgage Loan Originator at Homesite Mortgage — NMLS #1577726" class="team-photo" width="900" height="678" loading="lazy" />
             <div class="team-info">
               <h3 class="team-name">Brandon Culpepper</h3>
               <div class="team-title">Mortgage Loan Originator</div>
