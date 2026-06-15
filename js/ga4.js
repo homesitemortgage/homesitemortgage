@@ -6,7 +6,7 @@
    (G-XXXXXXXXXX) from the GA4 web data stream. While the placeholder is in
    place the loader is inert — no network requests, no cookies. */
 (function () {
-  var GA4_ID = 'G-XXXXXXXXXX'; // <-- replace with the real Measurement ID
+  var GA4_ID = 'G-4PN6EVV4DM'; // Homesite Mortgage — GA4 web data stream
 
   function loadGA4() {
     if (window.ga4Loaded) return;
