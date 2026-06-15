@@ -115,6 +115,7 @@ export default {
       if (k === 'access_key' || k === 'subject' || k === 'redirect') continue;
       if (k.startsWith('_')) continue; // _next, _cc, _captcha, etc.
       if (k === 'website') continue; // honeypot
+      if (k === 'g-recaptcha-response') continue; // verification token, not lead data
       fields[k] = String(v || '');
     }
 
