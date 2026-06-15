@@ -159,7 +159,7 @@
 
         .btn-gold {
             background-color: var(--accent-gold);
-            color: white;
+            color: var(--primary-navy);
             padding: 18px;
             border: none;
             font-size: 18px;
@@ -259,7 +259,10 @@
                 padding: 30px 20px;
             }
         }
-    </style>
+      @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>

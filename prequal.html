@@ -389,7 +389,7 @@
         box-shadow: none;
     }
     .btn-primary {
-        background: var(--accent-gold); color: white;
+        background: var(--accent-gold); color: var(--primary-navy);
         text-transform: uppercase;
         box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
     }
@@ -412,6 +412,9 @@
     .hp-trap {
         position: absolute; left: -10000px;
         top: auto; width: 1px; height: 1px; overflow: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
@@ -482,7 +485,7 @@
         <!-- STEP 1 — Intent & Location -->
         <fieldset class="step" data-step="1">
           <h3 class="step-q">What are you looking to do?</h3>
-          <div class="radio-cards" data-name="Intent">
+          <div class="radio-cards" data-name="Intent" role="radiogroup" aria-label="What are you looking to do?">
             <label class="radio-card"><input type="radio" name="Intent" value="Buy a Home" required><span class="radio-label">Buy a Home</span></label>
             <label class="radio-card"><input type="radio" name="Intent" value="Refinance"><span class="radio-label">Refinance</span></label>
             <label class="radio-card"><input type="radio" name="Intent" value="Investment Property"><span class="radio-label">Investment Property</span></label>
@@ -549,7 +552,7 @@
           </div>
 
           <h3 class="step-q">What's your estimated credit score range?</h3>
-          <div class="radio-cards" data-name="Estimated Credit Score">
+          <div class="radio-cards" data-name="Estimated Credit Score" role="radiogroup" aria-label="Estimated credit score range">
             <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Excellent (740+)" required><span class="radio-label"><strong>Excellent</strong> · 740+</span></label>
             <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Good (700–739)"><span class="radio-label"><strong>Good</strong> · 700–739</span></label>
             <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Fair (660–699)"><span class="radio-label"><strong>Fair</strong> · 660–699</span></label>
@@ -564,7 +567,7 @@
         <!-- STEP 2 — Loan Details -->
         <fieldset class="step" data-step="2" hidden>
           <h3 class="step-q">What's your target loan amount?</h3>
-          <div class="radio-cards" data-name="Target Loan Amount">
+          <div class="radio-cards" data-name="Target Loan Amount" role="radiogroup" aria-label="Target loan amount">
             <label class="radio-card"><input type="radio" name="Target Loan Amount" value="Under $150K" required><span class="radio-label">Under $150K</span></label>
             <label class="radio-card"><input type="radio" name="Target Loan Amount" value="$150K – $300K"><span class="radio-label">$150K – $300K</span></label>
             <label class="radio-card"><input type="radio" name="Target Loan Amount" value="$300K – $500K"><span class="radio-label">$300K – $500K</span></label>
@@ -572,7 +575,7 @@
           </div>
 
           <h3 class="step-q">What type of property?</h3>
-          <div class="radio-cards" data-name="Property Type">
+          <div class="radio-cards" data-name="Property Type" role="radiogroup" aria-label="Property type">
             <label class="radio-card"><input type="radio" name="Property Type" value="Primary Residence" required><span class="radio-label">Primary Residence</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Second Home"><span class="radio-label">Second Home</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Investment"><span class="radio-label">Investment</span></label>
@@ -580,7 +583,7 @@
           </div>
 
           <h3 class="step-q">How soon are you looking to close?</h3>
-          <div class="radio-cards" data-name="Timeline">
+          <div class="radio-cards" data-name="Timeline" role="radiogroup" aria-label="How soon are you looking to close?">
             <label class="radio-card"><input type="radio" name="Timeline" value="ASAP" required><span class="radio-label">ASAP</span></label>
             <label class="radio-card"><input type="radio" name="Timeline" value="1–3 Months"><span class="radio-label">1–3 Months</span></label>
             <label class="radio-card"><input type="radio" name="Timeline" value="3–6 Months"><span class="radio-label">3–6 Months</span></label>
