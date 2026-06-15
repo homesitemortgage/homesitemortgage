@@ -16,7 +16,7 @@ direct-to-Web3Forms path with a Cloudflare Worker that handles email delivery
 | Failure | User-visible outcome | Lead delivered? |
 | --- | --- | --- |
 | HubSpot down or returns 4xx/5xx | Redirect to thank-you (success). Error logged to `wrangler tail`. | Yes — via email |
-| Resend down or returns 4xx/5xx | Plain-text 502 response with phone fallback (`321-432-6611`) | Surfaced to user; never silently dropped |
+| Resend down or returns 4xx/5xx | Plain-text 502 response with phone fallback (`321-751-4403`) | Surfaced to user; never silently dropped |
 | Origin/Referer mismatch | 403 Forbidden | No (rejected as untrusted source) |
 | Honeypot non-empty | Pretend-success redirect | No (treated as bot) |
 
