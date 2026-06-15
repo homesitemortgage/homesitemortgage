@@ -34,7 +34,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --navy: #0a1f3c; --navy-mid: #0d2a50; --navy-light: #0f3366;
-      --gold: #c5a059; --gold-light: #d4b478;
+      --gold: #c5a059; --gold-light: #d4b478; --gold-text: #8a6d2f;
       --white: #ffffff; --off-white: #f8f7f4;
       --gray-400: #9ca3af; --gray-600: #4b5563; --gray-800: #1f2937;
       --font-display: 'Playfair Display', Georgia, serif;
@@ -148,7 +148,7 @@
     .section-sub { color: var(--gray-600); font-size: 1.02rem; max-width: 760px; }
     .section-sub + .section-sub { margin-top: 14px; }
     .section-eyebrow {
-      color: var(--gold); font-size: 0.78rem; font-weight: 700;
+      color: var(--gold-text); font-size: 0.78rem; font-weight: 700;
       letter-spacing: 0.12em; text-transform: uppercase;
       margin-bottom: 12px;
     }
@@ -278,6 +278,9 @@
       body { padding-bottom: 80px; }
       .page-hero-actions .btn-xl { width: 100%; }
       .page-hero-actions .btn-lg { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
     }
   </style>
   <script type="application/ld+json">

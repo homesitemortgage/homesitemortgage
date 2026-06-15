@@ -80,6 +80,7 @@
       --navy-light:#0f3366;
       --gold:      #c5a059;
       --gold-light:#d4b478;
+      --gold-text:  #8a6d2f;
       --red:       #cc2200;
       --white:     #ffffff;
       --off-white: #f8f7f4;
@@ -272,7 +273,7 @@
     .section-inner { max-width: var(--max-w); margin: 0 auto; }
     .section-eyebrow {
       font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+      text-transform: uppercase; color: var(--gold-text); margin-bottom: 12px;
     }
     .section-title {
       font-family: var(--font-display);
@@ -331,7 +332,7 @@
     .loan-title { font-weight: 700; font-size: 1rem; color: var(--navy); }
     .loan-desc  { font-size: 0.88rem; color: var(--gray-600); line-height: 1.6; }
     .loan-link  {
-      font-size: 0.85rem; font-weight: 600; color: var(--gold);
+      font-size: 0.85rem; font-weight: 600; color: var(--gold-text);
       display: flex; align-items: center; gap: 4px; margin-top: auto;
     }
     .loan-card-link::after {
@@ -529,6 +530,9 @@
       body { padding-bottom: 80px; }
       .hero-actions .btn-xl { width: 100%; }
       .about-stat-row { gap: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
     }
   </style>
 
