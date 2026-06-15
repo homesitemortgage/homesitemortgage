@@ -1,0 +1,6 @@
+# Local tooling / caches — never commit
+.claude/
+.wrangler/
+worker/.wrangler/
+**/*.local.json
+node_modules/
