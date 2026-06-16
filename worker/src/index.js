@@ -386,6 +386,14 @@ async function upsertHubspot(token, { email, name, phone, fields, formSource, tc
     message: summary.join('\n').slice(0, 65000),
   };
 
+  // Structured TCPA consent so HubSpot can segment marketable (consented)
+  // contacts from inquiry-only ones. Best-effort: if the property can't be
+  // ensured (e.g. the token lacks schema scope) we omit it rather than risk
+  // the whole upsert — consent is still captured in `message` regardless.
+  if (await ensureConsentProperty(headers)) {
+    properties.tcpa_consent = tcpaStatus === 'YES' ? 'true' : 'false';
+  }
+
   // Search by email (dedupe).
   const searchRes = await fetch('https://api.hubapi.com/crm/v3/objects/contacts/search', {
     method: 'POST',
@@ -420,5 +428,42 @@ async function upsertHubspot(token, { email, name, phone, fields, formSource, tc
     if (!createRes.ok) {
       console.error('HubSpot create failed:', createRes.status, await createRes.text());
     }
+  }
+}
+
+// Idempotently ensure the custom `tcpa_consent` contact property exists so
+// consented leads can be segmented for compliant marketing (e.g. a HubSpot
+// active list of "TCPA Consent is Yes"). Returns true when the property is
+// present (created or already there), false if it can't be ensured — e.g. the
+// token lacks `crm.schemas.contacts.write`. Never throws; cached per isolate.
+let consentPropReady = false;
+async function ensureConsentProperty(headers) {
+  if (consentPropReady) return true;
+  try {
+    const res = await fetch('https://api.hubapi.com/crm/v3/properties/contacts', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        name: 'tcpa_consent',
+        label: 'TCPA Consent',
+        type: 'enumeration',
+        fieldType: 'radio',
+        groupName: 'contactinformation',
+        description: 'Express written consent to automated calls/texts (TCPA).',
+        options: [
+          { label: 'Yes - consented to calls/texts', value: 'true', displayOrder: 0 },
+          { label: 'No - inquiry only', value: 'false', displayOrder: 1 },
+        ],
+      }),
+    });
+    if (res.ok || res.status === 409) {
+      consentPropReady = true; // created, or already exists
+      return true;
+    }
+    console.error('ensureConsentProperty failed:', res.status, await res.text());
+    return false;
+  } catch (err) {
+    console.error('ensureConsentProperty exception:', err && err.message);
+    return false;
   }
 }

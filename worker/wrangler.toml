@@ -11,6 +11,12 @@ name = "homesite-form-handler"
 main = "src/index.js"
 compatibility_date = "2026-05-01"
 
+# Pin the deploy target to the Cloudflare account that owns this Worker
+# (subdomain: brandonjculpepper.workers.dev). Prevents accidental deploys to a
+# different logged-in account. `wrangler login` must be an account with access
+# to this account_id.
+account_id = "86b415292842f73071952bae444d7ac3"
+
 # Production logs (errors only). Tail with:
 #   wrangler tail
 [observability]
