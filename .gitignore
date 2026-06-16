@@ -4,3 +4,6 @@
 worker/.wrangler/
 **/*.local.json
 node_modules/
+
+# Internal strategy docs — keep private (not served on the public site)
+marketing/
