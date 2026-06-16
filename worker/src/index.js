@@ -214,6 +214,11 @@ export default {
       console.error('Resend exception:', err && err.message);
     }
 
+    // ----- SMS alert to Tom (best-effort; email alone gets missed) -----
+    // Fire-and-forget so it never delays the redirect. Inert until the
+    // TWILIO_* + TOM_SMS_TO vars are set.
+    ctx.waitUntil(sendLeadSMS(env, { name, phone, formSource }));
+
     // ----- HubSpot upsert (best-effort, never blocks user response) -----
     try {
       await upsertHubspot(env.HUBSPOT_TOKEN, {
@@ -465,5 +470,37 @@ async function ensureConsentProperty(headers) {
   } catch (err) {
     console.error('ensureConsentProperty exception:', err && err.message);
     return false;
+  }
+}
+
+// ---------- SMS lead alert (Twilio) ----------
+// Texts Tom the instant a lead arrives, because email gets missed. Sends only
+// name + phone + source (no income/credit/NPI in the SMS). Best-effort and
+// fully inert unless TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, and
+// TOM_SMS_TO are all configured. Never throws.
+async function sendLeadSMS(env, { name, phone, formSource }) {
+  const sid = env.TWILIO_ACCOUNT_SID;
+  const token = env.TWILIO_AUTH_TOKEN;
+  const from = env.TWILIO_FROM;
+  const to = env.TOM_SMS_TO;
+  if (!sid || !token || !from || !to) return; // not configured yet
+  try {
+    const body =
+      `New Homesite ${formSource === 'prequal' ? 'prequal' : 'contact'} lead: ` +
+      `${name}${phone ? ' · ' + phone : ''}. Check email/HubSpot to follow up fast.`;
+    const res = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Basic ' + btoa(`${sid}:${token}`),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ From: from, To: to, Body: body }),
+      }
+    );
+    if (!res.ok) console.error('Twilio SMS failed:', res.status, await res.text());
+  } catch (err) {
+    console.error('Twilio SMS exception:', err && err.message);
   }
 }
