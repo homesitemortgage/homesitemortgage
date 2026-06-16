@@ -394,6 +394,12 @@
     .about-stat-label { font-size: 0.82rem; color: var(--gray-600); margin-top: 4px; }
 
     /* ── CTA BAND ─────────────────────────────────── */
+    .faq-section { background: var(--off-white); }
+    .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .faq-item { background: var(--white); border: 1px solid #e8e4dc; border-radius: var(--radius); padding: 20px 24px; }
+    .faq-q { font-weight: 700; color: var(--navy); font-size: 1.02rem; margin-bottom: 8px; }
+    .faq-a { color: var(--gray-600); font-size: 0.92rem; line-height: 1.7; margin: 0; }
+
     .cta-section {
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
       padding: 72px 24px; text-align: center;
@@ -529,10 +535,17 @@
         "email": "tcloans1@gmail.com",
         "foundingDate": "1999",
         "description": "Family-owned Florida mortgage broker since 1999. Licensed statewide. Purchase, refinance, FHA, VA, and conventional loans. NMLS #353790.",
-        "areaServed": {
-          "@type": "State",
-          "name": "Florida"
-        },
+        "areaServed": [
+          { "@type": "State", "name": "Florida" },
+          { "@type": "City", "name": "Melbourne, FL" },
+          { "@type": "City", "name": "Palm Bay, FL" },
+          { "@type": "City", "name": "Viera, FL" },
+          { "@type": "City", "name": "Titusville, FL" },
+          { "@type": "City", "name": "Rockledge, FL" },
+          { "@type": "City", "name": "Cocoa, FL" },
+          { "@type": "City", "name": "Merritt Island, FL" },
+          { "@type": "City", "name": "Satellite Beach, FL" }
+        ],
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Melbourne",
@@ -576,7 +589,8 @@
           ]
         },
         "sameAs": [
-          "https://www.nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/353790"
+          "https://www.nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/353790",
+          "https://www.facebook.com/homesitemortgage.online"
         ]
       },
       {
@@ -585,6 +599,17 @@
         "url": "https://homesitemortgage.online",
         "name": "Homesite Mortgage",
         "publisher": {"@id": "https://homesitemortgage.online/#business"}
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://homesitemortgage.online/#faq",
+        "mainEntity": [
+          {"@type":"Question","name":"Do I need to visit an office to get a mortgage with Homesite Mortgage?","acceptedAnswer":{"@type":"Answer","text":"No — Homesite Mortgage is a fully online brokerage. You can complete everything from prequalification to closing by phone, email, and secure online tools, without an office visit. A real person handles your loan personally the whole way."}},
+          {"@type":"Question","name":"What areas of Florida does Homesite Mortgage serve?","acceptedAnswer":{"@type":"Answer","text":"We are based in Melbourne and serve all of Brevard County and the Space Coast — including Palm Bay, Viera, Titusville, Rockledge, Cocoa, Merritt Island, and Satellite Beach — as well as borrowers across the state of Florida."}},
+          {"@type":"Question","name":"Will starting my prequalification affect my credit?","acceptedAnswer":{"@type":"Answer","text":"No. Starting your prequalification with us does not require a hard credit pull, and there is no obligation to move forward."}},
+          {"@type":"Question","name":"What types of home loans do you offer?","acceptedAnswer":{"@type":"Answer","text":"Purchase, refinance, FHA, VA, conventional, DSCR/investment, and non-QM (self-employed) loans. If you are not sure which fits, we will review your situation and tell you what you qualify for."}},
+          {"@type":"Question","name":"How do I get started?","acceptedAnswer":{"@type":"Answer","text":"Start your free prequalification online in about 5 minutes, or call us at 321-751-4403. A real person reviews every submission and follows up personally."}}
+        ]
       }
     ]
   }
@@ -882,6 +907,38 @@
       </div>
     </section>
 
+    <!-- ── FAQ ── -->
+    <section class="faq-section" aria-labelledby="faq-heading">
+      <div class="section-inner">
+        <div class="section-header center">
+          <div class="section-eyebrow">Common Questions</div>
+          <h2 class="section-title" id="faq-heading">Questions Florida Buyers Ask Us</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-q">Do I need to visit an office to get a mortgage with Homesite Mortgage?</div>
+            <p class="faq-a">No — Homesite Mortgage is a fully online brokerage. You can complete everything from prequalification to closing by phone, email, and secure online tools, without an office visit. A real person handles your loan personally the whole way.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">What areas of Florida does Homesite Mortgage serve?</div>
+            <p class="faq-a">We're based in Melbourne and serve all of Brevard County and the Space Coast — including Palm Bay, Viera, Titusville, Rockledge, Cocoa, Merritt Island, and Satellite Beach — as well as borrowers across the state of Florida.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Will starting my prequalification affect my credit?</div>
+            <p class="faq-a">No. Starting your prequalification with us does not require a hard credit pull, and there's no obligation to move forward.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">What types of home loans do you offer?</div>
+            <p class="faq-a">Purchase, refinance, FHA, VA, conventional, DSCR/investment, and non-QM (self-employed) loans. If you're not sure which fits, we'll review your situation and tell you what you qualify for.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">How do I get started?</div>
+            <p class="faq-a">Start your free prequalification online in about 5 minutes, or call us at <a href="tel:3217514403" style="color:var(--gold-text);font-weight:600;">321-751-4403</a>. A real person reviews every submission and follows up personally.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── CTA BAND ── -->
     <section class="cta-section" aria-labelledby="cta-heading">
       <div class="section-inner" style="max-width:640px;">
@@ -907,6 +964,7 @@
             <img src="images/Homesitelogo.png" alt="Homesite Mortgage" width="140" height="38" />
           </span>
           <p style="margin-top:12px;">Family-owned Florida mortgage brokerage since 1999. Serving borrowers statewide — by phone, email, and secure online tools.</p>
+          <p style="margin-top:10px;color:rgba(255,255,255,0.4);font-size:0.8rem;line-height:1.7;">Proudly serving Melbourne, Palm Bay, Viera, Titusville, Rockledge, Cocoa, Merritt Island, Satellite Beach &amp; all of Brevard County, Florida.</p>
         </div>
         <div>
           <p class="footer-col-title">Quick Links</p>
@@ -916,6 +974,7 @@
             <li><a href="privacy-policy.html">Privacy Policy</a></li>
             <li><a href="javascript:void(0);" class="cky-banner-element">Cookie Settings</a></li>
             <li><a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener">NMLS Consumer Access ↗</a></li>
+            <li><a href="https://www.facebook.com/homesitemortgage.online" target="_blank" rel="noopener">Facebook ↗</a></li>
           </ul>
         </div>
         <div>
