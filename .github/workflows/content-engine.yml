@@ -30,6 +30,7 @@ jobs:
     permissions:
       contents: write        # create the branch + commit
       pull-requests: write    # open the PR
+      id-token: write         # required by claude-code-action (OIDC token)
     env:
       GH_TOKEN: ${{ github.token }}   # lets `gh pr create` authenticate
     steps:
