@@ -56,18 +56,43 @@ const PHONE_FALLBACK = '321-751-4403';
 
 export default {
   async fetch(request, env, ctx) {
+    const reqOrigin = request.headers.get('Origin') || '';
+    const corsOrigin = ALLOWED_ORIGINS.includes(reqOrigin) ? reqOrigin : ALLOWED_ORIGINS[0];
+
     if (request.method === 'OPTIONS') {
-      // Light CORS allowance for future fetch()-based clients. Plain
-      // <form> POSTs don't need this; included so curl/diagnostic tools
-      // and any future AJAX usage work without surprise.
       return new Response(null, {
         status: 204,
         headers: {
-          'Access-Control-Allow-Origin': ALLOWED_ORIGINS[0],
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Origin': corsOrigin,
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         },
       });
+    }
+
+    // Geo endpoint — lets the static site enforce the Florida-only Pixel rule.
+    // Returns the visitor's Cloudflare edge region; the page fails closed.
+    if (request.method === 'GET') {
+      const url = new URL(request.url);
+      if (url.pathname === '/geo') {
+        const cf = request.cf || {};
+        return new Response(
+          JSON.stringify({
+            country: cf.country || null,
+            regionCode: cf.regionCode || null,
+            region: cf.region || null,
+          }),
+          {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': corsOrigin,
+              'Cache-Control': 'no-store',
+            },
+          }
+        );
+      }
+      return new Response('Method Not Allowed', { status: 405 });
     }
 
     if (request.method !== 'POST') {
