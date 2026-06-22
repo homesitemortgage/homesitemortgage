@@ -48,17 +48,26 @@
 
   function loadFBPixel() {
     if (window.fbqLoaded) return;
-    window.fbqLoaded = true;
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '560701972154813');
-    fbq('track', 'PageView');
+    // Florida-only (P1.5): confirm region via the Cloudflare edge before firing.
+    // Fails closed — no Pixel for unknown or non-FL regions.
+    fetch('https://homesite-form-handler.brandonjculpepper.workers.dev/geo', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || d.country !== 'US' || d.regionCode !== 'FL') return;
+        if (window.fbqLoaded) return;
+        window.fbqLoaded = true;
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '560701972154813');
+        fbq('track', 'PageView');
+      })
+      .catch(function () { /* unknown region: do not load */ });
   }
   </script>
 
@@ -674,7 +683,7 @@
           <div class="hero-trust">
             <span class="hero-trust-item"><span class="dot"></span>Licensed in Florida · NMLS #353790</span>
             <span class="hero-trust-item"><span class="dot"></span>
-              <span class="years-in-business">27</span> years in business
+              <span class="years-in-business"></span> years in business
             </span>
             <span class="hero-trust-item"><span class="dot"></span>Equal Housing Opportunity</span>
           </div>
@@ -845,7 +854,7 @@
         <div class="section-eyebrow" style="text-align:center;">Who You're Working With</div>
         <h2 class="section-title" id="about-heading" style="text-align:center;">Three Licensed Professionals. No Call Centers.</h2>
         <p class="section-sub" style="text-align:center;max-width:680px;margin:0 auto 14px;">
-          Homesite Mortgage was founded in 1999 with one goal: to give Florida borrowers the same honest, personal guidance we'd want for our own family. In <span class="years-in-business">27</span> years, that hasn't changed.
+          Homesite Mortgage was founded in 1999 with one goal: to give Florida borrowers the same honest, personal guidance we'd want for our own family. In <span class="years-in-business"></span> years, that hasn't changed.
         </p>
         <p class="section-sub" style="text-align:center;max-width:680px;margin:0 auto 48px;">
           When you submit a prequal, Tom reviews it personally. Tracy, a licensed loan officer, guides your loan through to closing with the same care. A small team of licensed professionals — no call centers, no handoffs to juniors, same names start to finish.
@@ -887,7 +896,7 @@
           </div>
           <div class="about-stat-row" style="margin:0;">
             <div class="about-stat">
-              <div class="about-stat-num"><span class="years-in-business">27</span>+</div>
+              <div class="about-stat-num"><span class="years-in-business"></span>+</div>
               <div class="about-stat-label">Years in business</div>
             </div>
             <div class="about-stat">
@@ -986,12 +995,12 @@
         </div>
       </div>
 
-      <div style="margin:0 0 32px;padding-top:4px;">
-        <p class="footer-col-title" style="margin-bottom:12px;">Areas We Serve — First-Time Buyer Guides</p>
-        <ul id="fthb-guides" style="list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px 24px;">
+      <div style="margin:0 0 28px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.08);">
+        <p class="footer-col-title" style="margin-bottom:16px;">Areas We Serve</p>
+        <ul id="fthb-guides" style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px 28px;">
           <!-- content-engine: add new <li> area-guide links here -->
-          <li><a href="first-time-home-buyer-brevard-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">First-Time Buyer: Brevard County / Space Coast</a></li>
-          <li><a href="first-time-home-buyer-orlando-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">First-Time Buyer: Orlando</a></li>
+          <li><a href="first-time-home-buyer-brevard-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">First-Time Home Buyer — Brevard County / Space Coast</a></li>
+          <li><a href="first-time-home-buyer-orlando-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">First-Time Home Buyer — Orlando</a></li>
         </ul>
       </div>
       <div class="footer-nmls">

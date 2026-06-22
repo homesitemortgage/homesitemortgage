@@ -196,7 +196,7 @@ if not needs_human:
         link_li = (
             f'\n          <li><a href="{slug}" '
             f'style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">'
-            f'First-Time Buyer: {topic["title"]}</a></li>'
+            f'First-Time Home Buyer — {topic["title"]}</a></li>'
         )
         write(idx_path, idx_html.replace(marker, marker + link_li, 1))
 
