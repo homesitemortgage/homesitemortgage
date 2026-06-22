@@ -201,8 +201,8 @@ export default {
           bcc: [BRANDON_EMAIL],
           reply_to: email,
           subject,
-          html: buildEmailHtml(fields, formSource, tcpaStatus),
-          text: buildEmailText(fields, formSource, tcpaStatus),
+          html: buildEmailHtml(fields, formSource, tcpaStatus, { name, email, phone }),
+          text: buildEmailText(fields, formSource, tcpaStatus, { name, email, phone }),
         }),
       });
       resendOk = r.ok;
@@ -268,8 +268,17 @@ const SUMMARY_SKIP_KEYS = new Set([
   'tcpa_consent',
 ]);
 
-function buildEmailText(fields, source, tcpa) {
+function buildEmailText(fields, source, tcpa, lead) {
   const lines = [];
+  const name = (lead && lead.name) || '';
+  const email = (lead && lead.email) || '';
+  const phone = (lead && lead.phone) || '';
+  lines.push(`NEW ${source === 'prequal' ? 'PREQUALIFICATION' : 'CONTACT'} LEAD`);
+  lines.push('');
+  if (name) lines.push(`Name:  ${name}`);
+  if (phone) lines.push(`Phone: ${phone}`);
+  if (email) lines.push(`Email: ${email}`);
+  lines.push('');
   lines.push(`Submission source: ${source}`);
   lines.push(`TCPA consent: ${tcpa}`);
   const utmRows = utmEntries(fields);
@@ -290,7 +299,7 @@ function buildEmailText(fields, source, tcpa) {
   return lines.join('\n');
 }
 
-function buildEmailHtml(fields, source, tcpa) {
+function buildEmailHtml(fields, source, tcpa, lead) {
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({
       '&': '&amp;',
@@ -299,29 +308,70 @@ function buildEmailHtml(fields, source, tcpa) {
       '"': '&quot;',
       "'": '&#39;',
     })[c]);
+  const name = (lead && lead.name) || '';
+  const email = (lead && lead.email) || '';
+  const phone = (lead && lead.phone) || '';
+  const telDigits = phone.replace(/[^\d]/g, '');
+  const firstName = (name.split(/\s+/)[0] || 'them');
+  const label = source === 'prequal' ? 'Prequalification' : 'Contact';
+
+  // Keys already surfaced at the top — don't repeat them in the detail table.
+  const TOP_KEYS = new Set([
+    'Full Name', 'name', 'Name', 'Email Address', 'email', 'Email',
+    'Phone Number', 'phone', 'Phone',
+  ]);
+  // Fields worth surfacing high (when present).
+  const PRIORITY_KEYS = [
+    'Property State', 'property_state', 'Loan Purpose', 'loan_purpose',
+    'Loan Type', 'loan_type', 'Timeline', 'timeline',
+  ];
+  const priority = [];
+  for (const k of PRIORITY_KEYS) {
+    if (fields[k]) priority.push([k, fields[k]]);
+  }
+
   const rows = [];
-  rows.push(`<tr><td><strong>Source</strong></td><td>${esc(source)}</td></tr>`);
-  rows.push(`<tr><td><strong>TCPA consent</strong></td><td>${esc(tcpa)}</td></tr>`);
+  rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>Source</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(source)}</td></tr>`);
+  rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>TCPA consent</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(tcpa)}</td></tr>`);
   const utmRows = utmEntries(fields);
-  if (utmRows.length) {
-    for (const [k, v] of utmRows) {
-      rows.push(`<tr><td><strong>${esc(k)}</strong></td><td>${esc(v)}</td></tr>`);
-    }
-  } else {
-    rows.push(`<tr><td><strong>Attribution</strong></td><td>(none)</td></tr>`);
+  for (const [k, v] of utmRows) {
+    rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>${esc(k)}</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(v)}</td></tr>`);
   }
   for (const [k, v] of Object.entries(fields)) {
-    if (SUMMARY_SKIP_KEYS.has(k)) continue;
+    if (SUMMARY_SKIP_KEYS.has(k) || TOP_KEYS.has(k)) continue;
     if (!v) continue;
-    rows.push(`<tr><td><strong>${esc(k)}</strong></td><td>${esc(v)}</td></tr>`);
+    rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>${esc(k)}</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(v)}</td></tr>`);
   }
+
+  const callBtn = telDigits
+    ? `<a href="tel:${telDigits}" style="display:inline-block;background:#0a7d2c;color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;padding:13px 22px;border-radius:6px;margin:0 10px 10px 0;">&#128222; Call ${esc(firstName)}</a>`
+    : '';
+  const emailBtn = email
+    ? `<a href="mailto:${esc(email)}" style="display:inline-block;background:#0a1f3c;color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;padding:13px 22px;border-radius:6px;margin:0 10px 10px 0;">&#9993; Email</a>`
+    : '';
+  const priorityHtml = priority.length
+    ? '<table cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;font-size:15px;">' +
+      priority
+        .map(([k, v]) => `<tr><td style="padding:2px 14px 2px 0;color:#555555;">${esc(k)}</td><td style="padding:2px 0;font-weight:bold;color:#1f2937;">${esc(v)}</td></tr>`)
+        .join('') +
+      '</table>'
+    : '';
+
   return (
-    '<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;color:#222;">' +
-    `<h2 style="color:#0a1f3c;margin:0 0 16px;">New ${esc(source === 'prequal' ? 'Prequalification' : 'Contact')} Lead</h2>` +
-    '<table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;font-size:14px;">' +
+    '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">' +
+    '<div style="max-width:560px;margin:0 auto;padding:24px;">' +
+    `<div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#8a6d2f;font-weight:bold;margin-bottom:6px;">&#128293; New ${esc(label)} Lead</div>` +
+    `<h1 style="margin:0 0 6px;font-size:26px;color:#0a1f3c;">${esc(name || '(no name provided)')}</h1>` +
+    (phone ? `<div style="font-size:17px;color:#374151;margin-bottom:2px;">${esc(phone)}</div>` : '') +
+    (email ? `<div style="font-size:15px;color:#374151;margin-bottom:18px;">${esc(email)}</div>` : '<div style="margin-bottom:18px;"></div>') +
+    `<div style="margin:6px 0 22px;">${callBtn}${emailBtn}</div>` +
+    priorityHtml +
+    '<div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin:8px 0 6px;">All submitted details</div>' +
+    '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-size:14px;width:100%;background:#ffffff;border:1px solid #e5e7eb;border-radius:6px;">' +
     rows.join('') +
     '</table>' +
-    '</body></html>'
+    '<div style="font-size:12px;color:#9ca3af;margin-top:18px;">Homesite Mortgage lead alert &middot; just hit Reply to email this lead back directly.</div>' +
+    '</div></body></html>'
   );
 }
 
