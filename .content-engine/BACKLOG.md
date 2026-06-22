@@ -17,7 +17,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
 - [x] **Brevard County (Space Coast)** — `first-time-home-buyer-brevard-county-fl.html`
   - kw: "first time home buyer brevard county" · cities: Melbourne, Palm Bay, Titusville, Viera, Merritt Island, Satellite Beach, Rockledge
   - _Done — the proof-of-concept page._
-- [ ] **Orange County / Orlando** — `first-time-home-buyer-orlando-fl.html`
+- [x] **Orange County / Orlando** — `first-time-home-buyer-orlando-fl.html`
   - kw: "first time home buyer orlando" · cities: Orlando, Winter Park, Apopka, Ocoee, Winter Garden
 - [ ] **Hillsborough County / Tampa** — `first-time-home-buyer-tampa-fl.html`
   - kw: "first time home buyer tampa" · cities: Tampa, Brandon, Riverview, Plant City
