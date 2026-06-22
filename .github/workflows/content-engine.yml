@@ -3,12 +3,14 @@ name: Content Engine (nightly local-SEO page)
 # Generates ONE local-SEO page per run and opens a DRAFT pull request for review.
 # It never merges and never pushes to main — the PR is the human approval gate.
 #
+# Self-contained: calls the Anthropic API directly (no Claude GitHub App needed)
+# and opens the PR with the built-in GITHUB_TOKEN via the gh CLI.
+#
 # One-time setup required before this works:
 #   1. Add repo secret ANTHROPIC_API_KEY  (Settings > Secrets and variables > Actions).
 #   2. Settings > Actions > General > Workflow permissions:
 #        - "Read and write permissions"
 #        - check "Allow GitHub Actions to create and approve pull requests".
-#   3. Merge the .content-engine/ infra PR to main so this job can read ENGINE.md.
 #
 # Test it before trusting the schedule: Actions tab > this workflow > "Run workflow".
 
@@ -26,46 +28,23 @@ concurrency:
 jobs:
   generate-page:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     permissions:
       contents: write        # create the branch + commit
-      pull-requests: write    # open the PR
-      id-token: write         # required by claude-code-action (OIDC token)
+      pull-requests: write    # open the draft PR
     env:
-      GH_TOKEN: ${{ github.token }}   # lets `gh pr create` authenticate
+      GH_TOKEN: ${{ github.token }}                    # lets `gh pr create` authenticate
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Run the content engine
-        uses: anthropics/claude-code-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: |
-            REPO: ${{ github.repository }}
-            You are the Homesite Mortgage content engine running on a nightly schedule
-            with no memory of prior runs.
+          python-version: "3.12"
 
-            Read .content-engine/ENGINE.md, .content-engine/BACKLOG.md, and
-            .content-engine/COMPLIANCE-CHECKLIST.md, then follow ENGINE.md EXACTLY:
-
-            1. Pick the FIRST unchecked "[ ]" topic from BACKLOG.md (if none remain, stop
-               and open a PR/issue note saying the backlog is empty).
-            2. Generate ONE local-SEO page on the existing site template (copy the
-               nav/style/footer/scripts verbatim from fha.html; write only fresh head meta,
-               JSON-LD, and <main> content). Verify the cities are really in that county
-               via web search. Follow every BLOCKER in COMPLIANCE-CHECKLIST.md.
-            3. Append the new page's <url> entry to sitemap.xml and flip the topic's
-               checkbox to "[x]" in BACKLOG.md.
-            4. Self-review the page against COMPLIANCE-CHECKLIST.md (compliance, fabricated
-               specifics, FAQ-schema match, links resolve). Fix every blocker.
-            5. Create a branch off main, commit the new page + sitemap.xml + BACKLOG.md, push,
-               and open a pull request titled "content: <Page Title>". DO NOT merge. DO NOT
-               push to main. One page, one PR. If a compliance blocker cannot be cleared,
-               title the PR "content: <Page Title> [needs-human]" and explain in the body.
-          claude_args: |
-            --model claude-opus-4-8
-            --max-turns 40
-            --allowedTools Read,Write,Edit,Glob,Grep,Bash,WebSearch,WebFetch
+      - name: Generate one page and open a draft PR
+        run: python .content-engine/run.py
