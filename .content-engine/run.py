@@ -64,6 +64,12 @@ if chk.returncode == 0 and chk.stdout.strip() and chk.stdout.strip() != "[]":
     print(f"Open PR already exists for {slug}; waiting for it to merge. Nothing to do.")
     sys.exit(0)
 
+# Already published to main (e.g. a [needs-human] PR was fixed + merged without
+# the backlog flip)? Don't regenerate over it.
+if os.path.exists(os.path.join(ROOT, slug)):
+    print(f"{slug} already exists on main; skipping.")
+    sys.exit(0)
+
 # --- 3. build the prompt ------------------------------------------------------
 engine = read(os.path.join(CE, "ENGINE.md"))
 compliance = read(os.path.join(CE, "COMPLIANCE-CHECKLIST.md"))
@@ -133,43 +139,75 @@ idx = html.find("<!DOCTYPE html>")
 if idx > 0:
     html = html[idx:]
 
+# Hard abort on a fundamentally broken generation — do NOT open a PR or consume
+# the backlog slot; the next run retries this topic cleanly.
+if not html or "</html>" not in html or resp.get("stop_reason") == "max_tokens":
+    print("Generation incomplete/empty (truncated or missing </html>); aborting, backlog untouched.")
+    sys.exit(1)
+
 # --- 5. sanity checks (page still opens as a draft PR; flagged for humans) -----
 issues = []
-if resp.get("stop_reason") == "max_tokens":
-    issues.append("output hit max_tokens (possibly truncated)")
 if not html.startswith("<!DOCTYPE html>"):
     issues.append("missing doctype")
-for needle in ["NMLS #353790", "Equal Housing", "</html>", "prequal.html",
-               "cookieyes", "ga4.js"]:
+for needle in ["NMLS #353790", "NMLS #353539", "NMLS #886861", "NMLS #1577726",
+               "Equal Housing", "</html>", "prequal.html", "cookieyes", "ga4.js",
+               "favicon", "321-751-4403", "Melbourne",
+               f"homesitemortgage.online/{slug}"]:
     if needle not in html:
         issues.append(f"missing '{needle}'")
+# Reg Z triggering terms / fabricated specifics must NEVER ship — force review.
+FORBIDDEN = [
+    r"\bno down payment\b", r"\bzero down\b", r"\$0\s*down\b", r"\bno-down\b",
+    r"\b\d{1,2}(?:\.\d+)?\s*%\s*down\b",
+    r"\b\d{1,2}\.\d+\s*%\s*(?:apr|rate|interest)",
+    r"\bas low as\b",
+    r"\bguarantee(?:d|s)?\s+(?:approval|rates?|results?)\b",  # not "VA-guaranteed"/"VA guarantee"
+]
+hits = [p for p in FORBIDDEN if re.search(p, html, re.I)]
+if hits:
+    issues.append("possible Reg Z triggering term(s) — review: " + ", ".join(hits))
 needs_human = bool(issues)
 
 write(os.path.join(ROOT, slug), html.rstrip("\n") + "\n")
 
-# --- 6. sitemap + backlog -----------------------------------------------------
-sm_path = os.path.join(ROOT, "sitemap.xml")
-sm = read(sm_path)
-if slug not in sm:
-    entry = (
-        "  <url>\n"
-        f"    <loc>https://homesitemortgage.online/{slug}</loc>\n"
-        f"    <lastmod>{TODAY}</lastmod>\n"
-        "    <changefreq>monthly</changefreq>\n"
-        "    <priority>0.7</priority>\n"
-        "  </url>\n"
-    )
-    sm = sm.replace("</urlset>", entry + "</urlset>")
-    write(sm_path, sm)
+# --- 6. sitemap + backlog + homepage hub -- only for a clean page --------------
+# A flagged page still opens a [needs-human] PR, but must NOT consume the backlog
+# slot, get indexed, or be linked from the homepage until a human fixes it.
+if not needs_human:
+    sm_path = os.path.join(ROOT, "sitemap.xml")
+    sm = read(sm_path)
+    if slug not in sm:
+        entry = (
+            "  <url>\n"
+            f"    <loc>https://homesitemortgage.online/{slug}</loc>\n"
+            f"    <lastmod>{TODAY}</lastmod>\n"
+            "    <changefreq>monthly</changefreq>\n"
+            "    <priority>0.7</priority>\n"
+            "  </url>\n"
+        )
+        sm = sm.replace("</urlset>", entry + "</urlset>")
+        write(sm_path, sm)
 
-lines[topic["idx"]] = lines[topic["idx"]].replace("- [ ]", "- [x]", 1)
-write(backlog_path, "\n".join(lines) + ("\n" if backlog.endswith("\n") else ""))
+    # de-orphan: add an inbound link from the homepage "Areas We Serve" hub
+    idx_path = os.path.join(ROOT, "index.html")
+    idx_html = read(idx_path)
+    marker = "<!-- content-engine: add new <li> area-guide links here -->"
+    if marker in idx_html and f'href="{slug}"' not in idx_html:
+        link_li = (
+            f'\n          <li><a href="{slug}" '
+            f'style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">'
+            f'First-Time Buyer: {topic["title"]}</a></li>'
+        )
+        write(idx_path, idx_html.replace(marker, marker + link_li, 1))
+
+    lines[topic["idx"]] = lines[topic["idx"]].replace("- [ ]", "- [x]", 1)
+    write(backlog_path, "\n".join(lines) + ("\n" if backlog.endswith("\n") else ""))
 
 # --- 7. branch, commit, push, open DRAFT PR (never merge) ---------------------
 sh("git", "config", "user.name", "OptimizedLife")
 sh("git", "config", "user.email", "moondreamandsun@gmail.com")
 sh("git", "checkout", "-b", branch)
-sh("git", "add", slug, "sitemap.xml", ".content-engine/BACKLOG.md")
+sh("git", "add", slug, "sitemap.xml", ".content-engine/BACKLOG.md", "index.html")
 
 title = f"content: {topic['title']} — first-time buyer guide"
 if needs_human:
