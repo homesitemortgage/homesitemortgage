@@ -1,7 +1,8 @@
 name: Content Engine (nightly local-SEO page)
 
-# Generates ONE local-SEO page per run and opens a DRAFT pull request for review.
-# It never merges and never pushes to main — the PR is the human approval gate.
+# Generates ONE local-SEO page per run. Pages that pass the built-in compliance +
+# structure scan are AUTO-MERGED to main and go live; any page that trips a check is
+# left as a [needs-human] DRAFT PR for review (those never auto-merge).
 #
 # Self-contained: calls the Anthropic API directly (no Claude GitHub App needed)
 # and opens the PR with the built-in GITHUB_TOKEN via the gh CLI.
