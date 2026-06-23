@@ -19,7 +19,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - _Done — the proof-of-concept page._
 - [x] **Orange County / Orlando** — `first-time-home-buyer-orlando-fl.html`
   - kw: "first time home buyer orlando" · cities: Orlando, Winter Park, Apopka, Ocoee, Winter Garden
-- [ ] **Hillsborough County / Tampa** — `first-time-home-buyer-tampa-fl.html`
+- [x] **Hillsborough County / Tampa** — `first-time-home-buyer-tampa-fl.html`
   - kw: "first time home buyer tampa" · cities: Tampa, Brandon, Riverview, Plant City
 - [ ] **Duval County / Jacksonville** — `first-time-home-buyer-jacksonville-fl.html`
   - kw: "first time home buyer jacksonville" · cities: Jacksonville, Jacksonville Beach
