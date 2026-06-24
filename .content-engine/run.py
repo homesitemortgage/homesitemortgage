@@ -188,17 +188,45 @@ if not needs_human:
         sm = sm.replace("</urlset>", entry + "</urlset>")
         write(sm_path, sm)
 
-    # de-orphan: add an inbound link from the homepage "Areas We Serve" hub
+    # de-orphan: link the new page from the homepage footer hub (clean, no
+    # redundant prefix) AND from the areas.html regional accordion.
     idx_path = os.path.join(ROOT, "index.html")
     idx_html = read(idx_path)
-    marker = "<!-- content-engine: add new <li> area-guide links here -->"
-    if marker in idx_html and f'href="{slug}"' not in idx_html:
+    fmarker = "<!-- content-engine: add new <li> area-guide links here -->"
+    if fmarker in idx_html and f'href="{slug}"' not in idx_html:
         link_li = (
             f'\n          <li><a href="{slug}" '
             f'style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">'
-            f'First-Time Home Buyer — {topic["title"]}</a></li>'
+            f'{topic["title"]}</a></li>'
         )
-        write(idx_path, idx_html.replace(marker, marker + link_li, 1))
+        write(idx_path, idx_html.replace(fmarker, fmarker + link_li, 1))
+
+    # areas.html — slot the page into its Florida region accordion.
+    areas_path = os.path.join(ROOT, "areas.html")
+    if os.path.exists(areas_path):
+        areas_html = read(areas_path)
+        REGIONS = [
+            ("space-coast", ["brevard"]),
+            ("central-fl", ["orlando", "orange", "seminole", "osceola", "kissimmee", "lake-county", "volusia", "daytona", "marion", "ocala"]),
+            ("tampa-bay", ["tampa", "hillsborough", "pinellas", "petersburg", "pasco", "polk", "lakeland", "manatee", "bradenton", "sarasota"]),
+            ("northeast-fl", ["jacksonville", "duval", "st-johns", "augustine", "alachua", "gainesville", "leon", "tallahassee"]),
+            ("southwest-fl", ["fort-myers", "lee-county", "cape-coral", "collier", "naples"]),
+            ("southeast-fl", ["palm-beach", "broward", "lauderdale", "miami", "dade", "st-lucie", "indian-river", "vero"]),
+            ("panhandle", ["pensacola", "escambia"]),
+        ]
+        region = "central-fl"
+        for rid, keys in REGIONS:
+            if any(k in slug for k in keys):
+                region = rid
+                break
+        amarker = f"<!-- region:{region} -->"
+        soon = amarker + '\n                <li class="soon">Guides for this region are coming soon — we already serve buyers here statewide.</li>'
+        if soon in areas_html:
+            areas_html = areas_html.replace(soon, amarker, 1)  # drop the placeholder
+        if amarker in areas_html and f'href="{slug}"' not in areas_html:
+            area_li = f'\n                <li><a href="{slug}">First-Time Home Buyer Guide — {topic["title"]}</a></li>'
+            areas_html = areas_html.replace(amarker, amarker + area_li, 1)
+            write(areas_path, areas_html)
 
     lines[topic["idx"]] = lines[topic["idx"]].replace("- [ ]", "- [x]", 1)
     write(backlog_path, "\n".join(lines) + ("\n" if backlog.endswith("\n") else ""))
@@ -207,7 +235,7 @@ if not needs_human:
 sh("git", "config", "user.name", "OptimizedLife")
 sh("git", "config", "user.email", "moondreamandsun@gmail.com")
 sh("git", "checkout", "-b", branch)
-sh("git", "add", slug, "sitemap.xml", ".content-engine/BACKLOG.md", "index.html")
+sh("git", "add", slug, "sitemap.xml", ".content-engine/BACKLOG.md", "index.html", "areas.html")
 
 title = f"content: {topic['title']} — first-time buyer guide"
 if needs_human:
