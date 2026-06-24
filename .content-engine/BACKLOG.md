@@ -23,7 +23,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer tampa" · cities: Tampa, Brandon, Riverview, Plant City
 - [x] **Duval County / Jacksonville** — `first-time-home-buyer-jacksonville-fl.html`
   - kw: "first time home buyer jacksonville" · cities: Jacksonville, Jacksonville Beach
-- [ ] **Pinellas County / St. Petersburg–Clearwater** — `first-time-home-buyer-pinellas-county-fl.html`
+- [x] **Pinellas County / St. Petersburg–Clearwater** — `first-time-home-buyer-pinellas-county-fl.html`
   - kw: "first time home buyer st petersburg" · cities: St. Petersburg, Clearwater, Largo, Pinellas Park
 - [ ] **Polk County / Lakeland** — `first-time-home-buyer-lakeland-fl.html`
   - kw: "first time home buyer lakeland" · cities: Lakeland, Winter Haven, Bartow
