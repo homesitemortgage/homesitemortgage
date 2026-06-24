@@ -593,6 +593,12 @@
             <label class="radio-card"><input type="radio" name="Timeline" value="Just Exploring"><span class="radio-label">Just Exploring</span></label>
           </div>
 
+          <h3 class="step-q">Found a place you love? <span style="font-weight:400;font-size:0.85em;color:#6b7280;">(optional)</span></h3>
+          <input type="text" name="Property of Interest" maxlength="200"
+            placeholder="Property address or listing link — or leave blank if still looking"
+            autocomplete="off"
+            style="width:100%;padding:14px 16px;font-size:1rem;border:1px solid #d1d5db;border-radius:10px;font-family:inherit;box-sizing:border-box;" />
+
           <div id="step-2-feedback" hidden role="status" aria-live="polite" class="step-feedback">
             Based on what you've shared, Tom will review your options personally.
           </div>
@@ -816,20 +822,6 @@
             e.preventDefault();
             if (!validateStep(currentStep)) return;
             saveDraft();
-            if (currentStep === 2) {
-              // Soft feedback before advancing to Step 3
-              var fb = document.getElementById('step-2-feedback');
-              if (fb) {
-                fb.hidden = false;
-                nextBtn.disabled = true;
-                setTimeout(function() {
-                  fb.hidden = true;
-                  nextBtn.disabled = false;
-                  showStep(3);
-                }, 2000);
-                return;
-              }
-            }
             if (currentStep < totalSteps) showStep(currentStep + 1);
           }
           if (backBtn) {
