@@ -210,8 +210,11 @@ export default {
         ? 'YES'
         : 'NO';
 
+    // ----- Lead scoring (HOT / WARM / NURTURE) -----
+    const lead_score = scoreLead(fields, tcpaStatus);
+
     // ----- Email via Resend (primary path) -----
-    const subject = `New ${formSource === 'prequal' ? 'Prequalification' : 'Contact'} Lead — ${name}`;
+    const subject = `[${lead_score.band}] New ${formSource === 'prequal' ? 'Prequalification' : 'Contact'} Lead — ${name}`;
     let resendOk = false;
     try {
       const r = await fetch('https://api.resend.com/emails', {
@@ -226,8 +229,8 @@ export default {
           bcc: [BRANDON_EMAIL],
           reply_to: email,
           subject,
-          html: buildEmailHtml(fields, formSource, tcpaStatus, { name, email, phone }),
-          text: buildEmailText(fields, formSource, tcpaStatus, { name, email, phone }),
+          html: buildEmailHtml(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
+          text: buildEmailText(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
         }),
       });
       resendOk = r.ok;
@@ -293,12 +296,33 @@ const SUMMARY_SKIP_KEYS = new Set([
   'tcpa_consent',
 ]);
 
+function scoreLead(fields, tcpaStatus) {
+  const state = String(fields['Property State'] || '').trim();
+  // Florida-only: out-of-state leads are referrals, not hot prospects.
+  if (state && state !== 'Florida') return { band: 'REFERRAL', score: 0 };
+  const TIMELINE = { 'ASAP': 40, '1–3 Months': 30, '3–6 Months': 15, 'Just Exploring': 0 };
+  const CREDIT = { 'Excellent (740+)': 20, 'Good (700–739)': 15, 'Fair (660–699)': 8, 'Needs Work (below 660)': 0 };
+  const AMOUNT = { 'Under $150K': 5, '$150K – $300K': 8, '$300K – $500K': 12, '$500K+': 15 };
+  const INTENT = { 'Buy a Home': 10, 'Refinance': 8, 'Investment Property': 8 };
+  let s = 0;
+  s += TIMELINE[fields['Timeline']] || 0;
+  s += CREDIT[fields['Estimated Credit Score']] || 0;
+  s += AMOUNT[fields['Target Loan Amount']] || 0;
+  s += INTENT[fields['Intent']] || 0;
+  if (state === 'Florida') s += 10;
+  if (tcpaStatus === 'YES') s += 5;
+  if (String(fields['Property of Interest'] || '').trim()) s += 10; // named property = active buyer
+  const band = s >= 70 ? 'HOT' : s >= 40 ? 'WARM' : 'NURTURE';
+  return { band, score: s };
+}
+
 function buildEmailText(fields, source, tcpa, lead) {
   const lines = [];
   const name = (lead && lead.name) || '';
   const email = (lead && lead.email) || '';
   const phone = (lead && lead.phone) || '';
   lines.push(`NEW ${source === 'prequal' ? 'PREQUALIFICATION' : 'CONTACT'} LEAD`);
+  if (lead && lead.band) lines.push(`Priority: ${lead.band}${lead.score != null ? ' (score ' + lead.score + ')' : ''}`);
   lines.push('');
   if (name) lines.push(`Name:  ${name}`);
   if (phone) lines.push(`Phone: ${phone}`);
@@ -339,6 +363,15 @@ function buildEmailHtml(fields, source, tcpa, lead) {
   const telDigits = phone.replace(/[^\d]/g, '');
   const firstName = (name.split(/\s+/)[0] || 'them');
   const label = source === 'prequal' ? 'Prequalification' : 'Contact';
+  const band = (lead && lead.band) || 'NURTURE';
+  const BAND_STYLE = {
+    HOT: { bg: '#0a7d2c', text: '&#128293; HOT LEAD &mdash; call ASAP' },
+    WARM: { bg: '#c5a059', text: '&#9728;&#65039; WARM LEAD' },
+    NURTURE: { bg: '#6b7280', text: 'NURTURE &mdash; follow up' },
+    REFERRAL: { bg: '#1f5e8c', text: '&#8618; OUT-OF-STATE &mdash; referral' },
+  };
+  const bs = BAND_STYLE[band] || BAND_STYLE.NURTURE;
+  const bandBar = `<div style="background:${bs.bg};color:#ffffff;font-weight:bold;font-size:15px;letter-spacing:0.5px;padding:11px 16px;border-radius:6px;margin-bottom:16px;text-align:center;">${bs.text}</div>`;
 
   // Keys already surfaced at the top — don't repeat them in the detail table.
   const TOP_KEYS = new Set([
@@ -347,8 +380,9 @@ function buildEmailHtml(fields, source, tcpa, lead) {
   ]);
   // Fields worth surfacing high (when present).
   const PRIORITY_KEYS = [
-    'Property State', 'property_state', 'Loan Purpose', 'loan_purpose',
-    'Loan Type', 'loan_type', 'Timeline', 'timeline',
+    'Property of Interest', 'Intent', 'Property State', 'property_state',
+    'Target Loan Amount', 'Estimated Credit Score', 'Timeline', 'timeline',
+    'Property Type', 'Loan Purpose', 'loan_purpose', 'Loan Type', 'loan_type',
   ];
   const priority = [];
   for (const k of PRIORITY_KEYS) {
@@ -385,7 +419,8 @@ function buildEmailHtml(fields, source, tcpa, lead) {
   return (
     '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">' +
     '<div style="max-width:560px;margin:0 auto;padding:24px;">' +
-    `<div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#8a6d2f;font-weight:bold;margin-bottom:6px;">&#128293; New ${esc(label)} Lead</div>` +
+    bandBar +
+    `<div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#8a6d2f;font-weight:bold;margin-bottom:6px;">New ${esc(label)} Lead</div>` +
     `<h1 style="margin:0 0 6px;font-size:26px;color:#0a1f3c;">${esc(name || '(no name provided)')}</h1>` +
     (phone ? `<div style="font-size:17px;color:#374151;margin-bottom:2px;">${esc(phone)}</div>` : '') +
     (email ? `<div style="font-size:15px;color:#374151;margin-bottom:18px;">${esc(email)}</div>` : '<div style="margin-bottom:18px;"></div>') +
