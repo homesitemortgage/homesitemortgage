@@ -168,6 +168,18 @@ if hits:
     issues.append("possible Reg Z triggering term(s) — review: " + ", ".join(hits))
 needs_human = bool(issues)
 
+# interlink to the areas hub so each new county page isn't an SEO island
+AREAS_INTERLINK = (
+    '    <section style="background:var(--off-white);padding:48px 0;border-top:1px solid rgba(10,31,60,0.06);">\n'
+    '      <div style="max-width:var(--max-w);margin:0 auto;padding:0 24px;text-align:center;">\n'
+    '        <p style="font-size:0.78rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-text);margin:0 0 8px;">More Areas We Serve</p>\n'
+    '        <h2 style="color:var(--navy);font-size:1.4rem;margin:0 0 12px;">Homesite Mortgage helps first-time buyers across all of Florida</h2>\n'
+    '        <a href="areas.html" style="color:var(--navy);font-weight:600;text-decoration:underline;">Browse first-time buyer guides for every Florida region &rarr;</a>\n'
+    '      </div>\n'
+    '    </section>\n'
+)
+if "More Areas We Serve" not in html and "</main>" in html:
+    html = html.replace("</main>", AREAS_INTERLINK + "  </main>", 1)
 write(os.path.join(ROOT, slug), html.rstrip("\n") + "\n")
 
 # --- 6. sitemap + backlog + homepage hub -- only for a clean page --------------
