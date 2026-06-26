@@ -27,7 +27,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer st petersburg" · cities: St. Petersburg, Clearwater, Largo, Pinellas Park
 - [x] **Polk County / Lakeland** — `first-time-home-buyer-lakeland-fl.html`
   - kw: "first time home buyer lakeland" · cities: Lakeland, Winter Haven, Bartow
-- [ ] **Lee County / Fort Myers–Cape Coral** — `first-time-home-buyer-fort-myers-fl.html`
+- [x] **Lee County / Fort Myers–Cape Coral** — `first-time-home-buyer-fort-myers-fl.html`
   - kw: "first time home buyer fort myers" · cities: Fort Myers, Cape Coral, Estero
 - [ ] **Volusia County / Daytona Beach** — `first-time-home-buyer-volusia-county-fl.html`
   - kw: "first time home buyer daytona" · cities: Daytona Beach, Deltona, Port Orange, DeLand
