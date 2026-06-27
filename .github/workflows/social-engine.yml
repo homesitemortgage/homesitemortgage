@@ -1,0 +1,26 @@
+name: Social Drafting Engine
+
+on:
+  schedule:
+    - cron: '0 12 * * 1,4'   # Mondays & Thursdays, 12:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Draft Facebook posts (opens a draft PR — never auto-posts)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SOCIAL_ENGINE_MODEL: claude-sonnet-4-6
+          SOCIAL_ENGINE_POSTS: '3'
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python .social-engine/run.py
