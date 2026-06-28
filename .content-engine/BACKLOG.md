@@ -31,7 +31,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer fort myers" · cities: Fort Myers, Cape Coral, Estero
 - [x] **Volusia County / Daytona Beach** — `first-time-home-buyer-volusia-county-fl.html`
   - kw: "first time home buyer daytona" · cities: Daytona Beach, Deltona, Port Orange, DeLand
-- [ ] **Pasco County** — `first-time-home-buyer-pasco-county-fl.html`
+- [x] **Pasco County** — `first-time-home-buyer-pasco-county-fl.html`
   - kw: "first time home buyer pasco county" · cities: New Port Richey, Wesley Chapel, Land O' Lakes, Zephyrhills
 - [ ] **Seminole County** — `first-time-home-buyer-seminole-county-fl.html`
   - kw: "first time home buyer seminole county" · cities: Sanford, Altamonte Springs, Oviedo, Lake Mary
