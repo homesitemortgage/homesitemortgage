@@ -33,7 +33,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer daytona" · cities: Daytona Beach, Deltona, Port Orange, DeLand
 - [x] **Pasco County** — `first-time-home-buyer-pasco-county-fl.html`
   - kw: "first time home buyer pasco county" · cities: New Port Richey, Wesley Chapel, Land O' Lakes, Zephyrhills
-- [ ] **Seminole County** — `first-time-home-buyer-seminole-county-fl.html`
+- [x] **Seminole County** — `first-time-home-buyer-seminole-county-fl.html`
   - kw: "first time home buyer seminole county" · cities: Sanford, Altamonte Springs, Oviedo, Lake Mary
 - [ ] **Osceola County / Kissimmee** — `first-time-home-buyer-kissimmee-fl.html`
   - kw: "first time home buyer kissimmee" · cities: Kissimmee, St. Cloud, Celebration
