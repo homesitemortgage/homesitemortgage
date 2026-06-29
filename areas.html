@@ -21,32 +21,45 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { padding: 20px; background: #f5faff; color: #333; overflow-x: hidden; }
-        .container { max-width: 860px; margin: auto; background: white; padding: 32px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #002D62; text-align: center; font-size: 2em; margin-bottom: 8px; }
-        .lede { text-align: center; color: #4b5563; line-height: 1.6; margin-bottom: 28px; max-width: 640px; margin-left: auto; margin-right: auto; }
-        details { border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
-        summary { cursor: pointer; padding: 16px 20px; font-size: 1.1em; font-weight: bold; color: #002D62; background: #f8fafc; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        :root { --navy:#0a1f3c; --navy-mid:#15315c; --gold:#c5a059; --gold-text:#8a6d2f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+        body { background: #f5faff; color: #374151; overflow-x: hidden; }
+        a:focus { outline: 3px solid #ffcc00; }
+        .skip-link { position: absolute; top: -100%; left: 16px; background: var(--gold); color: var(--navy); padding: 10px 16px; text-decoration: none; z-index: 1000; border-radius: 0 0 8px 8px; font-weight: 700; }
+        .skip-link:focus { top: 0; }
+        .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid rgba(10,31,60,0.08); box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+        .nav-inner { max-width: 980px; margin: 0 auto; padding: 0 24px; height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .nav-logo img { height: 48px; width: auto; display: block; }
+        .nav-actions { display: flex; align-items: center; gap: 14px; }
+        .nav-phone { color: var(--navy); font-weight: 700; text-decoration: none; white-space: nowrap; font-size: 0.95rem; }
+        .btn-gold { display: inline-flex; align-items: center; background: var(--gold); color: var(--navy); padding: 10px 20px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.92rem; }
+        .area-hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 70%); color: #fff; padding: 48px 24px 44px; text-align: center; }
+        .area-hero .eyebrow { color: var(--gold); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78rem; margin-bottom: 10px; }
+        .area-hero h1 { font-size: 2.1em; margin-bottom: 12px; }
+        .area-hero .lede { color: rgba(255,255,255,0.85); line-height: 1.65; max-width: 640px; margin: 0 auto; }
+        .container { max-width: 820px; margin: -26px auto 0; background: #fff; padding: 28px; border-radius: 16px; box-shadow: 0 6px 30px rgba(10,31,60,0.08); position: relative; }
+        details { border: 1px solid #e6ebf2; border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+        details[open] { border-color: var(--gold); }
+        summary { cursor: pointer; padding: 16px 20px; font-size: 1.08em; font-weight: bold; color: var(--navy); background: #f8fafc; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         summary::-webkit-details-marker { display: none; }
-        summary::after { content: "+"; font-size: 1.4em; color: #c5a059; font-weight: bold; }
+        summary::after { content: "+"; font-size: 1.4em; color: var(--gold); font-weight: bold; }
         details[open] summary::after { content: "–"; }
         summary:hover { background: #eef2f7; }
-        .region-body { padding: 8px 20px 18px; }
+        .region-body { padding: 6px 12px 12px; }
         .region-body ul { list-style: none; padding: 0; margin: 0; }
-        .region-body li { padding: 8px 0; border-bottom: 1px solid #f1f3f5; }
+        .region-body li { border-bottom: 1px solid #f1f3f5; }
         .region-body li:last-child { border-bottom: none; }
-        .region-body a { color: #0a1f3c; text-decoration: none; font-weight: 600; }
-        .region-body a:hover { color: #c5a059; text-decoration: underline; }
-        .soon { color: #9ca3af; font-style: italic; font-size: 0.92em; }
-        a:focus { outline: 3px solid #ffcc00; }
-        .skip-link { position: absolute; top: -100%; left: 16px; background: #002D62; color: white; padding: 10px; text-decoration: none; z-index: 1000; }
-        .skip-link:focus { top: 0; }
-        .cta-button { display: inline-block; background-color: #c5a059; color: #0a1f3c; padding: 13px 26px; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; margin-top: 24px; }
+        .region-body a { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--navy); text-decoration: none; font-weight: 600; padding: 13px 10px; border-radius: 8px; transition: background .15s, color .15s; }
+        .region-body a::after { content: "→"; color: var(--gold); opacity: 0; transform: translateX(-4px); transition: opacity .15s, transform .15s; }
+        .region-body a:hover { background: #f8fafc; color: var(--gold-text); }
+        .region-body a:hover::after { opacity: 1; transform: translateX(0); }
+        .soon { color: #9ca3af; font-style: italic; font-size: 0.92em; padding: 12px 10px; display: block; }
         .cta-wrap { text-align: center; }
-        footer { background: #002D62; color: white; text-align: center; padding: 20px; margin-top: 30px; font-size: 0.8em; }
-        .footer-links a { color: #ffffff; text-decoration: none; font-weight: bold; }
+        .cta-button { display: inline-block; background: var(--gold); color: var(--navy); padding: 14px 30px; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 24px; }
+        footer { background: var(--navy); color: rgba(255,255,255,0.75); text-align: center; padding: 24px; margin-top: 36px; font-size: 0.82em; }
+        .footer-links a { color: #ffffff; text-decoration: none; font-weight: bold; margin: 0 8px; }
         .footer-links a:hover { text-decoration: underline; }
+        @media (max-width: 600px) { .nav-phone span { display: none; } .area-hero h1 { font-size: 1.6em; } .container { padding: 18px; } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.001ms !important; } }
     </style>
     <script type="application/ld+json">
@@ -78,10 +91,22 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo" aria-label="Homesite Mortgage — Home"><img src="images/Homesitelogo.webp" alt="Homesite Mortgage Logo" width="149" height="48" /></a>
+        <div class="nav-actions">
+          <a href="tel:3217514403" class="nav-phone"><span>321-751-4403</span></a>
+          <a href="prequal.html" class="btn-gold">Get Pre-Approved</a>
+        </div>
+      </div>
+    </nav>
+    <header class="area-hero">
+      <div class="eyebrow">Serving All of Florida</div>
+      <h1>Areas We Serve Across Florida</h1>
+      <p class="lede">Homesite Mortgage is licensed throughout the state of Florida and works with buyers everywhere — by phone, email, and secure online tools. Browse our first-time home buyer guides by region below. New areas are added regularly.</p>
+    </header>
     <main role="main" id="main-content">
         <div class="container">
-            <h1>Areas We Serve Across Florida</h1>
-            <p class="lede">Homesite Mortgage is licensed throughout the state of Florida and works with buyers everywhere — by phone, email, and secure online tools. Browse our first-time home buyer guides by region below. New areas are added regularly.</p>
 
             <details open>
               <summary>Space Coast (Brevard County)</summary>
