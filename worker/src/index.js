@@ -245,7 +245,7 @@ export default {
     // ----- SMS alert to Tom (best-effort; email alone gets missed) -----
     // Fire-and-forget so it never delays the redirect. Inert until the
     // TWILIO_* + TOM_SMS_TO vars are set.
-    ctx.waitUntil(sendLeadSMS(env, { name, phone, formSource }));
+    ctx.waitUntil(sendLeadSMS(env, { name, phone, formSource, band: lead_score.band }));
 
     // ----- HubSpot upsert (best-effort, never blocks user response) -----
     try {
@@ -583,34 +583,62 @@ async function ensureConsentProperty(headers) {
   }
 }
 
-// ---------- SMS lead alert (Twilio) ----------
+// ---------- SMS lead alert ----------
 // Texts Tom the instant a lead arrives, because email gets missed. Sends only
-// name + phone + source (no income/credit/NPI in the SMS). Best-effort and
-// fully inert unless TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, and
-// TOM_SMS_TO are all configured. Never throws.
-async function sendLeadSMS(env, { name, phone, formSource }) {
-  const sid = env.TWILIO_ACCOUNT_SID;
-  const token = env.TWILIO_AUTH_TOKEN;
-  const from = env.TWILIO_FROM;
-  const to = env.TOM_SMS_TO;
-  if (!sid || !token || !from || !to) return; // not configured yet
-  try {
-    const body =
-      `New Homesite ${formSource === 'prequal' ? 'prequal' : 'contact'} lead: ` +
-      `${name}${phone ? ' · ' + phone : ''}. Check email/HubSpot to follow up fast.`;
-    const res = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
-      {
+// name + phone + band + source (no income/credit/NPI in the SMS). Best-effort,
+// never throws. Two delivery paths run independently:
+//   1. Twilio — inert unless TWILIO_* + TOM_SMS_TO are all set.
+//   2. Carrier email-to-SMS gateway via Resend (free) — active now. Tom is on
+//      MetroPCS (T-Mobile network); we hit both gateways so one delivers.
+const TOM_SMS_EMAIL_GATEWAYS = ['3214326611@mymetropcs.com', '3214326611@tmomail.net'];
+
+async function sendLeadSMS(env, { name, phone, formSource, band }) {
+  const body =
+    `New Homesite ${formSource === 'prequal' ? 'prequal' : 'contact'} lead` +
+    `${band ? ' [' + band + ']' : ''}: ${name}${phone ? ' · ' + phone : ''}. ` +
+    `Check email to follow up fast.`;
+
+  // Path 1 — Twilio (stays inert until credentials are configured).
+  const sid = env.TWILIO_ACCOUNT_SID, token = env.TWILIO_AUTH_TOKEN,
+        from = env.TWILIO_FROM, to = env.TOM_SMS_TO;
+  if (sid && token && from && to) {
+    try {
+      const res = await fetch(
+        `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Basic ' + btoa(`${sid}:${token}`),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ From: from, To: to, Body: body }),
+        }
+      );
+      if (!res.ok) console.error('Twilio SMS failed:', res.status, await res.text());
+    } catch (err) {
+      console.error('Twilio SMS exception:', err && err.message);
+    }
+  }
+
+  // Path 2 — free carrier email-to-SMS gateway via Resend (active now).
+  if (env.RESEND_API_KEY) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
-          Authorization: 'Basic ' + btoa(`${sid}:${token}`),
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({ From: from, To: to, Body: body }),
-      }
-    );
-    if (!res.ok) console.error('Twilio SMS failed:', res.status, await res.text());
-  } catch (err) {
-    console.error('Twilio SMS exception:', err && err.message);
+        body: JSON.stringify({
+          from: FROM_EMAIL,
+          to: TOM_SMS_EMAIL_GATEWAYS,
+          subject: 'New lead',
+          text: body,
+        }),
+      });
+      if (!res.ok) console.error('Email-to-SMS failed:', res.status, await res.text());
+    } catch (err) {
+      console.error('Email-to-SMS exception:', err && err.message);
+    }
   }
 }
