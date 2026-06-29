@@ -589,8 +589,8 @@ async function ensureConsentProperty(headers) {
 // never throws. Two delivery paths run independently:
 //   1. Twilio — inert unless TWILIO_* + TOM_SMS_TO are all set.
 //   2. Carrier email-to-SMS gateway via Resend (free) — active now. Tom is on
-//      MetroPCS (T-Mobile network); we hit both gateways so one delivers.
-const TOM_SMS_EMAIL_GATEWAYS = ['3214326611@mymetropcs.com', '3214326611@tmomail.net'];
+//      Metro by T-Mobile, so we use T-Mobile's gateway (one address, no dupes).
+const TOM_SMS_EMAIL_GATEWAYS = ['3214326611@tmomail.net'];
 
 async function sendLeadSMS(env, { name, phone, formSource, band }) {
   const body =
