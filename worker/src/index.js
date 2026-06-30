@@ -388,6 +388,8 @@ function buildEmailHtml(fields, source, tcpa, lead) {
   for (const k of PRIORITY_KEYS) {
     if (fields[k]) priority.push([k, fields[k]]);
   }
+  // Don't repeat the top fields in the detail table below.
+  const shownKeys = new Set(priority.map(([k]) => k));
 
   const rows = [];
   rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>Source</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(source)}</td></tr>`);
@@ -397,7 +399,7 @@ function buildEmailHtml(fields, source, tcpa, lead) {
     rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>${esc(k)}</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(v)}</td></tr>`);
   }
   for (const [k, v] of Object.entries(fields)) {
-    if (SUMMARY_SKIP_KEYS.has(k) || TOP_KEYS.has(k)) continue;
+    if (SUMMARY_SKIP_KEYS.has(k) || TOP_KEYS.has(k) || shownKeys.has(k)) continue;
     if (!v) continue;
     rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>${esc(k)}</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(v)}</td></tr>`);
   }
@@ -409,9 +411,10 @@ function buildEmailHtml(fields, source, tcpa, lead) {
     ? `<a href="mailto:${esc(email)}" style="display:inline-block;background:#0a1f3c;color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;padding:13px 22px;border-radius:6px;margin:0 10px 10px 0;">&#9993; Email</a>`
     : '';
   const priorityHtml = priority.length
-    ? '<table cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;font-size:15px;">' +
+    ? '<div style="font-size:12px;color:#8a6d2f;text-transform:uppercase;letter-spacing:1px;font-weight:bold;margin:8px 0 8px;">What they&#39;re looking for</div>' +
+      '<table cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;font-size:15px;">' +
       priority
-        .map(([k, v]) => `<tr><td style="padding:2px 14px 2px 0;color:#555555;">${esc(k)}</td><td style="padding:2px 0;font-weight:bold;color:#1f2937;">${esc(v)}</td></tr>`)
+        .map(([k, v]) => `<tr><td style="padding:3px 14px 3px 0;color:#555555;">${esc(k)}</td><td style="padding:3px 0;font-weight:bold;color:#1f2937;">${esc(v)}</td></tr>`)
         .join('') +
       '</table>'
     : '';
@@ -426,7 +429,7 @@ function buildEmailHtml(fields, source, tcpa, lead) {
     (email ? `<div style="font-size:15px;color:#374151;margin-bottom:18px;">${esc(email)}</div>` : '<div style="margin-bottom:18px;"></div>') +
     `<div style="margin:6px 0 22px;">${callBtn}${emailBtn}</div>` +
     priorityHtml +
-    '<div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin:8px 0 6px;">All submitted details</div>' +
+    '<div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin:8px 0 6px;">Submission details</div>' +
     '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-size:14px;width:100%;background:#ffffff;border:1px solid #e5e7eb;border-radius:6px;">' +
     rows.join('') +
     '</table>' +
