@@ -35,7 +35,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer pasco county" · cities: New Port Richey, Wesley Chapel, Land O' Lakes, Zephyrhills
 - [x] **Seminole County** — `first-time-home-buyer-seminole-county-fl.html`
   - kw: "first time home buyer seminole county" · cities: Sanford, Altamonte Springs, Oviedo, Lake Mary
-- [ ] **Osceola County / Kissimmee** — `first-time-home-buyer-kissimmee-fl.html`
+- [x] **Osceola County / Kissimmee** — `first-time-home-buyer-kissimmee-fl.html`
   - kw: "first time home buyer kissimmee" · cities: Kissimmee, St. Cloud, Celebration
 - [ ] **Marion County / Ocala** — `first-time-home-buyer-ocala-fl.html`
   - kw: "first time home buyer ocala" · cities: Ocala, Belleview
