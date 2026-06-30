@@ -583,62 +583,35 @@ async function ensureConsentProperty(headers) {
   }
 }
 
-// ---------- SMS lead alert ----------
-// Texts Tom the instant a lead arrives, because email gets missed. Sends only
-// name + phone + band + source (no income/credit/NPI in the SMS). Best-effort,
-// never throws. Two delivery paths run independently:
-//   1. Twilio — inert unless TWILIO_* + TOM_SMS_TO are all set.
-//   2. Carrier email-to-SMS gateway via Resend (free) — active now. Tom is on
-//      Metro by T-Mobile, so we use T-Mobile's gateway (one address, no dupes).
-const TOM_SMS_EMAIL_GATEWAYS = ['3214326611@tmomail.net'];
-
+// ---------- SMS lead alert (Twilio — inert / disabled) ----------
+// The team relies on the INSTANT Gmail notification on Tom's phone for new
+// leads. The free carrier email-to-SMS path was removed because T-Mobile's
+// gateway delayed texts 10-15 min — too slow to be useful. This stays fully
+// inert (no text is sent) unless TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN,
+// TWILIO_FROM, and TOM_SMS_TO are all configured for a reliable paid text later.
+// Sends only name + phone + band (never income/credit/NPI). Never throws.
 async function sendLeadSMS(env, { name, phone, formSource, band }) {
+  const sid = env.TWILIO_ACCOUNT_SID, token = env.TWILIO_AUTH_TOKEN,
+        from = env.TWILIO_FROM, to = env.TOM_SMS_TO;
+  if (!sid || !token || !from || !to) return; // not configured — no text sent
   const body =
     `New Homesite ${formSource === 'prequal' ? 'prequal' : 'contact'} lead` +
     `${band ? ' [' + band + ']' : ''}: ${name}${phone ? ' · ' + phone : ''}. ` +
     `Check email to follow up fast.`;
-
-  // Path 1 — Twilio (stays inert until credentials are configured).
-  const sid = env.TWILIO_ACCOUNT_SID, token = env.TWILIO_AUTH_TOKEN,
-        from = env.TWILIO_FROM, to = env.TOM_SMS_TO;
-  if (sid && token && from && to) {
-    try {
-      const res = await fetch(
-        `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: 'Basic ' + btoa(`${sid}:${token}`),
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({ From: from, To: to, Body: body }),
-        }
-      );
-      if (!res.ok) console.error('Twilio SMS failed:', res.status, await res.text());
-    } catch (err) {
-      console.error('Twilio SMS exception:', err && err.message);
-    }
-  }
-
-  // Path 2 — free carrier email-to-SMS gateway via Resend (active now).
-  if (env.RESEND_API_KEY) {
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
+  try {
+    const res = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+      {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
+          Authorization: 'Basic ' + btoa(`${sid}:${token}`),
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
-          from: FROM_EMAIL,
-          to: TOM_SMS_EMAIL_GATEWAYS,
-          subject: 'New lead',
-          text: body,
-        }),
-      });
-      if (!res.ok) console.error('Email-to-SMS failed:', res.status, await res.text());
-    } catch (err) {
-      console.error('Email-to-SMS exception:', err && err.message);
-    }
+        body: new URLSearchParams({ From: from, To: to, Body: body }),
+      }
+    );
+    if (!res.ok) console.error('Twilio SMS failed:', res.status, await res.text());
+  } catch (err) {
+    console.error('Twilio SMS exception:', err && err.message);
   }
 }
