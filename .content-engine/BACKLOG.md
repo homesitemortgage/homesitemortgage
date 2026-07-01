@@ -37,7 +37,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer seminole county" · cities: Sanford, Altamonte Springs, Oviedo, Lake Mary
 - [x] **Osceola County / Kissimmee** — `first-time-home-buyer-kissimmee-fl.html`
   - kw: "first time home buyer kissimmee" · cities: Kissimmee, St. Cloud, Celebration
-- [ ] **Marion County / Ocala** — `first-time-home-buyer-ocala-fl.html`
+- [x] **Marion County / Ocala** — `first-time-home-buyer-ocala-fl.html`
   - kw: "first time home buyer ocala" · cities: Ocala, Belleview
 - [ ] **Sarasota County** — `first-time-home-buyer-sarasota-fl.html`
   - kw: "first time home buyer sarasota" · cities: Sarasota, Venice, North Port
