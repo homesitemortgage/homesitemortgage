@@ -39,7 +39,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer kissimmee" · cities: Kissimmee, St. Cloud, Celebration
 - [x] **Marion County / Ocala** — `first-time-home-buyer-ocala-fl.html`
   - kw: "first time home buyer ocala" · cities: Ocala, Belleview
-- [ ] **Sarasota County** — `first-time-home-buyer-sarasota-fl.html`
+- [x] **Sarasota County** — `first-time-home-buyer-sarasota-fl.html`
   - kw: "first time home buyer sarasota" · cities: Sarasota, Venice, North Port
 - [ ] **Manatee County / Bradenton** — `first-time-home-buyer-bradenton-fl.html`
   - kw: "first time home buyer bradenton" · cities: Bradenton, Palmetto, Lakewood Ranch
