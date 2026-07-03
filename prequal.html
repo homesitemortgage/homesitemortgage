@@ -459,20 +459,9 @@
         Worker handles email (Resend), HubSpot upsert, and 303 redirect to thank-you.html.
       -->
       <form id="prequal-form" action="https://homesite-form-handler.brandonjculpepper.workers.dev/" method="POST" novalidate>
-        <!--
-          Web3Forms hidden config — preserved as unwired fallback per P1.6.2 rollback plan.
-          The Worker drops every field starting with "_" plus "access_key" / "subject" / "redirect".
-          Remove in follow-up task 1.6.3 after 1 week of stability.
-        -->
-        <input type="hidden" name="access_key" value="e6e06fa9-3277-42a0-95ff-6c649c03ed0a">
-        <input type="hidden" name="subject" value="New Lead — Homesite Mortgage">
-        <input type="hidden" name="redirect" value="https://homesitemortgage.online/thank-you.html">
-        <input type="hidden" name="_next" value="https://homesitemortgage.online/thank-you.html">
-        <input type="hidden" name="_subject" value="New Prequalification Submission!">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_autoresponse" value="Thank you for submitting your prequalification form. We will reach out shortly.">
-        <input type="hidden" name="_cc" value="brandonjculpepper@gmail.com">
+        <!-- P1.6.3: legacy Web3Forms/FormSubmit fallback fields removed. Form posts to the
+             homesite-form-handler Worker (Resend email + HubSpot upsert, 303 → thank-you.html).
+             No third-party form processor; Worker persists nothing (no KV/D1/R2). -->
 
         <!-- Honeypot — must remain empty; bots fill it, real users never see it. -->
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp-trap">
