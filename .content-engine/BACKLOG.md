@@ -41,7 +41,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer ocala" · cities: Ocala, Belleview
 - [x] **Sarasota County** — `first-time-home-buyer-sarasota-fl.html`
   - kw: "first time home buyer sarasota" · cities: Sarasota, Venice, North Port
-- [ ] **Manatee County / Bradenton** — `first-time-home-buyer-bradenton-fl.html`
+- [x] **Manatee County / Bradenton** — `first-time-home-buyer-bradenton-fl.html`
   - kw: "first time home buyer bradenton" · cities: Bradenton, Palmetto, Lakewood Ranch
 - [ ] **Palm Beach County / West Palm Beach** — `first-time-home-buyer-palm-beach-county-fl.html`
   - kw: "first time home buyer palm beach county" · cities: West Palm Beach, Boca Raton, Boynton Beach, Wellington
