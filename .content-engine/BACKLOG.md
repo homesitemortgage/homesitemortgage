@@ -45,7 +45,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer bradenton" · cities: Bradenton, Palmetto, Lakewood Ranch
 - [x] **Palm Beach County / West Palm Beach** — `first-time-home-buyer-palm-beach-county-fl.html`
   - kw: "first time home buyer palm beach county" · cities: West Palm Beach, Boca Raton, Boynton Beach, Wellington
-- [ ] **Broward County / Fort Lauderdale** — `first-time-home-buyer-broward-county-fl.html`
+- [x] **Broward County / Fort Lauderdale** — `first-time-home-buyer-broward-county-fl.html`
   - kw: "first time home buyer fort lauderdale" · cities: Fort Lauderdale, Pembroke Pines, Hollywood, Coral Springs
 - [ ] **St. Lucie County / Port St. Lucie** — `first-time-home-buyer-port-st-lucie-fl.html`
   - kw: "first time home buyer port st lucie" · cities: Port St. Lucie, Fort Pierce
