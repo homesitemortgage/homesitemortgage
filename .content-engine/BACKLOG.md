@@ -47,7 +47,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer palm beach county" · cities: West Palm Beach, Boca Raton, Boynton Beach, Wellington
 - [x] **Broward County / Fort Lauderdale** — `first-time-home-buyer-broward-county-fl.html`
   - kw: "first time home buyer fort lauderdale" · cities: Fort Lauderdale, Pembroke Pines, Hollywood, Coral Springs
-- [ ] **St. Lucie County / Port St. Lucie** — `first-time-home-buyer-port-st-lucie-fl.html`
+- [x] **St. Lucie County / Port St. Lucie** — `first-time-home-buyer-port-st-lucie-fl.html`
   - kw: "first time home buyer port st lucie" · cities: Port St. Lucie, Fort Pierce
 - [ ] **Alachua County / Gainesville** — `first-time-home-buyer-gainesville-fl.html`
   - kw: "first time home buyer gainesville" · cities: Gainesville, Alachua, Newberry
