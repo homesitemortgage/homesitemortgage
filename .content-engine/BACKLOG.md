@@ -49,7 +49,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer fort lauderdale" · cities: Fort Lauderdale, Pembroke Pines, Hollywood, Coral Springs
 - [x] **St. Lucie County / Port St. Lucie** — `first-time-home-buyer-port-st-lucie-fl.html`
   - kw: "first time home buyer port st lucie" · cities: Port St. Lucie, Fort Pierce
-- [ ] **Alachua County / Gainesville** — `first-time-home-buyer-gainesville-fl.html`
+- [x] **Alachua County / Gainesville** — `first-time-home-buyer-gainesville-fl.html`
   - kw: "first time home buyer gainesville" · cities: Gainesville, Alachua, Newberry
 - [ ] **Escambia County / Pensacola** — `first-time-home-buyer-pensacola-fl.html`
   - kw: "first time home buyer pensacola" · cities: Pensacola, Pace, Cantonment
