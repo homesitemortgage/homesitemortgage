@@ -51,7 +51,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer port st lucie" · cities: Port St. Lucie, Fort Pierce
 - [x] **Alachua County / Gainesville** — `first-time-home-buyer-gainesville-fl.html`
   - kw: "first time home buyer gainesville" · cities: Gainesville, Alachua, Newberry
-- [ ] **Escambia County / Pensacola** — `first-time-home-buyer-pensacola-fl.html`
+- [x] **Escambia County / Pensacola** — `first-time-home-buyer-pensacola-fl.html`
   - kw: "first time home buyer pensacola" · cities: Pensacola, Pace, Cantonment
 - [ ] **Leon County / Tallahassee** — `first-time-home-buyer-tallahassee-fl.html`
   - kw: "first time home buyer tallahassee" · cities: Tallahassee
