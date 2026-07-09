@@ -129,7 +129,8 @@
       display: flex; align-items: center; justify-content: space-between;
       height: 68px; gap: 16px;
     }
-    .nav-logo img { height: 52px; width: auto; }
+    .nav-logo { flex-shrink: 0; }
+    .nav-logo img { height: 52px; width: auto; max-width: none; }
     .nav-actions { display: flex; align-items: center; gap: 12px; }
     .nav-phone {
       color: var(--navy); font-weight: 600; font-size: 0.95rem;
@@ -532,7 +533,7 @@
       body { padding-bottom: 80px; }
     }
     @media (max-width: 768px) {
-      .nav-logo img { max-height: 48px; width: auto; height: auto; }
+      .nav-logo img { max-height: 48px; width: auto; height: auto; max-width: none; }
     }
     @media (max-width: 600px) {
       section { padding: 56px 20px; }
