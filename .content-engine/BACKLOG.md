@@ -53,7 +53,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer gainesville" · cities: Gainesville, Alachua, Newberry
 - [x] **Escambia County / Pensacola** — `first-time-home-buyer-pensacola-fl.html`
   - kw: "first time home buyer pensacola" · cities: Pensacola, Pace, Cantonment
-- [ ] **Leon County / Tallahassee** — `first-time-home-buyer-tallahassee-fl.html`
+- [x] **Leon County / Tallahassee** — `first-time-home-buyer-tallahassee-fl.html`
   - kw: "first time home buyer tallahassee" · cities: Tallahassee
 - [ ] **St. Johns County / St. Augustine** — `first-time-home-buyer-st-johns-county-fl.html`
   - kw: "first time home buyer st johns county" · cities: St. Augustine, St. Johns, Ponte Vedra
