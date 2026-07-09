@@ -45,4 +45,20 @@
     var data = e.detail;
     if (data && data.accepted && data.accepted.indexOf('analytics') > -1) loadGA4();
   });
+
+  // Funnel instrumentation — measure which entry points drive prequal/calculator
+  // clicks so ad spend can be optimized by cost-per-lead. No-ops until analytics
+  // consent has loaded gtag (guarded), so it never fires without consent.
+  document.addEventListener('click', function (e) {
+    if (!window.gtag || !e.target.closest) return;
+    var a = e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var label = (a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+    if (/prequal\.html/.test(href)) {
+      window.gtag('event', 'prequal_cta_click', { event_category: 'lead', event_label: label, page_path: location.pathname });
+    } else if (/mortgage-calculator\.html/.test(href)) {
+      window.gtag('event', 'calculator_cta_click', { event_category: 'engagement', event_label: label, page_path: location.pathname });
+    }
+  });
 })();
