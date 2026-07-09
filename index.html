@@ -466,6 +466,12 @@
     }
     .footer-links-row a { color: rgba(255,255,255,0.55); font-size: 0.78rem; transition: color 0.15s; }
     .footer-links-row a:hover { color: var(--gold); }
+    .footer-areas { margin: 0 0 28px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .footer-areas summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; }
+    .footer-areas summary::-webkit-details-marker { display: none; }
+    .footer-areas summary::after { content: "▸"; color: var(--gold); margin-left: auto; transition: transform 0.2s ease; font-size: 0.9rem; }
+    .footer-areas[open] summary::after { transform: rotate(90deg); }
+    .footer-areas #fthb-guides { margin-top: 18px; }
 
     /* ── STICKY MOBILE CTA ────────────────────────── */
     .sticky-cta {
@@ -979,8 +985,9 @@
           <h2 class="section-title" id="reviews-heading">5.0 Stars from Real Florida Clients</h2>
           <p class="section-sub" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
             <span style="color:#f5a623;font-size:1.4rem;letter-spacing:2px;" aria-hidden="true">★★★★★</span>
-            <span><strong>5.0</strong> average &middot; Verified Google reviews</span>
+            <span><strong>5.0</strong> average &middot; <strong>21</strong> verified Google reviews</span>
           </p>
+          <p style="margin-top:8px;color:var(--gray-600);font-size:0.95rem;">Family-owned in Florida for <span class="years-in-business">27</span>+ years &middot; a perfect 5.0 across every Google review.</p>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;margin-top:44px;">
           <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
@@ -990,33 +997,13 @@
           </figure>
           <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
             <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;I have had an amazing experience with Homesite. Every time I have needed assistance, Tracy has gone above and beyond to make sure I got exactly what I wanted.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Ladonna Gayle <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy and Tom were great to work with. Very smooth process. We saved a lot of money going with them. Would definitely recommend them.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Jz Pitt <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy and Tom are amazing. They have helped me a few times over the years. I highly recommend!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Lisa Hamor <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy is the best!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Francisco Chumpitaz <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
             <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;My adult children needed help with their 1st time mortgages! Tracy and Homesite Mortgage helped them throughout the process. Highly recommended!!!&rdquo;</blockquote>
             <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Kevin Baker <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
           </figure>
           <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
             <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Homesite Mortgage is awesome! We were recommended by family friends to contact Tracy and she did not disappoint. We were not ready to buy just yet, but Tracy was so helpful and made us feel so comfortable. When we are ready, we will 100% be contacting Tracy.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Sydney Fanous <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
+            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy is absolutely wonderful &mdash; extremely knowledgeable and reliable. She got me refinanced within weeks and helped me throughout the entire process. You won&rsquo;t find anyone in central Florida more helpful than her!&rdquo;</blockquote>
+            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Mike Sherman <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
           </figure>
           <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
             <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
@@ -1025,58 +1012,13 @@
           </figure>
           <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
             <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy is absolutely wonderful — extremely knowledgeable and reliable. She got me refinanced within weeks and helped me throughout the entire process. You won't find anyone in central Florida more helpful than her!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Mike Sherman <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
+            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy and Tom are amazing. They have helped me a few times over the years. I highly recommend!&rdquo;</blockquote>
+            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Lisa Hamor <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
           </figure>
           <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
             <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
             <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;This company helped me purchase my first home. They&rsquo;re incredibly knowledgeable, helpful and honest. Being a first-time buyer can be overwhelming, but they made it so much easier. I highly recommend Tracy!&rdquo;</blockquote>
             <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Tami <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;I had an amazing experience with Homesite. Tracy goes above and beyond &mdash; professional, patient, and always willing to answer my questions. She made everything stress-free. Highly recommend!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Carline Jean Louis <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy was amazing. She helped me out and patiently explained everything throughout the process &mdash; and most importantly, she was honest. I love her service!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Noudjeko Sagesse <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy is wonderful. She made first-time home buying so easy and painless, explained everything, and made sure we had all the information we needed. She&rsquo;s even there for us afterward. Definitely go to Tracy!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Madysen Brutto <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy is great to work with. As first-time home buyers, she explained everything so well and answered every question we had. Highly recommend!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Jj Mcvey <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;I have been working with Tracy and Tom for a long time. They&rsquo;re always available to answer questions and help even after closing. They always make time and stay in contact with all their clients. May God bless this team &mdash; highly recommend!&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">wendy moise <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy helped me purchase my first home. It took a little while, but it was well worth the wait &mdash; I love my new home! Homesite Mortgage, highly recommended. You are the best, Tracy &mdash; thank you for helping me.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Marie Myrtha wi lap aji pou mw Joseph <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Homesite Mortgage was awesome. Tracy Cody did a fantastic job communicating with me every step of the way. Would highly recommend this company.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Lisa Turnbaugh <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy is wonderful! She made it easy and took all of the stress out of the process of our loan.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Dana Gebhardt <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
-          </figure>
-          <figure style="background:#fff;border:1px solid rgba(10,31,60,0.08);border-radius:14px;padding:24px;margin:0;box-shadow:var(--shadow);">
-            <div style="color:#f5a623;letter-spacing:1px;margin-bottom:10px;" aria-hidden="true">★★★★★</div>
-            <blockquote style="margin:0 0 16px;font-size:0.97rem;line-height:1.65;color:var(--gray-800);">&ldquo;Tracy was great &mdash; she helped me with everything, I mean everything.&rdquo;</blockquote>
-            <figcaption style="font-weight:600;color:var(--navy);font-size:0.88rem;">Jim Longtin <span style="font-weight:400;color:var(--gray-600);">&middot; Google review</span></figcaption>
           </figure>
         </div>
         <p style="text-align:center;margin-top:36px;color:var(--gray-600);font-size:0.9rem;">Reviews from real Homesite Mortgage clients on Google. Equal Housing Opportunity.</p>
@@ -1155,7 +1097,6 @@
           </span>
           <p style="margin-top:14px;font-style:italic;color:var(--gold);font-size:1rem;font-weight:600;">Where people are our foundation.</p>
           <p style="margin-top:10px;">Family-owned Florida mortgage brokerage since 1999. Serving borrowers statewide — by phone, email, and secure online tools.</p>
-          <p style="margin-top:10px;color:rgba(255,255,255,0.4);font-size:0.8rem;line-height:1.7;">Proudly serving Melbourne, Palm Bay, Viera, Titusville, Rockledge, Cocoa, Merritt Island, Satellite Beach &amp; all of Brevard County, Florida.</p>
         </div>
         <div>
           <p class="footer-col-title">Quick Links</p>
@@ -1178,9 +1119,8 @@
         </div>
       </div>
 
-      <div style="margin:0 0 28px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.08);">
-        <p class="footer-col-title" style="margin-bottom:6px;">Areas We Serve</p>
-        <p style="margin:0 0 14px;color:rgba(255,255,255,0.45);font-size:0.78rem;">First-time buyer guides across Florida</p>
+      <details class="footer-areas">
+        <summary><span class="footer-col-title" style="margin:0;">Areas We Serve</span><span style="color:rgba(255,255,255,0.45);font-size:0.78rem;font-weight:400;">First-time buyer guides across Florida — tap to expand</span></summary>
         <ul id="fthb-guides" style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 28px;">
           <!-- content-engine: add new <li> area-guide links here -->
           <li><a href="first-time-home-buyer-pensacola-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Escambia County / Pensacola</a></li>
@@ -1204,7 +1144,7 @@
           <li><a href="first-time-home-buyer-orlando-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Orange County / Orlando</a></li>
         </ul>
         <a href="areas.html" style="display:inline-block;margin-top:16px;color:var(--gold);text-decoration:none;font-size:0.85rem;font-weight:600;">View all Florida areas we serve →</a>
-      </div>
+      </details>
       <div class="footer-nmls">
         <div class="footer-nmls-row">
           <div class="footer-eho" aria-label="Equal Housing Opportunity">
