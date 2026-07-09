@@ -418,7 +418,7 @@
         }
       });
       rows += '<div class="row total"><span>Total</span><span class="amt">'+money(total)+'/mo</span></div>';
-      if (underLtv) rows += '<div style="font-size:0.76rem;color:#4b5563;margin-top:6px;">PMI is an estimate that applies when your down payment is under 20%.</div>';
+      if (underLtv) rows += '<div style="font-size:0.76rem;color:#4b5563;margin-top:6px;">PMI is an estimate that applies when your down payment is under 20%. <a href="'+ctaHref()+'" class="pq-link" style="color:#0a1f3c;font-weight:700;">See your options →</a></div>';
       $('legend').innerHTML = rows;
 
       $('scPay').innerHTML = 'Est. monthly payment<strong>'+money(total)+'/mo</strong>';
@@ -428,9 +428,13 @@
       if (document.querySelector('.amort').open) buildAmort();
     }
 
-    function updateCTA(){
+    function ctaHref(){
       var q = 'prequal.html?type=purchase&price=' + Math.round(S.price) + '&down=' + Math.round(S.downDollars) + '&term=' + S.term;
       if (!isNaN(S.rate)) q += '&rate=' + S.rate;
+      return q;
+    }
+    function updateCTA(){
+      var q = ctaHref();
       var links = document.querySelectorAll('.pq-link');
       for (var i=0;i<links.length;i++) links[i].href = q;
     }
@@ -464,7 +468,7 @@
         var monthsSaved = n - months;
         var when = monthsSaved >= 12 ? (monthsSaved/12).toFixed(1) + ' years' : monthsSaved + ' months';
         saved.style.display = 'block';
-        saved.innerHTML = '💡 Paying <strong>'+money(extra)+'/mo extra</strong> saves about <strong>'+money(save)+'</strong> in interest and pays your loan off <strong>'+when+'</strong> sooner.';
+        saved.innerHTML = '💡 Paying <strong>'+money(extra)+'/mo extra</strong> saves about <strong>'+money(save)+'</strong> in interest and pays your loan off <strong>'+when+'</strong> sooner. <a href="'+ctaHref()+'" class="pq-link" style="color:#0a1f3c;font-weight:700;white-space:nowrap;">See if you qualify →</a>';
       } else { saved.style.display = 'none'; }
     }
 
