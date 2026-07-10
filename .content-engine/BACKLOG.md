@@ -55,7 +55,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer pensacola" · cities: Pensacola, Pace, Cantonment
 - [x] **Leon County / Tallahassee** — `first-time-home-buyer-tallahassee-fl.html`
   - kw: "first time home buyer tallahassee" · cities: Tallahassee
-- [ ] **St. Johns County / St. Augustine** — `first-time-home-buyer-st-johns-county-fl.html`
+- [x] **St. Johns County / St. Augustine** — `first-time-home-buyer-st-johns-county-fl.html`
   - kw: "first time home buyer st johns county" · cities: St. Augustine, St. Johns, Ponte Vedra
 - [ ] **Lake County** — `first-time-home-buyer-lake-county-fl.html`
   - kw: "first time home buyer lake county fl" · cities: Clermont, Leesburg, Eustis, Mount Dora
