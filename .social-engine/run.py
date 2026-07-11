@@ -13,7 +13,7 @@ Run by GitHub Actions on a schedule. Needs ANTHROPIC_API_KEY + GH_TOKEN.
 import os, re, sys, json, subprocess, datetime, urllib.request, urllib.error
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL = os.environ.get("SOCIAL_ENGINE_MODEL", "claude-sonnet-4-6")
+MODEL = os.environ.get("SOCIAL_ENGINE_MODEL", "claude-sonnet-5")
 TODAY = datetime.date.today().isoformat()
 N_POSTS = int(os.environ.get("SOCIAL_ENGINE_POSTS", "3"))
 
