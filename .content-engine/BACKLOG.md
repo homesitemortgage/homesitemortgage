@@ -57,7 +57,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer tallahassee" · cities: Tallahassee
 - [x] **St. Johns County / St. Augustine** — `first-time-home-buyer-st-johns-county-fl.html`
   - kw: "first time home buyer st johns county" · cities: St. Augustine, St. Johns, Ponte Vedra
-- [ ] **Lake County** — `first-time-home-buyer-lake-county-fl.html`
+- [x] **Lake County** — `first-time-home-buyer-lake-county-fl.html`
   - kw: "first time home buyer lake county fl" · cities: Clermont, Leesburg, Eustis, Mount Dora
 - [ ] **Collier County / Naples** — `first-time-home-buyer-naples-fl.html`
   - kw: "first time home buyer naples fl" · cities: Naples, Marco Island, Immokalee
