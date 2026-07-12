@@ -59,7 +59,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer st johns county" · cities: St. Augustine, St. Johns, Ponte Vedra
 - [x] **Lake County** — `first-time-home-buyer-lake-county-fl.html`
   - kw: "first time home buyer lake county fl" · cities: Clermont, Leesburg, Eustis, Mount Dora
-- [ ] **Collier County / Naples** — `first-time-home-buyer-naples-fl.html`
+- [x] **Collier County / Naples** — `first-time-home-buyer-naples-fl.html`
   - kw: "first time home buyer naples fl" · cities: Naples, Marco Island, Immokalee
 - [ ] **Indian River County / Vero Beach** — `first-time-home-buyer-vero-beach-fl.html`
   - kw: "first time home buyer vero beach" · cities: Vero Beach, Sebastian
