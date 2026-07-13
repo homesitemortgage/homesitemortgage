@@ -20,7 +20,7 @@ jobs:
       - name: Draft Facebook posts (opens a draft PR — never auto-posts)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          SOCIAL_ENGINE_MODEL: claude-sonnet-4-6
+          SOCIAL_ENGINE_MODEL: claude-sonnet-5
           SOCIAL_ENGINE_POSTS: '3'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python .social-engine/run.py
