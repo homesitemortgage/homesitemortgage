@@ -61,7 +61,7 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
   - kw: "first time home buyer lake county fl" · cities: Clermont, Leesburg, Eustis, Mount Dora
 - [x] **Collier County / Naples** — `first-time-home-buyer-naples-fl.html`
   - kw: "first time home buyer naples fl" · cities: Naples, Marco Island, Immokalee
-- [ ] **Indian River County / Vero Beach** — `first-time-home-buyer-vero-beach-fl.html`
+- [x] **Indian River County / Vero Beach** — `first-time-home-buyer-vero-beach-fl.html`
   - kw: "first time home buyer vero beach" · cities: Vero Beach, Sebastian
 - [ ] **Miami-Dade County** — `first-time-home-buyer-miami-dade-fl.html`
   - kw: "first time home buyer miami" · cities: Miami, Hialeah, Homestead, Kendall
