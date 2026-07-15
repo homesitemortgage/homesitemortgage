@@ -4,10 +4,10 @@
   <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8005e4bb409abe9cf9e8ef20e939de30/script.js"></script>
   <!-- Google Analytics 4 — gated behind CookieYes "Analytics" consent -->
   <script src="/js/ga4.js" defer></script>
-  <!-- reCAPTCHA v3 — replace 6LdMO_0sAAAAAOFjTkBGKn960u6ISAivmBF_GT2b with the real
-       site key from google.com/recaptcha/admin (account: moondreamandsun@gmail.com).
-       Token is injected into #g-recaptcha-response by the form controller below. -->
-  <script src="https://www.google.com/recaptcha/api.js?render=6LdMO_0sAAAAAOFjTkBGKn960u6ISAivmBF_GT2b"></script>
+  <!-- Cloudflare Turnstile — bot protection on the prequal form. The widget is
+       rendered explicitly into #turnstile-slot when step 3 becomes visible
+       (see the form controller below). Verified server-side by the Worker. -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <meta charset="UTF-8">
   <title>Get Pre-Approved | Homesite Mortgage — No Hard Credit Pull</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -473,8 +473,8 @@
         <input type="hidden" id="utm_medium" name="utm_medium" value="">
         <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
         <input type="hidden" id="ref" name="ref" value="">
-        <!-- reCAPTCHA v3 token — populated by the form controller below before submit. -->
-        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">
+        <!-- Turnstile injects its cf-turnstile-response hidden input into this form
+             when the widget renders in #turnstile-slot (step 3). -->
 
         <!-- STEP 1 — Intent & Location -->
         <fieldset class="step" data-step="1">
@@ -620,6 +620,9 @@
             </label>
           </div>
 
+          <!-- Turnstile bot check — rendered when this step becomes visible. -->
+          <div id="turnstile-slot" style="margin-top:16px;min-height:0;"></div>
+
           <div class="step-nav">
             <button type="button" class="btn-secondary" data-back>← Back</button>
             <button type="submit" class="btn-primary">Get My Options →</button>
@@ -672,6 +675,9 @@
           labels.forEach(function(l) {
             l.classList.toggle('is-current', String(l.dataset.label) === String(n));
           });
+          // Render the Turnstile widget once the contact step is visible
+          // (rendering into a hidden container produces a zero-size widget).
+          if (String(n) === '3') renderTurnstile();
           // Scroll the form back into view on advance
           var topOf = form.getBoundingClientRect().top + window.pageYOffset - 80;
           window.scrollTo({ top: Math.max(0, topOf), behavior: 'smooth' });
@@ -839,39 +845,59 @@
           }
         });
 
-        // Submission — validate, fetch reCAPTCHA token if available, clear draft, POST to Worker.
-        // If the site key placeholder hasn't been swapped yet OR grecaptcha
-        // failed to load, the form submits without a token and the Worker
-        // either skips reCAPTCHA (secret unset) or returns 400 (secret set).
-        var RECAPTCHA_SITE_KEY = '6LdMO_0sAAAAAOFjTkBGKn960u6ISAivmBF_GT2b';
+        // Turnstile — explicit render into #turnstile-slot when step 3 shows.
+        // Managed mode: completes silently for humans, shows an interactive
+        // check only on suspicion. The widget injects a cf-turnstile-response
+        // hidden input into the form; the Worker verifies it server-side.
+        var TURNSTILE_SITE_KEY = '0x4AAAAAAD2IhRcKUl5FqyDN';
+        var turnstileWidgetId = null;
+        var turnstilePendingSubmit = false;
+        function renderTurnstile() {
+          if (turnstileWidgetId !== null) return;
+          if (TURNSTILE_SITE_KEY.indexOf('PENDING') !== -1) return;
+          if (typeof turnstile === 'undefined' || !window.turnstile) return;
+          var slot = document.getElementById('turnstile-slot');
+          if (!slot) return;
+          turnstileWidgetId = turnstile.render(slot, {
+            sitekey: TURNSTILE_SITE_KEY,
+            action: 'turnstile-spin-v1',
+            'refresh-expired': 'auto',
+            callback: function() {
+              // If the visitor hit submit before the check finished, continue
+              // the submission they asked for.
+              if (turnstilePendingSubmit) {
+                turnstilePendingSubmit = false;
+                form.dataset.turnstileSubmitted = '1';
+                clearDraft();
+                form.submit();
+              }
+            }
+          });
+        }
+
+        // Submission — validate, ensure a Turnstile token, clear draft, POST to Worker.
+        // If the Turnstile script failed to load, the form submits without a
+        // token and the Worker either skips the check (secret unset) or
+        // returns 400 with the phone fallback (secret set).
         form.addEventListener('submit', function(e) {
           if (!validateStep(currentStep)) {
             e.preventDefault();
             return;
           }
-          if (form.dataset.recaptchaSubmitted) {
-            // Second pass — token already injected, allow native submit
+          if (form.dataset.turnstileSubmitted) {
+            // Second pass — token already present, allow native submit
             clearDraft();
             return;
           }
-          if (
-            RECAPTCHA_SITE_KEY.indexOf('PLACEHOLDER') === -1 &&
-            typeof grecaptcha !== 'undefined' && grecaptcha.execute
-          ) {
+          var tokenField = form.querySelector('input[name="cf-turnstile-response"]');
+          var token = tokenField && tokenField.value;
+          if (!token && typeof turnstile !== 'undefined' && window.turnstile &&
+              TURNSTILE_SITE_KEY.indexOf('PENDING') === -1) {
+            // Widget still verifying (or not rendered yet) — hold the submit
+            // and let the callback finish it.
             e.preventDefault();
-            grecaptcha.ready(function() {
-              grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit' }).then(function(token) {
-                var field = document.getElementById('g-recaptcha-response');
-                if (field) field.value = token;
-                form.dataset.recaptchaSubmitted = '1';
-                clearDraft();
-                form.submit();
-              }).catch(function() {
-                form.dataset.recaptchaSubmitted = '1';
-                clearDraft();
-                form.submit();
-              });
-            });
+            renderTurnstile();
+            turnstilePendingSubmit = true;
             return;
           }
           clearDraft();
