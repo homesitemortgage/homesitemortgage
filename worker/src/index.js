@@ -5,7 +5,7 @@
  * prequal.html POST to this Worker. On each POST it:
  *
  *   1. Validates: POST-only, Origin/Referer same-origin, honeypot empty,
- *      required fields present, reCAPTCHA v3 score >= 0.5 (if configured).
+ *      required fields present, Turnstile token verified (if configured).
  *   2. Sends an email to Tom (BCC Brandon) via Resend with the full
  *      submission body — including TCPA consent status and UTM/ref
  *      attribution.
@@ -20,14 +20,14 @@
  *   - Resend fail: return 502 with a plain-text user-facing message that
  *     includes the 321-751-4403 phone fallback. The lead is surfaced to
  *     the user immediately rather than silently disappearing.
- *   - reCAPTCHA missing/low-score: return 400 with the same phone-fallback
+ *   - Turnstile token missing/invalid: return 400 with the same phone-fallback
  *     message so the user has a path forward. Skipped entirely when the
- *     RECAPTCHA_SECRET binding is not set (graceful pre-rollout).
+ *     TURNSTILE_SECRET binding is not set (graceful pre-rollout).
  *
  * Secrets (set via `wrangler secret put`):
  *   - RESEND_API_KEY (required)
  *   - HUBSPOT_TOKEN  (required for CRM upsert; lead still emailed if missing)
- *   - RECAPTCHA_SECRET (optional; reCAPTCHA check is skipped when unset)
+ *   - TURNSTILE_SECRET (optional; Turnstile check is skipped when unset)
  *
  * Privacy / compliance:
  *   - No persistent storage. No KV. No D1. No R2.
@@ -140,7 +140,8 @@ export default {
       if (k === 'access_key' || k === 'subject' || k === 'redirect') continue;
       if (k.startsWith('_')) continue; // _next, _cc, _captcha, etc.
       if (k === 'website') continue; // honeypot
-      if (k === 'g-recaptcha-response') continue; // verification token, not lead data
+      if (k === 'g-recaptcha-response') continue; // legacy verification token, not lead data
+      if (k === 'cf-turnstile-response') continue; // Turnstile token, not lead data
       fields[k] = String(v || '');
     }
 
@@ -155,35 +156,34 @@ export default {
       });
     }
 
-    // ----- reCAPTCHA v3 verification (skipped if RECAPTCHA_SECRET is unset) -----
-    // Graceful degradation per task brief: if the Wrangler secret hasn't been
-    // configured yet, log a warning and let the submission through. Once the
-    // secret is set, missing token -> 400, score < 0.5 -> 400.
-    if (env.RECAPTCHA_SECRET) {
-      const recaptchaToken = String(form.get('g-recaptcha-response') || '').trim();
-      if (!recaptchaToken) {
+    // ----- Turnstile verification (skipped if TURNSTILE_SECRET is unset) -----
+    // Graceful degradation: if the Wrangler secret hasn't been configured
+    // yet, log a warning and let the submission through. Once the secret is
+    // set, missing token -> 400, failed verification -> 400.
+    if (env.TURNSTILE_SECRET) {
+      const turnstileToken = String(form.get('cf-turnstile-response') || '').trim();
+      if (!turnstileToken) {
         return new Response(
           `We couldn't verify your submission. Please reload the page and try again — or call us at ${PHONE_FALLBACK}.`,
           { status: 400, headers: { 'Content-Type': 'text/plain' } }
         );
       }
       try {
-        const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({
-            secret: env.RECAPTCHA_SECRET,
-            response: recaptchaToken,
+            secret: env.TURNSTILE_SECRET,
+            response: turnstileToken,
+            remoteip: request.headers.get('CF-Connecting-IP') || '',
           }),
         });
         const verifyData = await verifyRes.json();
-        const score = typeof verifyData.score === 'number' ? verifyData.score : null;
-        if (!verifyData.success || (score !== null && score < 0.5)) {
-          console.error('reCAPTCHA rejected:', {
-            success: verifyData.success,
-            score: score,
+        if (!verifyData.success) {
+          console.error('Turnstile rejected:', {
             errorCodes: verifyData['error-codes'],
             action: verifyData.action,
+            hostname: verifyData.hostname,
           });
           return new Response(
             `We couldn't verify your submission. Please reload the page and try again — or call us at ${PHONE_FALLBACK}.`,
@@ -191,14 +191,14 @@ export default {
           );
         }
       } catch (err) {
-        // Network / parse error talking to Google. Conservative choice: log
-        // and continue, so a Google API outage doesn't block legitimate
+        // Network / parse error talking to siteverify. Conservative choice:
+        // log and continue, so a transient outage doesn't block legitimate
         // leads. Bot pressure from this exact failure mode is low because
         // the secret is still required to spoof a token in the first place.
-        console.error('reCAPTCHA verify exception (continuing):', err && err.message);
+        console.error('Turnstile verify exception (continuing):', err && err.message);
       }
     } else {
-      console.warn('RECAPTCHA_SECRET not set; skipping reCAPTCHA check.');
+      console.warn('TURNSTILE_SECRET not set; skipping Turnstile check.');
     }
 
     const formSource =
