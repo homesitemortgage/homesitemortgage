@@ -112,7 +112,7 @@ for i, p in enumerate(posts, 1):
     tags = " ".join(p.get("hashtags", []) if isinstance(p.get("hashtags"), list) else [])
     out += [f"## {i}. {p.get('angle','Post')}  ·  {status}", "",
             f"**{p.get('hook','')}**", "", p.get("body", ""), "",
-            p.get("cta", ""), "", tags, "",
+            p.get("cta", ""), "", "NMLS #353790 · Equal Housing Opportunity", "", tags, "",
             f"*Image idea:* {p.get('image_idea','')}", "", "---", ""]
 write(os.path.join(ROOT, "social-drafts", f"{TODAY}-facebook.md"), "\n".join(out))
 
