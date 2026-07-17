@@ -4,10 +4,10 @@
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8005e4bb409abe9cf9e8ef20e939de30/script.js"></script>
     <!-- Google Analytics 4 — gated behind CookieYes "Analytics" consent -->
     <script src="/js/ga4.js" defer></script>
-    <!-- reCAPTCHA v3 — replace 6LdMO_0sAAAAAOFjTkBGKn960u6ISAivmBF_GT2b with the real
-         site key from google.com/recaptcha/admin (account: moondreamandsun@gmail.com).
-         The submit interceptor below short-circuits if the placeholder is still present. -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdMO_0sAAAAAOFjTkBGKn960u6ISAivmBF_GT2b"></script>
+    <!-- Cloudflare Turnstile — bot protection on the contact form. The widget
+         renders into #turnstile-slot and injects cf-turnstile-response, which the
+         Worker verifies server-side (matches prequal.html). -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Contact Homesite Mortgage by phone or email. Tom Culpepper, Principal Broker, NMLS #353539. Serving all of Florida online and by appointment.">
@@ -324,8 +324,8 @@
                 <input type="hidden" id="utm_medium" name="utm_medium" value="">
                 <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
                 <input type="hidden" id="ref" name="ref" value="">
-                <!-- reCAPTCHA v3 token — populated by submit interceptor JS at end of body. -->
-                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">
+                <!-- Turnstile injects its cf-turnstile-response input into this form
+                     when the widget renders in #turnstile-slot (below the consent box). -->
 
                 <label for="name">Full Name</label>
                 <input type="text" id="name" name="name" required placeholder="Enter your full name" aria-label="Your Full Name">
@@ -346,6 +346,9 @@
                     </label>
                 </div>
 
+                <!-- Turnstile bot check — invisible for real people (managed mode). -->
+                <div id="turnstile-slot" style="margin-top:18px;"></div>
+
                 <button type="submit" class="btn-gold">Send Message</button>
             </form>
             <p style="margin-top:20px;font-size:0.78rem;color:#999;line-height:1.6;text-align:center;">This is not a commitment to lend. All loans subject to credit approval. Homesite Mortgage originates loans in Florida only.</p>
@@ -361,7 +364,7 @@
 
         <div class="trust-card" style="text-align:center;">
             <div style="color:#f5a623;font-size:1.4rem;letter-spacing:2px;" aria-hidden="true">★★★★★</div>
-            <p style="margin:6px 0 0;"><a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--primary-navy);text-decoration:none;font-weight:700;"><strong>5.0</strong> &middot; 21 verified Google reviews</a></p>
+            <p style="margin:6px 0 0;"><a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--primary-navy);text-decoration:none;font-weight:700;"><strong>5.0</strong> &middot; 23 verified Google reviews</a></p>
             <p style="font-style:italic;color:var(--primary-navy);max-width:460px;margin:14px auto 4px;">&ldquo;Tracy goes above and beyond &mdash; professional, patient, and always willing to answer my questions. She made everything stress-free.&rdquo;</p>
             <p style="font-size:0.85rem;color:#666;margin:0 0 20px;">&mdash; Carline Jean Louis, Google review</p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
@@ -437,35 +440,47 @@
       })();
     </script>
 
-    <!-- reCAPTCHA v3 submit interceptor — fetches a token from Google on
-         form submit and injects it into the g-recaptcha-response hidden
-         field before the form POSTs to the Worker. Short-circuits if the
-         placeholder site key hasn't been swapped yet OR if grecaptcha
-         failed to load — submission proceeds and the Worker handles
-         missing-token semantics on its end. -->
+    <!-- Turnstile — renders the widget and gates the submit on a token, so the
+         Worker's server-side verification passes. Managed mode completes silently
+         for real people; only suspicious traffic sees a challenge. -->
     <script>
       (function() {
-        var SITE_KEY = '6LdMO_0sAAAAAOFjTkBGKn960u6ISAivmBF_GT2b';
+        var SITE_KEY = '0x4AAAAAAD2IhRcKUl5FqyDN';
         var form = document.querySelector('form[action*="homesite-form-handler"]');
         if (!form) return;
-        var tokenInjected = false;
-        form.addEventListener('submit', function(e) {
-          if (tokenInjected) return; // second pass — token already injected, let it submit
-          if (SITE_KEY.indexOf('PLACEHOLDER') !== -1) return; // key not yet swapped
-          if (typeof grecaptcha === 'undefined' || !grecaptcha.execute) return; // script failed to load
-          e.preventDefault();
-          grecaptcha.ready(function() {
-            grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(function(token) {
-              var field = document.getElementById('g-recaptcha-response');
-              if (field) field.value = token;
-              tokenInjected = true;
-              form.submit();
-            }).catch(function() {
-              // Google API failed; submit anyway — Worker decides based on its own secret state
-              tokenInjected = true;
-              form.submit();
-            });
+        var widgetId = null, pendingSubmit = false;
+
+        function render() {
+          if (widgetId !== null) return;
+          if (typeof turnstile === 'undefined' || !window.turnstile) return;
+          var slot = document.getElementById('turnstile-slot');
+          if (!slot) return;
+          widgetId = turnstile.render(slot, {
+            sitekey: SITE_KEY,
+            action: 'turnstile-spin-v1',
+            'refresh-expired': 'auto',
+            callback: function() {
+              if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
+            }
           });
+        }
+        // Turnstile's script is async — render as soon as it's ready.
+        if (typeof turnstile !== 'undefined' && window.turnstile) render();
+        else window.onloadTurnstileCallback = render;
+        var tries = 0;
+        var poll = setInterval(function() {
+          if (widgetId !== null || tries++ > 40) { clearInterval(poll); return; }
+          render();
+        }, 250);
+
+        form.addEventListener('submit', function(e) {
+          if (form.dataset.tsDone) return; // token already in hand — let it POST
+          var field = form.querySelector('input[name="cf-turnstile-response"]');
+          if (field && field.value) return; // widget already solved
+          if (typeof turnstile === 'undefined' || !window.turnstile) return; // script blocked; Worker decides
+          e.preventDefault();       // hold submit until the check finishes
+          render();
+          pendingSubmit = true;
         });
       })();
     </script>
