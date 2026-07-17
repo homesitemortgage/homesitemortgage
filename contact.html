@@ -4,6 +4,7 @@
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8005e4bb409abe9cf9e8ef20e939de30/script.js"></script>
     <!-- Google Analytics 4 — gated behind CookieYes "Analytics" consent -->
     <script src="/js/ga4.js" defer></script>
+<script src="/js/attribution.js"></script>
     <!-- Cloudflare Turnstile — bot protection on the contact form. The widget
          renders into #turnstile-slot and injects cf-turnstile-response, which the
          Worker verifies server-side (matches prequal.html). -->
@@ -324,6 +325,7 @@
                 <input type="hidden" id="utm_medium" name="utm_medium" value="">
                 <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
                 <input type="hidden" id="ref" name="ref" value="">
+                <input type="hidden" id="gclid" name="gclid" value="">
                 <!-- Turnstile injects its cf-turnstile-response input into this form
                      when the widget renders in #turnstile-slot (below the consent box). -->
 
@@ -414,7 +416,7 @@
          and populates the hidden form fields so the Worker receives them. -->
     <script>
       (function() {
-        var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'ref'];
+        var keys = ['gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'ref'];
         try {
           var url = new URLSearchParams(window.location.search);
           keys.forEach(function(k) {
@@ -459,6 +461,11 @@
             sitekey: SITE_KEY,
             action: 'turnstile-spin-v1',
             'refresh-expired': 'auto',
+            'error-callback': function() {
+              // Don't strand the visitor if the challenge errors — submit and let
+              // the Worker respond with its message + phone fallback.
+              if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
+            },
             callback: function() {
               if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
             }

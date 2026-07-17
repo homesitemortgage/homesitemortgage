@@ -4,6 +4,7 @@
   <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8005e4bb409abe9cf9e8ef20e939de30/script.js"></script>
   <!-- Google Analytics 4 — gated behind CookieYes "Analytics" consent -->
   <script src="/js/ga4.js" defer></script>
+<script src="/js/attribution.js"></script>
   <!-- Cloudflare Turnstile — bot protection on the prequal form. The widget is
        rendered explicitly into #turnstile-slot when step 3 becomes visible
        (see the form controller below). Verified server-side by the Worker. -->
@@ -473,6 +474,7 @@
         <input type="hidden" id="utm_medium" name="utm_medium" value="">
         <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
         <input type="hidden" id="ref" name="ref" value="">
+                <input type="hidden" id="gclid" name="gclid" value="">
         <!-- Turnstile injects its cf-turnstile-response hidden input into this form
              when the widget renders in #turnstile-slot (step 3). -->
 
@@ -862,6 +864,17 @@
             sitekey: TURNSTILE_SITE_KEY,
             action: 'turnstile-spin-v1',
             'refresh-expired': 'auto',
+            'error-callback': function() {
+              // Challenge failed to load/solve. Never strand the visitor with a
+              // dead button — let the submit through; the Worker replies with a
+              // clear message and the phone number.
+              if (turnstilePendingSubmit) {
+                turnstilePendingSubmit = false;
+                form.dataset.turnstileSubmitted = '1';
+                clearDraft();
+                form.submit();
+              }
+            },
             callback: function() {
               // If the visitor hit submit before the check finished, continue
               // the submission they asked for.
@@ -943,7 +956,7 @@
        and populates the hidden form fields so the Worker receives them. -->
   <script>
     (function() {
-      var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'ref'];
+      var keys = ['gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'ref'];
       try {
         var url = new URLSearchParams(window.location.search);
         keys.forEach(function(k) {
