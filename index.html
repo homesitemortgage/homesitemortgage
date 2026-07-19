@@ -494,7 +494,9 @@
     /* ── RESPONSIVE ───────────────────────────────── */
     @media (max-width: 900px) {
       .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-      .hero-visual { order: -1; }
+      /* Headline, CTAs and trust bar come first on phones — the map is decorative and
+         was pushing the whole value proposition below the fold for mobile visitors,
+         who are the majority of paid traffic. */
       .florida-map-wrap { max-width: 280px; }
       .map-card-top { top: 5%; right: 0; }
       .map-card-bottom { bottom: 10%; left: 0; }

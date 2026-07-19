@@ -667,7 +667,7 @@
         var labels = document.querySelectorAll('.step-label');
         var currentStep = 1;
 
-        function showStep(n) {
+        function showStep(n, scroll) {
           currentStep = n;
           steps.forEach(function(s) {
             var match = String(s.dataset.step) === String(n);
@@ -680,9 +680,13 @@
           // Render the Turnstile widget once the contact step is visible
           // (rendering into a hidden container produces a zero-size widget).
           if (String(n) === '3') renderTurnstile();
-          // Scroll the form back into view on advance
-          var topOf = form.getBoundingClientRect().top + window.pageYOffset - 80;
-          window.scrollTo({ top: Math.max(0, topOf), behavior: 'smooth' });
+          // Scroll the form back into view when the visitor advances a step — but never
+          // on first paint, which would scroll the logo, headline, star rating, NMLS ID
+          // and phone number off screen before an arriving visitor has seen them.
+          if (scroll) {
+            var topOf = form.getBoundingClientRect().top + window.pageYOffset - 80;
+            window.scrollTo({ top: Math.max(0, topOf), behavior: 'smooth' });
+          }
         }
 
         function validateStep(n) {
@@ -728,12 +732,21 @@
           return allValid;
         }
 
+        // Contact details are nonpublic personal information under GLBA and must never
+        // persist on the visitor's device. The draft exists to preserve the step 1-2
+        // selections so a returning visitor doesn't re-answer them — that needs none of
+        // these. Hiding a fieldset does not exclude it from FormData (only `disabled`
+        // does), so they have to be skipped explicitly.
+        var DRAFT_SKIP = { 'Full Name': 1, 'Email Address': 1, 'Phone Number': 1, 'tcpa_consent': 1 };
+        var DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
+
         function saveDraft() {
           try {
             var fd = new FormData(form);
             var obj = {};
-            fd.forEach(function(v, k) { obj[k] = v; });
+            fd.forEach(function(v, k) { if (!DRAFT_SKIP[k]) obj[k] = v; });
             obj.__step = currentStep;
+            obj.__ts = Date.now();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
           } catch (e) { /* storage blocked; best-effort */ }
         }
@@ -743,6 +756,8 @@
             var raw = localStorage.getItem(STORAGE_KEY);
             if (!raw) return;
             var obj = JSON.parse(raw);
+            // Discard stale drafts rather than letting them sit on the device forever.
+            if (!obj.__ts || (Date.now() - obj.__ts) > DRAFT_TTL_MS) { clearDraft(); return; }
             Object.keys(obj).forEach(function(k) {
               if (k === '__step') return;
               var v = obj[k];
@@ -839,11 +854,11 @@
             e.preventDefault();
             if (!validateStep(currentStep)) return;
             saveDraft();
-            if (currentStep < totalSteps) showStep(currentStep + 1);
+            if (currentStep < totalSteps) showStep(currentStep + 1, true);
           }
           if (backBtn) {
             e.preventDefault();
-            if (currentStep > 1) showStep(currentStep - 1);
+            if (currentStep > 1) showStep(currentStep - 1, true);
           }
         });
 
