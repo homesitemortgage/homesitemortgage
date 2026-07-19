@@ -816,19 +816,25 @@
         // Prefill Target Loan Amount from the calculator handoff (?price=&down=).
         // Runs after restoreDraft() so fresh calculator numbers win over a stale
         // draft, mirroring the type→Intent override. rate/term stay unconsumed.
+        // Reads the calculator's coarse loan-size bucket. It deliberately does NOT
+        // accept the visitor's price/down payment any more — those rode in the URL
+        // and were captured by analytics as page_location.
+        var AMT_BUCKETS = {
+          'under-150k': 'Under $150K',
+          '150-300k':   '$150K – $300K',
+          '300-500k':   '$300K – $500K',
+          '500k-plus':  '$500K+'
+        };
         function applyLoanParams() {
-          var q = new URLSearchParams(window.location.search);
-          var price = parseFloat(q.get('price'));
-          var down = parseFloat(q.get('down'));
-          if (!(price > 0) || !(down >= 0) || down >= price) return;
-          var loan = price - down;
-          var bucket = loan < 150000 ? 'Under $150K'
-                     : loan < 300000 ? '$150K – $300K'
-                     : loan < 500000 ? '$300K – $500K'
-                     : '$500K+';
-          var safe = (window.CSS && CSS.escape) ? CSS.escape(bucket) : bucket.replace(/"/g, '\\"');
-          var radio = form.querySelector('input[name="Target Loan Amount"][value="' + safe + '"]');
-          if (radio) radio.checked = true;
+          var bucket = AMT_BUCKETS[new URLSearchParams(window.location.search).get('amt')];
+          if (!bucket) return;
+          // Compare values in JS rather than building an attribute selector: these
+          // labels contain $, spaces and an en-dash, which CSS.escape mangles inside
+          // a quoted attribute value so the selector silently matches nothing.
+          var radios = form.querySelectorAll('input[name="Target Loan Amount"]');
+          for (var i = 0; i < radios.length; i++) {
+            if (radios[i].value === bucket) { radios[i].checked = true; break; }
+          }
         }
 
         // Non-FL inline message
