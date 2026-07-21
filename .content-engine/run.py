@@ -95,10 +95,15 @@ sticky CTA, and BOTH <script> blocks. Change ONLY these:
   2. JSON-LD @graph — BreadcrumbList + Article (publisher and author point to
      "https://homesitemortgage.online/#business"; datePublished and dateModified = {TODAY})
      + FAQPage. The FAQPage entries MUST match the visible FAQ text word-for-word.
-  3. <main> — hero (local H1 + lede), intro, the buyer process, a loan-programs card grid
-     linking to fha.html / va.html / conventional.html, a general down-payment-assistance
-     section, a "why local / why Homesite" section, a visible FAQ of 4 Q&As, and a final
-     CTA linking to prequal.html?type=purchase. Mirror the structure of the example.
+  3. <main> — hero (local H1 + lede) followed by the SAME three hero-actions buttons as
+     the example, in this order and verbatim: "Start My Free Prequal →" linking to
+     prequal.html?type=purchase, "Estimate My Monthly Payment" linking to
+     mortgage-calculator.html, and the "Call Us — 321-751-4403" button. The calculator
+     link is REQUIRED on every page (it is our main lead engine — never drop it). Then:
+     intro, the buyer process, a loan-programs card grid linking to fha.html / va.html /
+     conventional.html, a general down-payment-assistance section, a "why local / why
+     Homesite" section, a visible FAQ of 4 Q&As, and a final CTA linking to
+     prequal.html?type=purchase. Mirror the structure of the example.
 
 Follow EVERY blocker in these rules:
 --- COMPLIANCE CHECKLIST ---
