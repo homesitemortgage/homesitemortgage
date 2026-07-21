@@ -511,6 +511,10 @@
       .trust-item:last-child { border-bottom: none; }
       .trust-strip-inner { flex-direction: column; align-items: stretch; }
       .nav-phone span { display: none; }
+      /* The gold nav CTA plus the logo, phone icon and hamburger overflow every phone
+         and push the row into a horizontal scroll. Drop it on mobile — the sticky
+         bottom bar already carries "Check My Options", and the hamburger opens the menu. */
+      .nav-actions .btn-gold { display: none; }
       .nav-toggle { display: inline-flex; }
       .nav-links {
         display: none;

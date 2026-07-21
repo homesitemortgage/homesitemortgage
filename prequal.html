@@ -1015,7 +1015,7 @@
         var url = new URLSearchParams(window.location.search);
         keys.forEach(function(k) {
           var v = url.get(k);
-          if (v) sessionStorage.setItem(k, v);
+          if (v && !sessionStorage.getItem(k)) sessionStorage.setItem(k, v); // first touch wins
         });
       } catch (e) { /* sessionStorage blocked; best-effort */ }
       function fill() {

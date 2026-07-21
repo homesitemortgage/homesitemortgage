@@ -371,7 +371,7 @@
 
         <div class="trust-card" style="text-align:center;">
             <div style="color:#f5a623;font-size:1.4rem;letter-spacing:2px;" aria-hidden="true">★★★★★</div>
-            <p style="margin:6px 0 0;"><a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--primary-navy);text-decoration:none;font-weight:700;"><strong>5.0</strong> &middot; 23 verified Google reviews</a></p>
+            <p style="margin:6px 0 0;"><a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--primary-navy);text-decoration:none;font-weight:700;"><strong>5.0</strong> &middot; 25 verified Google reviews</a></p>
             <p style="font-style:italic;color:var(--primary-navy);max-width:460px;margin:14px auto 4px;">&ldquo;Tracy goes above and beyond &mdash; professional, patient, and always willing to answer my questions. She made everything stress-free.&rdquo;</p>
             <p style="font-size:0.85rem;color:#666;margin:0 0 20px;">&mdash; Carline Jean Louis, Google review</p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
@@ -428,7 +428,7 @@
           var url = new URLSearchParams(window.location.search);
           keys.forEach(function(k) {
             var v = url.get(k);
-            if (v) sessionStorage.setItem(k, v);
+            if (v && !sessionStorage.getItem(k)) sessionStorage.setItem(k, v); // first touch wins
           });
         } catch (e) { /* sessionStorage blocked; best-effort */ }
         function fill() {
@@ -495,6 +495,11 @@
           e.preventDefault();       // hold submit until the check finishes
           render();
           pendingSubmit = true;
+          // Backstop: never leave the button dead if the widget never resolves
+          // (mirrors prequal.html). After 6s, submit anyway; the Worker decides.
+          setTimeout(function () {
+            if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
+          }, 6000);
         });
       })();
     </script>
