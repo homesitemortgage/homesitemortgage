@@ -4,6 +4,7 @@
   <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8005e4bb409abe9cf9e8ef20e939de30/script.js"></script>
   <!-- Google Analytics 4 — gated behind CookieYes "Analytics" consent -->
   <script src="/js/ga4.js" defer></script>
+  <script src="/js/google-ads.js" defer></script>
 <script src="/js/attribution.js"></script>
   <!-- Cloudflare Turnstile — bot protection on the prequal form. The widget is
        rendered explicitly into #turnstile-slot when step 3 becomes visible
@@ -474,7 +475,11 @@
         <input type="hidden" id="utm_medium" name="utm_medium" value="">
         <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
         <input type="hidden" id="ref" name="ref" value="">
-                <input type="hidden" id="gclid" name="gclid" value="">
+        <input type="hidden" id="gclid" name="gclid" value="">
+        <input type="hidden" id="gbraid" name="gbraid" value="">
+        <input type="hidden" id="wbraid" name="wbraid" value="">
+        <input type="hidden" id="utm_term" name="utm_term" value="">
+        <input type="hidden" id="utm_content" name="utm_content" value="">
         <!-- Turnstile injects its cf-turnstile-response hidden input into this form
              when the widget renders in #turnstile-slot (step 3). -->
 
@@ -667,7 +672,7 @@
         var labels = document.querySelectorAll('.step-label');
         var currentStep = 1;
 
-        function showStep(n) {
+        function showStep(n, scroll) {
           currentStep = n;
           steps.forEach(function(s) {
             var match = String(s.dataset.step) === String(n);
@@ -679,10 +684,14 @@
           });
           // Render the Turnstile widget once the contact step is visible
           // (rendering into a hidden container produces a zero-size widget).
-          if (String(n) === '3') renderTurnstile();
-          // Scroll the form back into view on advance
-          var topOf = form.getBoundingClientRect().top + window.pageYOffset - 80;
-          window.scrollTo({ top: Math.max(0, topOf), behavior: 'smooth' });
+          if (String(n) === '3') { renderTurnstile(); noticeIfTurnstileBlocked(); }
+          // Scroll the form back into view when the visitor advances a step — but never
+          // on first paint, which would scroll the logo, headline, star rating, NMLS ID
+          // and phone number off screen before an arriving visitor has seen them.
+          if (scroll) {
+            var topOf = form.getBoundingClientRect().top + window.pageYOffset - 80;
+            window.scrollTo({ top: Math.max(0, topOf), behavior: 'smooth' });
+          }
         }
 
         function validateStep(n) {
@@ -728,12 +737,21 @@
           return allValid;
         }
 
+        // Contact details are nonpublic personal information under GLBA and must never
+        // persist on the visitor's device. The draft exists to preserve the step 1-2
+        // selections so a returning visitor doesn't re-answer them — that needs none of
+        // these. Hiding a fieldset does not exclude it from FormData (only `disabled`
+        // does), so they have to be skipped explicitly.
+        var DRAFT_SKIP = { 'Full Name': 1, 'Email Address': 1, 'Phone Number': 1, 'tcpa_consent': 1 };
+        var DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
+
         function saveDraft() {
           try {
             var fd = new FormData(form);
             var obj = {};
-            fd.forEach(function(v, k) { obj[k] = v; });
+            fd.forEach(function(v, k) { if (!DRAFT_SKIP[k]) obj[k] = v; });
             obj.__step = currentStep;
+            obj.__ts = Date.now();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
           } catch (e) { /* storage blocked; best-effort */ }
         }
@@ -743,6 +761,8 @@
             var raw = localStorage.getItem(STORAGE_KEY);
             if (!raw) return;
             var obj = JSON.parse(raw);
+            // Discard stale drafts rather than letting them sit on the device forever.
+            if (!obj.__ts || (Date.now() - obj.__ts) > DRAFT_TTL_MS) { clearDraft(); return; }
             Object.keys(obj).forEach(function(k) {
               if (k === '__step') return;
               var v = obj[k];
@@ -797,19 +817,25 @@
         // Prefill Target Loan Amount from the calculator handoff (?price=&down=).
         // Runs after restoreDraft() so fresh calculator numbers win over a stale
         // draft, mirroring the type→Intent override. rate/term stay unconsumed.
+        // Reads the calculator's coarse loan-size bucket. It deliberately does NOT
+        // accept the visitor's price/down payment any more — those rode in the URL
+        // and were captured by analytics as page_location.
+        var AMT_BUCKETS = {
+          'under-150k': 'Under $150K',
+          '150-300k':   '$150K – $300K',
+          '300-500k':   '$300K – $500K',
+          '500k-plus':  '$500K+'
+        };
         function applyLoanParams() {
-          var q = new URLSearchParams(window.location.search);
-          var price = parseFloat(q.get('price'));
-          var down = parseFloat(q.get('down'));
-          if (!(price > 0) || !(down >= 0) || down >= price) return;
-          var loan = price - down;
-          var bucket = loan < 150000 ? 'Under $150K'
-                     : loan < 300000 ? '$150K – $300K'
-                     : loan < 500000 ? '$300K – $500K'
-                     : '$500K+';
-          var safe = (window.CSS && CSS.escape) ? CSS.escape(bucket) : bucket.replace(/"/g, '\\"');
-          var radio = form.querySelector('input[name="Target Loan Amount"][value="' + safe + '"]');
-          if (radio) radio.checked = true;
+          var bucket = AMT_BUCKETS[new URLSearchParams(window.location.search).get('amt')];
+          if (!bucket) return;
+          // Compare values in JS rather than building an attribute selector: these
+          // labels contain $, spaces and an en-dash, which CSS.escape mangles inside
+          // a quoted attribute value so the selector silently matches nothing.
+          var radios = form.querySelectorAll('input[name="Target Loan Amount"]');
+          for (var i = 0; i < radios.length; i++) {
+            if (radios[i].value === bucket) { radios[i].checked = true; break; }
+          }
         }
 
         // Non-FL inline message
@@ -839,11 +865,11 @@
             e.preventDefault();
             if (!validateStep(currentStep)) return;
             saveDraft();
-            if (currentStep < totalSteps) showStep(currentStep + 1);
+            if (currentStep < totalSteps) showStep(currentStep + 1, true);
           }
           if (backBtn) {
             e.preventDefault();
-            if (currentStep > 1) showStep(currentStep - 1);
+            if (currentStep > 1) showStep(currentStep - 1, true);
           }
         });
 
@@ -854,6 +880,19 @@
         var TURNSTILE_SITE_KEY = '0x4AAAAAAD2IhRcKUl5FqyDN';
         var turnstileWidgetId = null;
         var turnstilePendingSubmit = false;
+        var turnstileErrored = false;
+        var turnstileTimer = null;
+
+        // Release a submit that was held waiting on the challenge. Safe to call
+        // more than once.
+        function finishPendingSubmit() {
+          if (!turnstilePendingSubmit) return;
+          turnstilePendingSubmit = false;
+          clearTimeout(turnstileTimer);
+          form.dataset.turnstileSubmitted = '1';
+          form.submit();
+        }
+
         function renderTurnstile() {
           if (turnstileWidgetId !== null) return;
           if (TURNSTILE_SITE_KEY.indexOf('PENDING') !== -1) return;
@@ -865,27 +904,36 @@
             action: 'turnstile-spin-v1',
             'refresh-expired': 'auto',
             'error-callback': function() {
-              // Challenge failed to load/solve. Never strand the visitor with a
-              // dead button — let the submit through; the Worker replies with a
-              // clear message and the phone number.
-              if (turnstilePendingSubmit) {
-                turnstilePendingSubmit = false;
-                form.dataset.turnstileSubmitted = '1';
-                clearDraft();
-                form.submit();
-              }
+              // Remember the failure. Without this flag a later submit gets held
+              // waiting on a callback that will never fire, leaving the button
+              // permanently dead with no feedback.
+              turnstileErrored = true;
+              finishPendingSubmit();
             },
             callback: function() {
-              // If the visitor hit submit before the check finished, continue
-              // the submission they asked for.
-              if (turnstilePendingSubmit) {
-                turnstilePendingSubmit = false;
-                form.dataset.turnstileSubmitted = '1';
-                clearDraft();
-                form.submit();
-              }
+              turnstileErrored = false;
+              finishPendingSubmit();
             }
           });
+        }
+
+        // If the Turnstile script is blocked outright — ad blocker, strict privacy
+        // mode, corporate DNS — tell the visitor on step 3 instead of letting them
+        // finish the form and hit a bare plain-text error from the Worker.
+        function noticeIfTurnstileBlocked() {
+          setTimeout(function() {
+            if (typeof turnstile !== 'undefined' && window.turnstile) return;
+            var slot = document.getElementById('turnstile-slot');
+            if (!slot || slot.dataset.blockedNotice) return;
+            slot.dataset.blockedNotice = '1';
+            slot.innerHTML =
+              '<p style="margin:0;padding:12px 14px;border:1px solid #e2cdcd;background:#fdf5f4;' +
+              'border-radius:10px;font-size:0.9rem;line-height:1.5;">Our security check couldn\'t ' +
+              'load &mdash; usually an ad blocker or privacy setting. You can still send this. If it ' +
+              'doesn\'t go through, call us at <a href="tel:3217514403" style="font-weight:700;' +
+              'white-space:nowrap;color:var(--primary-navy);">321-751-4403</a> and we\'ll take it ' +
+              'over the phone.</p>';
+          }, 3000);
         }
 
         // Submission — validate, ensure a Turnstile token, clear draft, POST to Worker.
@@ -897,23 +945,25 @@
             e.preventDefault();
             return;
           }
-          if (form.dataset.turnstileSubmitted) {
-            // Second pass — token already present, allow native submit
-            clearDraft();
-            return;
-          }
+          if (form.dataset.turnstileSubmitted) return; // second pass — already tokenized
           var tokenField = form.querySelector('input[name="cf-turnstile-response"]');
           var token = tokenField && tokenField.value;
-          if (!token && typeof turnstile !== 'undefined' && window.turnstile &&
+          // Only hold the submit while a live widget might still produce a token.
+          // If it already errored, or the script never loaded, let it through — a
+          // stranded visitor is worse than an unverified POST.
+          if (!token && !turnstileErrored && typeof turnstile !== 'undefined' && window.turnstile &&
               TURNSTILE_SITE_KEY.indexOf('PENDING') === -1) {
-            // Widget still verifying (or not rendered yet) — hold the submit
-            // and let the callback finish it.
             e.preventDefault();
             renderTurnstile();
             turnstilePendingSubmit = true;
+            clearTimeout(turnstileTimer);
+            // Backstop: never hang on a challenge that never resolves.
+            turnstileTimer = setTimeout(finishPendingSubmit, 6000);
             return;
           }
-          clearDraft();
+          // Note: the draft is deliberately NOT cleared here. This handler also runs
+          // on attempts that the Worker rejects, and wiping it would make the visitor
+          // retype everything. thank-you.html clears it — that page only loads on success.
         });
 
         // Init order: restore draft first (so radios are pre-checked), then
@@ -956,12 +1006,16 @@
        and populates the hidden form fields so the Worker receives them. -->
   <script>
     (function() {
-      var keys = ['gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'ref'];
+      // gbraid/wbraid are what Google Ads sends instead of gclid for iOS clicks and
+      // wherever tracking protection suppresses gclid — a large share of mobile paid
+      // traffic. Dropping them means those leads arrive with no campaign attached.
+      var keys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium',
+                  'utm_campaign', 'utm_term', 'utm_content', 'ref'];
       try {
         var url = new URLSearchParams(window.location.search);
         keys.forEach(function(k) {
           var v = url.get(k);
-          if (v) sessionStorage.setItem(k, v);
+          if (v && !sessionStorage.getItem(k)) sessionStorage.setItem(k, v); // first touch wins
         });
       } catch (e) { /* sessionStorage blocked; best-effort */ }
       function fill() {

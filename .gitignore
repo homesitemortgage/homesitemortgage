@@ -4,6 +4,11 @@
 worker/.wrangler/
 **/*.local.json
 node_modules/
+__pycache__/
+*.pyc
 
 # Internal strategy docs — keep private (not served on the public site)
 marketing/
+
+# Local staging copies — uploaded to Google Business Profile by hand
+gbp-images/
