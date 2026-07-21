@@ -495,7 +495,9 @@
     /* ── RESPONSIVE ───────────────────────────────── */
     @media (max-width: 900px) {
       .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-      .hero-visual { order: -1; }
+      /* Headline, CTAs and trust bar come first on phones — the map is decorative and
+         was pushing the whole value proposition below the fold for mobile visitors,
+         who are the majority of paid traffic. */
       .florida-map-wrap { max-width: 280px; }
       .map-card-top { top: 5%; right: 0; }
       .map-card-bottom { bottom: 10%; left: 0; }
@@ -639,7 +641,7 @@
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "5.0",
-          "reviewCount": "23"
+          "reviewCount": "25"
         },
         "review": [
           {"@type": "Review", "reviewRating": {"@type": "Rating", "ratingValue": "5", "bestRating": "5"}, "author": {"@type": "Person", "name": "Leslie Purdy"}, "reviewBody": "Tracy Cody is the best! She has closed 10 loans for me over the years and multiple loans for my friends and clients."},
@@ -1020,7 +1022,7 @@
           <h2 class="section-title" id="reviews-heading">5.0 Stars from Real Florida Clients</h2>
           <p class="section-sub" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
             <span style="color:#f5a623;font-size:1.4rem;letter-spacing:2px;" aria-hidden="true">★★★★★</span>
-            <span><strong>5.0</strong> average &middot; <strong>23</strong> verified Google reviews</span>
+            <span><strong>5.0</strong> average &middot; <strong>25</strong> verified Google reviews</span>
           </p>
           <p style="margin-top:8px;color:var(--gray-600);font-size:0.95rem;">Family-owned in Florida for <span class="years-in-business">27</span>+ years &middot; a perfect 5.0 across every Google review.</p>
         </div>
@@ -1133,7 +1135,7 @@
         </details>
         <p style="text-align:center;margin-top:36px;color:var(--gray-600);font-size:0.9rem;">Reviews from real Homesite Mortgage clients on Google. Equal Housing Opportunity.</p>
         <p style="text-align:center;margin-top:14px;font-size:0.95rem;">
-          <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--navy);font-weight:600;">Read all 23 reviews on Google →</a>
+          <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--navy);font-weight:600;">Read all 25 reviews on Google →</a>
           &nbsp;&middot;&nbsp;
           <a href="https://g.page/r/CR-Wj1TibHqiEAI/review" target="_blank" rel="noopener" style="color:var(--gold-text);font-weight:600;">Leave us a review</a>
         </p>
@@ -1233,29 +1235,10 @@
         <summary><span class="footer-col-title" style="margin:0;">Areas We Serve</span><span style="color:rgba(255,255,255,0.45);font-size:0.78rem;font-weight:400;">First-time buyer guides across Florida — tap to expand</span></summary>
         <ul id="fthb-guides" style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 28px;">
           <!-- content-engine: add new <li> area-guide links here -->
-          <li><a href="first-time-home-buyer-miami-dade-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Miami-Dade County</a></li>
           <li><a href="first-time-home-buyer-vero-beach-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Indian River County / Vero Beach</a></li>
-          <li><a href="first-time-home-buyer-naples-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Collier County / Naples</a></li>
-          <li><a href="first-time-home-buyer-lake-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Lake County</a></li>
-          <li><a href="first-time-home-buyer-st-johns-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">St. Johns County / St. Augustine</a></li>
-          <li><a href="first-time-home-buyer-tallahassee-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Leon County / Tallahassee</a></li>
-          <li><a href="first-time-home-buyer-pensacola-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Escambia County / Pensacola</a></li>
-          <li><a href="first-time-home-buyer-gainesville-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Alachua County / Gainesville</a></li>
-          <li><a href="first-time-home-buyer-port-st-lucie-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">St. Lucie County / Port St. Lucie</a></li>
-          <li><a href="first-time-home-buyer-broward-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Broward County / Fort Lauderdale</a></li>
-          <li><a href="first-time-home-buyer-palm-beach-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Palm Beach County / West Palm Beach</a></li>
-          <li><a href="first-time-home-buyer-bradenton-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Manatee County / Bradenton</a></li>
-          <li><a href="first-time-home-buyer-sarasota-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Sarasota County</a></li>
-          <li><a href="first-time-home-buyer-ocala-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Marion County / Ocala</a></li>
           <li><a href="first-time-home-buyer-kissimmee-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Osceola County / Kissimmee</a></li>
           <li><a href="first-time-home-buyer-seminole-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Seminole County</a></li>
-          <li><a href="first-time-home-buyer-pasco-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Pasco County</a></li>
           <li><a href="first-time-home-buyer-volusia-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Volusia County / Daytona Beach</a></li>
-          <li><a href="first-time-home-buyer-fort-myers-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Lee County / Fort Myers–Cape Coral</a></li>
-          <li><a href="first-time-home-buyer-lakeland-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Polk County / Lakeland</a></li>
-          <li><a href="first-time-home-buyer-pinellas-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Pinellas County / St. Petersburg</a></li>
-          <li><a href="first-time-home-buyer-jacksonville-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Duval County / Jacksonville</a></li>
-          <li><a href="first-time-home-buyer-tampa-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Hillsborough County / Tampa</a></li>
           <li><a href="first-time-home-buyer-brevard-county-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Brevard County / Space Coast</a></li>
           <li><a href="first-time-home-buyer-orlando-fl.html" style="color:rgba(255,255,255,0.72);text-decoration:none;font-size:0.85rem;">Orange County / Orlando</a></li>
         </ul>

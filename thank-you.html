@@ -278,6 +278,14 @@
     })();
   </script>
 
+  <!-- Clear the prequal draft. This page is only reached via the Worker's 303 after a
+       successful submit, so it is the one place we know the lead actually landed.
+       Clearing it on the prequal page's submit handler instead would wipe the visitor's
+       answers on attempts the Worker rejects, forcing them to start over. -->
+  <script>
+    try { localStorage.removeItem('homesite_prequal_draft'); } catch (e) {}
+  </script>
+
   <!-- Facebook Pixel — gated behind CookieYes "Advertisement" consent. Fires a
        Lead conversion on this post-submit page so Meta ads can optimize/attribute. -->
   <script>

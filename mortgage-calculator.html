@@ -256,7 +256,7 @@
           </div>
 
           <div class="trust">
-            <span><span class="stars">★★★★★</span> <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener"><strong>5.0</strong> · 23 Google reviews</a></span>
+            <span><span class="stars">★★★★★</span> <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener"><strong>5.0</strong> · 25 Google reviews</a></span>
             <span id="sinceLine">Family-owned in Florida since 1999</span>
           </div>
         </div>
@@ -430,10 +430,18 @@
       if (document.querySelector('.amort').open) buildAmort();
     }
 
+    // Hand off only a coarse loan-size bucket — never the visitor's actual price,
+    // down payment or rate. The prequal form only ever used these to pre-select a
+    // bucket anyway, and anything in the URL is recorded by GA4 as page_location
+    // on every pageview, which would put a visitor's financial details in analytics.
     function ctaHref(){
-      var q = 'prequal.html?type=purchase&price=' + Math.round(S.price) + '&down=' + Math.round(S.downDollars) + '&term=' + S.term;
-      if (!isNaN(S.rate)) q += '&rate=' + S.rate;
-      return q;
+      var loan = Math.max(0, S.price - S.downDollars);
+      if (!(loan > 0)) return 'prequal.html?type=purchase';
+      var amt = loan < 150000 ? 'under-150k'
+              : loan < 300000 ? '150-300k'
+              : loan < 500000 ? '300-500k'
+              : '500k-plus';
+      return 'prequal.html?type=purchase&amt=' + amt;
     }
     function updateCTA(){
       var q = ctaHref();

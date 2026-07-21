@@ -327,6 +327,10 @@
                 <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
                 <input type="hidden" id="ref" name="ref" value="">
                 <input type="hidden" id="gclid" name="gclid" value="">
+                <input type="hidden" id="gbraid" name="gbraid" value="">
+                <input type="hidden" id="wbraid" name="wbraid" value="">
+                <input type="hidden" id="utm_term" name="utm_term" value="">
+                <input type="hidden" id="utm_content" name="utm_content" value="">
                 <!-- Turnstile injects its cf-turnstile-response input into this form
                      when the widget renders in #turnstile-slot (below the consent box). -->
 
@@ -417,7 +421,9 @@
          and populates the hidden form fields so the Worker receives them. -->
     <script>
       (function() {
-        var keys = ['gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'ref'];
+        // gbraid/wbraid replace gclid on iOS ad clicks — see prequal.html.
+        var keys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium',
+                    'utm_campaign', 'utm_term', 'utm_content', 'ref'];
         try {
           var url = new URLSearchParams(window.location.search);
           keys.forEach(function(k) {
