@@ -742,7 +742,11 @@
         // selections so a returning visitor doesn't re-answer them — that needs none of
         // these. Hiding a fieldset does not exclude it from FormData (only `disabled`
         // does), so they have to be skipped explicitly.
-        var DRAFT_SKIP = { 'Full Name': 1, 'Email Address': 1, 'Phone Number': 1, 'tcpa_consent': 1 };
+        // 'Property of Interest' is free text ("Property address or listing link") — a
+        // specific address is identifying, so it is skipped too. The draft exists to
+        // preserve the step 1-2 radio selections, which needs none of these.
+        var DRAFT_SKIP = { 'Full Name': 1, 'Email Address': 1, 'Phone Number': 1,
+                           'tcpa_consent': 1, 'Property of Interest': 1 };
         var DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
 
         function saveDraft() {
@@ -889,6 +893,7 @@
           if (!turnstilePendingSubmit) return;
           turnstilePendingSubmit = false;
           clearTimeout(turnstileTimer);
+          turnstileTimer = null;
           form.dataset.turnstileSubmitted = '1';
           form.submit();
         }
@@ -956,9 +961,12 @@
             e.preventDefault();
             renderTurnstile();
             turnstilePendingSubmit = true;
-            clearTimeout(turnstileTimer);
-            // Backstop: never hang on a challenge that never resolves.
-            turnstileTimer = setTimeout(finishPendingSubmit, 6000);
+            // Backstop: never hang on a challenge that never resolves. Arm it once —
+            // re-arming on every click would let an impatient visitor clicking
+            // repeatedly push the deadline back forever and never submit.
+            if (turnstileTimer === null) {
+              turnstileTimer = setTimeout(finishPendingSubmit, 6000);
+            }
             return;
           }
           // Note: the draft is deliberately NOT cleared here. This handler also runs
