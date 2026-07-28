@@ -438,11 +438,27 @@ function buildEmailHtml(fields, source, tcpa, lead) {
   );
 }
 
+// Attribution shown at the top of every lead email.
+//
+// gclid / gbraid / wbraid matter more than they look: js/google-ads.js only fires
+// when the visitor accepts CookieYes "advertisement" consent, so a lead who declines
+// cookies converts INVISIBLY in Google Ads. On a ~40-click test that can read as
+// "the ads produced nothing" when they actually produced leads. These IDs always
+// reach us on the form POST regardless of consent, so the lead email is the
+// source of truth: paste a gclid into Google Ads to find the exact click/keyword
+// that produced the lead, and reconcile against reported conversions.
+//
+// gbraid/wbraid replace gclid on iOS and wherever tracking protection suppresses it.
 function utmEntries(fields) {
   return [
+    ['gclid', fields.gclid],
+    ['gbraid', fields.gbraid],
+    ['wbraid', fields.wbraid],
     ['utm_source', fields.utm_source],
     ['utm_medium', fields.utm_medium],
     ['utm_campaign', fields.utm_campaign],
+    ['utm_term', fields.utm_term],
+    ['utm_content', fields.utm_content],
     ['ref', fields.ref],
   ].filter(([, v]) => v);
 }
