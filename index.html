@@ -219,6 +219,36 @@
       line-height: 1.7; margin-bottom: 32px; max-width: 480px;
     }
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+
+    /* Hero form-start — step 1 of the prequal, asked right in the hero.
+       Answering a question is a far smaller ask than "Get Pre-Approved", and each
+       choice deep-links into prequal.html with that intent already selected. */
+    .hero-start { margin: 4px 0 18px; }
+    .hero-start-q {
+      color: #fff; font-weight: 600; font-size: 1rem; margin: 0 0 10px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .hero-start-q .step {
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--navy); background: var(--gold); font-weight: 700;
+      padding: 3px 9px; border-radius: 100px;
+    }
+    .hero-start-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .hero-start-opts a {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; text-align: center; min-height: 92px; padding: 14px 10px;
+      background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.18);
+      border-radius: 12px; color: #fff; text-decoration: none; font-weight: 600;
+      font-size: 0.95rem; line-height: 1.25; transition: all 0.15s;
+    }
+    .hero-start-opts a:hover {
+      background: rgba(197,160,89,0.16); border-color: var(--gold); transform: translateY(-2px);
+    }
+    .hero-start-opts a:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold); }
+    .hero-start-opts .ico { font-size: 1.5rem; line-height: 1; }
+    .hero-start-alt { margin: 12px 0 0; font-size: 0.9rem; display: flex; gap: 18px; flex-wrap: wrap; }
+    .hero-start-alt a { color: var(--gold); font-weight: 600; text-decoration: none; }
+    .hero-start-alt a:hover { text-decoration: underline; }
     .hero-reassure { color: rgba(255,255,255,0.62); font-size: 0.82rem; margin-bottom: 36px; line-height: 1.5; }
     .hero-trust {
       display: flex; flex-wrap: wrap; gap: 20px;
@@ -548,6 +578,12 @@
       .hero { padding: 48px 20px 64px; }
       .loans-grid { grid-template-columns: 1fr; }
       .hero-actions .btn-xl { width: 100%; }
+      /* Keep all three choices visible on a phone — stacking them would push the
+         third below the fold and it would never get picked. */
+      .hero-start-opts { gap: 8px; }
+      .hero-start-opts a { min-height: 84px; font-size: 0.86rem; padding: 12px 6px; }
+      .hero-start-opts .ico { font-size: 1.3rem; }
+      .hero-start-alt { gap: 14px; font-size: 0.86rem; }
       .about-stat-row { gap: 20px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -720,11 +756,18 @@
           <p class="hero-sub">
             Since 1999, Homesite Mortgage has helped Florida families buy and refinance their homes — one loan at a time, with a real person on every call. Free prequalification in about 5 minutes.
           </p>
-          <div class="hero-actions">
-            <a href="prequal.html" class="btn btn-gold btn-xl">Check My Options →</a>
-            <a href="mortgage-calculator.html" class="btn btn-outline btn-lg">Estimate My Payment</a>
+          <div class="hero-start">
+            <p class="hero-start-q"><span class="step">Step 1 of 3</span> What are you looking to do?</p>
+            <div class="hero-start-opts">
+              <a href="prequal.html?type=purchase"><span class="ico" aria-hidden="true">🏡</span>Buy a Home</a>
+              <a href="prequal.html?type=refinance"><span class="ico" aria-hidden="true">🔄</span>Refinance</a>
+              <a href="prequal.html?type=dscr"><span class="ico" aria-hidden="true">🔑</span>Investment Property</a>
+            </div>
+            <p class="hero-start-alt">
+              <a href="mortgage-calculator.html">Estimate my payment &rarr;</a>
+              <a href="contact.html">Prefer to talk? Reach a real person &rarr;</a>
+            </p>
           </div>
-          <p style="margin:4px 0 0;font-size:0.92rem;"><a href="contact.html" style="color:var(--gold);font-weight:600;text-decoration:none;">Prefer to talk? Reach a real person &rarr;</a></p>
           <p class="hero-reassure">No hard credit pull &middot; No obligation &middot; A real person follows up with you personally</p>
           <div class="hero-trust">
             <span class="hero-trust-item"><span class="dot"></span><a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;"><span style="color:#f5a623;letter-spacing:1px;" aria-hidden="true">★★★★★</span>&nbsp;<strong>5.0</strong>&nbsp;on Google</a></span>
