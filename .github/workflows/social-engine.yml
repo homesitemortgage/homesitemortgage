@@ -1,8 +1,17 @@
 name: Social Drafting Engine
 
 on:
-  schedule:
-    - cron: '0 12 * * 1,4'   # Mondays & Thursdays, 12:00 UTC
+  # PAUSED 2026-07-31. The engine was drafting 3 posts every Mon & Thu faster than
+  # they were being scheduled — 5 unmerged draft PRs had stacked up while a curated
+  # 6-post set sat unused in social-drafts/2026-07-ready-to-schedule.md. Each run
+  # costs ~$0.15 of Sonnet 5 and adds PR noise for content nobody is posting.
+  #
+  # TO RESUME: uncomment the two lines below. Do that once posting is a steady habit.
+  # Until then, run it on demand from the Actions tab ("Run workflow") — that still
+  # works, because workflow_dispatch stays enabled.
+  #
+  # schedule:
+  #   - cron: '0 12 * * 1,4'   # Mondays & Thursdays, 12:00 UTC
   workflow_dispatch: {}
 
 permissions:
