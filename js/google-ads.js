@@ -5,10 +5,14 @@
    the gtag/dataLayer instance with js/ga4.js when analytics consent is also
    granted; works standalone when it isn't.
 
-   TO ACTIVATE: replace AW_ID and the labels below with the real values from
-   Google Ads (Goals → Conversions → open the action → "Tag setup" → the
-   send_to value looks like AW-1234567890/AbC-D_efGh12_34-567). While the
-   placeholders are here the loader is inert — no network requests, no cookies.
+   The "Submit lead form" conversion is URL-BASED, not snippet-based: the action
+   in Google Ads is defined as "page load: homesitemortgage.online/thank-you.html".
+   The Google tag alone detects that page load and records the conversion, so
+   there is no event snippet and no send_to label for the lead. Do not add one —
+   a second signal on the same page would double-count.
+
+   CALL_LABEL is still a placeholder because no click-to-call conversion action
+   exists in Google Ads yet. While it holds XXXX the click handler is inert.
 
    DELIBERATELY NOT ENABLED — Enhanced Conversions. It uploads hashed borrower
    email/phone to Google. Borrower contact details are NPI under GLBA and stay
@@ -19,8 +23,7 @@
    NAP consistency for local SEO and bypass the Quo line / Free Caller Registry
    setup. Click-to-call is tracked below instead, from our own number. */
 (function () {
-  var AW_ID      = 'AW-XXXXXXXXXX';       // Google Ads conversion ID
-  var LEAD_LABEL = 'XXXXXXXXXXXXXXXXXXX'; // "Prequal Lead" — primary conversion
+  var AW_ID      = 'AW-18333281422';      // Google Ads conversion ID
   var CALL_LABEL = 'XXXXXXXXXXXXXXXXXXX'; // "Click to Call" — secondary/observation
 
   function isSet(v) { return v && v.indexOf('XXXX') === -1; }
@@ -44,12 +47,9 @@
       document.head.appendChild(s);
     }
     window.gtag('config', AW_ID);
-
-    // Lead conversion — the Worker 303-redirects here after a successful submit,
-    // so this page load is the confirmed lead. Matches GA4's generate_lead.
-    if (location.pathname.indexOf('thank-you') !== -1 && isSet(LEAD_LABEL)) {
-      window.gtag('event', 'conversion', { send_to: AW_ID + '/' + LEAD_LABEL });
-    }
+    // No lead snippet here on purpose — see the URL-based note at the top of
+    // this file. The Worker 303-redirects to thank-you.html after a successful
+    // submit, and the Google tag matches that URL on its own.
   }
 
   // Load now if advertisement consent is already granted...
