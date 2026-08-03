@@ -414,7 +414,14 @@ function buildEmailHtml(fields, source, tcpa, lead) {
     ? '<div style="font-size:12px;color:#8a6d2f;text-transform:uppercase;letter-spacing:1px;font-weight:bold;margin:8px 0 8px;">What they&#39;re looking for</div>' +
       '<table cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;font-size:15px;">' +
       priority
-        .map(([k, v]) => `<tr><td style="padding:3px 14px 3px 0;color:#555555;">${esc(k)}</td><td style="padding:3px 0;font-weight:bold;color:#1f2937;">${esc(v)}</td></tr>`)
+        .map(([k, v]) => {
+          // The property address is the one value Tom acts on away from his desk —
+          // make it open in Maps instead of forcing a copy-paste.
+          const cell = k === 'Property of Interest'
+            ? `<a href="https://maps.google.com/?q=${encodeURIComponent(String(v))}" style="color:#0a1f3c;">${esc(v)}</a>`
+            : esc(v);
+          return `<tr><td style="padding:3px 14px 3px 0;color:#555555;">${esc(k)}</td><td style="padding:3px 0;font-weight:bold;color:#1f2937;">${cell}</td></tr>`;
+        })
         .join('') +
       '</table>'
     : '';
