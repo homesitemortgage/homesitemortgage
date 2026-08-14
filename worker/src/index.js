@@ -50,6 +50,10 @@ const ALLOWED_ORIGINS = [
 
 const TOM_EMAIL = 'tcloans1@gmail.com';
 const BRANDON_EMAIL = 'brandonjculpepper@gmail.com';
+// Lizzie answers the phones, so she needs the lead the moment it lands, not
+// after someone forwards it. Speed to first contact is the whole game here —
+// the first lead sat 1.5 hours before anyone noticed.
+const LIZZIE_EMAIL = 'le.elizabeth0206@gmail.com';
 const FROM_EMAIL = 'Homesite Mortgage <leads@homesitemortgage.online>';
 const THANK_YOU_URL = 'https://homesitemortgage.online/thank-you.html';
 const PHONE_FALLBACK = '321-751-4403';
@@ -226,7 +230,7 @@ export default {
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [TOM_EMAIL],
-          bcc: [BRANDON_EMAIL],
+          bcc: [BRANDON_EMAIL, LIZZIE_EMAIL],
           reply_to: email,
           subject,
           html: buildEmailHtml(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
