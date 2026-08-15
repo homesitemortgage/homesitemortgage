@@ -3,6 +3,7 @@
 <head>
   <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8005e4bb409abe9cf9e8ef20e939de30/script.js"></script>
   <!-- Google Analytics 4 — gated behind CookieYes "Analytics" consent -->
+  <script src="/js/consent-mode.js" defer></script>
   <script src="/js/ga4.js" defer></script>
   <script src="/js/google-ads.js" defer></script>
 <script src="/js/attribution.js"></script>
@@ -672,6 +673,18 @@
         var labels = document.querySelectorAll('.step-label');
         var currentStep = 1;
 
+        // GA4 funnel events — step-level, so we can see which step loses people
+        // instead of only "reached the form" vs "reached thank-you". No-ops until
+        // analytics consent has loaded gtag, mirroring the guard in js/ga4.js.
+        // Sends step numbers and field NAMES only, never field values: contact
+        // details are nonpublic personal information under GLBA.
+        function track(name, params) {
+          if (!window.gtag) return;
+          try { window.gtag('event', name, params || {}); } catch (e) { /* noop */ }
+        }
+        var startTracked = false;
+        var submitTracked = false;
+
         function showStep(n, scroll) {
           currentStep = n;
           steps.forEach(function(s) {
@@ -685,6 +698,7 @@
           // Render the Turnstile widget once the contact step is visible
           // (rendering into a hidden container produces a zero-size widget).
           if (String(n) === '3') { renderTurnstile(); noticeIfTurnstileBlocked(); }
+          track('prequal_step_view', { step: n });
           // Scroll the form back into view when the visitor advances a step — but never
           // on first paint, which would scroll the logo, headline, star rating, NMLS ID
           // and phone number off screen before an arriving visitor has seen them.
@@ -698,6 +712,7 @@
           var step = form.querySelector('[data-step="' + n + '"]');
           if (!step) return true;
           var allValid = true;
+          var badFields = [];
           // Check radio groups
           step.querySelectorAll('.radio-cards').forEach(function(group) {
             var radios = group.querySelectorAll('input[type="radio"]');
@@ -709,6 +724,7 @@
             });
             if (anyRequired && !anyChecked) {
               allValid = false;
+              badFields.push(group.dataset.name || 'radio-group');
               group.classList.add('is-invalid');
             } else {
               group.classList.remove('is-invalid');
@@ -718,12 +734,15 @@
           step.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], select, input[type="checkbox"]').forEach(function(el) {
             if (el.required && !el.checkValidity()) {
               allValid = false;
+              badFields.push(el.name || el.id || 'field');
               el.classList.add('is-invalid');
             } else {
               el.classList.remove('is-invalid');
             }
           });
           if (!allValid) {
+            // Field NAMES only — never the values the visitor typed.
+            track('prequal_step_blocked', { step: n, fields: badFields.join(', ').slice(0, 100) });
             var firstBad = step.querySelector('.is-invalid');
             if (firstBad) {
               if (firstBad.classList.contains('radio-cards')) {
@@ -857,6 +876,7 @@
           if (t.classList) t.classList.remove('is-invalid');
           var grp = t.closest && t.closest('.radio-cards');
           if (grp) grp.classList.remove('is-invalid');
+          if (!startTracked) { startTracked = true; track('prequal_form_start', { step: currentStep }); }
           saveDraft();
         });
         form.addEventListener('change', saveDraft);
@@ -868,6 +888,7 @@
           if (nextBtn) {
             e.preventDefault();
             if (!validateStep(currentStep)) return;
+            track('prequal_step_complete', { step: currentStep });
             saveDraft();
             if (currentStep < totalSteps) showStep(currentStep + 1, true);
           }
@@ -931,6 +952,9 @@
             var slot = document.getElementById('turnstile-slot');
             if (!slot || slot.dataset.blockedNotice) return;
             slot.dataset.blockedNotice = '1';
+            // A real, invisible drop-off cause: the visitor reached the last step
+            // and the security check never loaded. Worth counting separately.
+            track('prequal_turnstile_blocked', { step: 3 });
             slot.innerHTML =
               '<p style="margin:0;padding:12px 14px;border:1px solid #e2cdcd;background:#fdf5f4;' +
               'border-radius:10px;font-size:0.9rem;line-height:1.5;">Our security check couldn\'t ' +
@@ -950,6 +974,10 @@
             e.preventDefault();
             return;
           }
+          // Counts the visitor pressing the final button. Distinct from GA4's
+          // generate_lead on thank-you.html: the gap between the two is exactly
+          // the submits the Worker rejected (bad token, network, 400).
+          if (!submitTracked) { submitTracked = true; track('prequal_submit_attempt', {}); }
           if (form.dataset.turnstileSubmitted) return; // second pass — already tokenized
           var tokenField = form.querySelector('input[name="cf-turnstile-response"]');
           var token = tokenField && tokenField.value;
