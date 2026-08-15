@@ -291,11 +291,26 @@ function pickPhone(f) {
 }
 
 // ---------- Email body builders ----------
+// Anything rendered by utmEntries() must be listed here, or it renders twice —
+// once in the attribution rows and again in the generic field loop below. That
+// is why gclid appeared twice in the first real lead email.
 const SUMMARY_SKIP_KEYS = new Set([
   'utm_source',
   'utm_medium',
   'utm_campaign',
+  'utm_term',
+  'utm_content',
   'ref',
+  'gclid',
+  'gbraid',
+  'wbraid',
+  'adkeyword',
+  'matchtype',
+  'adnetwork',
+  'addevice',
+  'campaignid',
+  'adgroupid',
+  'creativeid',
   'lead_source_page',
   'tcpa_consent',
 ]);
@@ -460,11 +475,28 @@ function buildEmailHtml(fields, source, tcpa, lead) {
 // that produced the lead, and reconcile against reported conversions.
 //
 // gbraid/wbraid replace gclid on iOS and wherever tracking protection suppresses it.
+// Match types arrive as single letters; spell them out so the email is readable
+// without a lookup table.
+const MATCH_TYPES = { e: 'Exact', p: 'Phrase', b: 'Broad' };
+const AD_NETWORKS = { g: 'Google Search', s: 'Search partner', d: 'Display', ytv: 'YouTube', vp: 'Video partner' };
+const AD_DEVICES = { m: 'Mobile', t: 'Tablet', c: 'Desktop' };
+
 function utmEntries(fields) {
+  const kw = fields.adkeyword;
+  const mt = fields.matchtype;
   return [
+    // The keyword goes FIRST — it is the single most useful line in the email.
+    // It is the direct answer to "which keyword produced this lead", which no
+    // Google Ads report will tell you from a gclid alone.
+    ['Ad keyword', kw ? (mt ? `${kw}  (${MATCH_TYPES[mt] || mt} match)` : kw) : ''],
+    ['Ad network', AD_NETWORKS[fields.adnetwork] || fields.adnetwork],
+    ['Device', AD_DEVICES[fields.addevice] || fields.addevice],
     ['gclid', fields.gclid],
     ['gbraid', fields.gbraid],
     ['wbraid', fields.wbraid],
+    ['campaignid', fields.campaignid],
+    ['adgroupid', fields.adgroupid],
+    ['creativeid', fields.creativeid],
     ['utm_source', fields.utm_source],
     ['utm_medium', fields.utm_medium],
     ['utm_campaign', fields.utm_campaign],

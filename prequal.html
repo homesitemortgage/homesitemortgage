@@ -481,6 +481,17 @@
         <input type="hidden" id="wbraid" name="wbraid" value="">
         <input type="hidden" id="utm_term" name="utm_term" value="">
         <input type="hidden" id="utm_content" name="utm_content" value="">
+        <!-- Google Ads ValueTrack — populated by the campaign's Final URL suffix.
+             adkeyword is the matched keyword, which is the only reliable way to
+             learn which keyword produced a given lead; Google will not resolve
+             that from a gclid. -->
+        <input type="hidden" id="adkeyword" name="adkeyword" value="">
+        <input type="hidden" id="matchtype" name="matchtype" value="">
+        <input type="hidden" id="adnetwork" name="adnetwork" value="">
+        <input type="hidden" id="addevice" name="addevice" value="">
+        <input type="hidden" id="campaignid" name="campaignid" value="">
+        <input type="hidden" id="adgroupid" name="adgroupid" value="">
+        <input type="hidden" id="creativeid" name="creativeid" value="">
         <!-- Turnstile injects its cf-turnstile-response hidden input into this form
              when the widget renders in #turnstile-slot (step 3). -->
 
@@ -1046,7 +1057,10 @@
       // wherever tracking protection suppresses gclid — a large share of mobile paid
       // traffic. Dropping them means those leads arrive with no campaign attached.
       var keys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium',
-                  'utm_campaign', 'utm_term', 'utm_content', 'ref'];
+                  'utm_campaign', 'utm_term', 'utm_content', 'ref',
+                  // Google Ads ValueTrack, set by the campaign's Final URL suffix
+                  'adkeyword', 'matchtype', 'adnetwork', 'addevice',
+                  'campaignid', 'adgroupid', 'creativeid'];
       try {
         var url = new URLSearchParams(window.location.search);
         keys.forEach(function(k) {
