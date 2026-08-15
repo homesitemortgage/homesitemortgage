@@ -18,8 +18,12 @@
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4_ID;
     document.head.appendChild(s);
 
+    // Do NOT reassign window.gtag — consent-mode.js already defined it and
+    // queued the consent defaults. Replacing it here would orphan those.
     window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
+    if (!window.gtag) {
+      window.gtag = function () { window.dataLayer.push(arguments); };
+    }
     window.gtag('js', new Date());
     window.gtag('config', GA4_ID);
 
@@ -32,19 +36,13 @@
     }
   }
 
-  // Load now if analytics consent is already granted...
-  document.addEventListener('DOMContentLoaded', function () {
-    if (typeof CookieYes !== 'undefined') {
-      var consent = CookieYes.getConsent();
-      if (consent && consent.analytics === 'yes') loadGA4();
-    }
-  });
-
-  // ...or the moment the visitor grants it.
-  document.addEventListener('cookieyes_consent_update', function (e) {
-    var data = e.detail;
-    if (data && data.accepted && data.accepted.indexOf('analytics') > -1) loadGA4();
-  });
+  // Always load. Consent Mode (js/consent-mode.js) gates whether this writes
+  // cookies or only sends cookieless pings, so the loader itself no longer waits.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadGA4);
+  } else {
+    loadGA4();
+  }
 
   // Funnel instrumentation — measure which entry points drive prequal/calculator
   // clicks so ad spend can be optimized by cost-per-lead. No-ops until analytics

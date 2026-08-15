@@ -1,9 +1,12 @@
 /* Homesite Mortgage — Google Ads conversion tracking.
 
-   Gated behind CookieYes "Advertisement" consent, mirroring the Facebook Pixel
-   loader in thank-you.html so nothing fires before the visitor opts in. Shares
-   the gtag/dataLayer instance with js/ga4.js when analytics consent is also
-   granted; works standalone when it isn't.
+   CONSENT IS HANDLED BY js/consent-mode.js, WHICH MUST LOAD FIRST. This file
+   no longer gates the tag behind CookieYes. It used to, and that silently lost
+   real conversions: the first ad-driven lead declined the banner, so gtag never
+   loaded and Google Ads recorded zero conversions even though the Worker had
+   the gclid. Under Consent Mode v2 the tag always loads but starts in a denied
+   state — cookieless pings only, no cookies, no identifiers — which lets Google
+   model the conversions it cannot directly observe.
 
    The "Submit lead form" conversion is URL-BASED, not snippet-based: the action
    in Google Ads is defined as "page load: homesitemortgage.online/thank-you.html".
@@ -52,19 +55,14 @@
     // submit, and the Google tag matches that URL on its own.
   }
 
-  // Load now if advertisement consent is already granted...
-  document.addEventListener('DOMContentLoaded', function () {
-    if (typeof CookieYes !== 'undefined') {
-      var consent = CookieYes.getConsent();
-      if (consent && consent.advertisement === 'yes') loadAds();
-    }
-  });
-
-  // ...or the moment the visitor grants it.
-  document.addEventListener('cookieyes_consent_update', function (e) {
-    var data = e.detail;
-    if (data && data.accepted && data.accepted.indexOf('advertisement') > -1) loadAds();
-  });
+  // Always load. Consent Mode (js/consent-mode.js) decides whether this tag may
+  // write cookies or only send cookieless pings — so loading it while consent is
+  // denied is the intended behaviour, and it is what makes modelling possible.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadAds);
+  } else {
+    loadAds();
+  }
 
   // Click-to-call — a tapped phone number is a real lead signal for this business,
   // where most borrowers call rather than fill in a form. Keep this one SECONDARY
