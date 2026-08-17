@@ -252,18 +252,22 @@ export default {
     ctx.waitUntil(sendLeadSMS(env, { name, phone, formSource, band: lead_score.band }));
 
     // ----- HubSpot upsert (best-effort, never blocks user response) -----
-    try {
-      await upsertHubspot(env.HUBSPOT_TOKEN, {
+    // This was awaited despite the comment, holding the 303 redirect for the
+    // full round-trip to HubSpot while the visitor sat on an unchanged page.
+    // The CRM write has no bearing on what they see and its failure is already
+    // swallowed, so run it after the response like the SMS alert above.
+    ctx.waitUntil(
+      upsertHubspot(env.HUBSPOT_TOKEN, {
         email,
         name,
         phone,
         fields,
         formSource,
         tcpaStatus,
-      });
-    } catch (err) {
-      console.error('HubSpot exception (swallowed):', err && err.message);
-    }
+      }).catch((err) => {
+        console.error('HubSpot exception (swallowed):', err && err.message);
+      })
+    );
 
     // ----- Response semantics -----
     if (!resendOk) {
