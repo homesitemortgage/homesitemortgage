@@ -419,6 +419,37 @@
         top: auto; width: 1px; height: 1px; overflow: hidden;
     }
 
+    /* Inline validation messages. A red border alone reads as "nothing
+       happened" — the visitor presses Continue and sees no explanation. */
+    .field-error {
+        margin: 6px 0 0; font-size: 0.85rem;
+        color: #b81f00; font-weight: 700;
+    }
+
+    /* --- Broker trust row ---
+       Deliberately inline rather than a bordered card: a block card cost 144px
+       of above-the-fold space and pushed the first radio back below the capped
+       cookie banner, undoing the header compression. A face is worth having;
+       it is not worth the first question. */
+    .broker-row {
+        display: flex; align-items: center; justify-content: center;
+        gap: 10px; margin: 10px 0 0; text-align: left;
+    }
+    .broker-row img {
+        width: 38px; height: 38px; border-radius: 50%;
+        object-fit: cover; flex-shrink: 0;
+    }
+    .broker-row span {
+        font-size: 0.86rem; color: #6b7280; line-height: 1.4;
+    }
+    .broker-row strong { color: var(--primary-navy); }
+
+    .privacy-note {
+        margin: 18px 0 0; font-size: 0.85rem;
+        color: #4b5563; line-height: 1.55; text-align: center;
+    }
+    .privacy-note a { color: var(--primary-navy); font-weight: 700; }
+
     /* --- Trust line under the headline --- */
     .trust-line {
         text-align: center; font-size: 0.9rem;
@@ -489,9 +520,15 @@
            they can act. Heading order (h1 in the header -> h2 here -> h3 per
            question) is preserved for screen readers. -->
       <h2 style="font-size:1.2em;margin-bottom:8px;">Start Your Prequalification</h2>
-      <p class="subtitle" style="font-size:1rem;margin-bottom:10px;">A few quick questions &mdash; Tom reviews every one personally. No hard credit pull.</p>
+      <p class="subtitle" style="font-size:1rem;margin-bottom:10px;">A few quick questions. No hard credit pull, no obligation.</p>
       <p class="trust-line"><span class="stars" aria-hidden="true">★★★★★</span> <strong>5.0</strong> average &middot; <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener"><strong>28</strong> verified Google reviews</a> &middot; NMLS #353790</p>
-      <p class="trust-line">Family-owned in Melbourne since 1999 &middot; Prefer to talk? <a href="tel:3217514403" class="call-link">Call 321-751-4403</a></p>
+      <!-- The one advantage a two-person brokerage has over Rocket and the
+           aggregators is that a named human picks this up. The headshot already
+           existed in the repo and was only ever used on the homepage. -->
+      <div class="broker-row">
+        <img src="images/tom-culpepper.webp" alt="Tom Culpepper, Principal Broker at Homesite Mortgage" width="38" height="38">
+        <span><strong>Tom Culpepper</strong>, Principal Broker &middot; Melbourne, FL since 1999<br>Reviews every submission himself &middot; <a href="tel:3217514403" class="call-link">321-751-4403</a></span>
+      </div>
 
       <!-- Pre-fill banner shown when ?type= param is present -->
       <div id="program-banner" role="status" aria-live="polite" hidden style="background:#fff7e6;border:1px solid var(--accent-gold);border-radius:12px;padding:14px 18px;margin:18px 0 22px;font-size:0.95em;color:var(--primary-navy);">
@@ -634,7 +671,7 @@
 
           <h3 class="step-q">What type of property?</h3>
           <div class="radio-cards" data-name="Property Type" role="radiogroup" aria-label="Property type">
-            <label class="radio-card"><input type="radio" name="Property Type" value="Primary Residence" required><span class="radio-label">Primary Residence</span></label>
+            <label class="radio-card"><input type="radio" name="Property Type" value="Primary Residence"><span class="radio-label">Primary Residence</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Second Home"><span class="radio-label">Second Home</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Investment"><span class="radio-label">Investment</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Multi-Family"><span class="radio-label">Multi-Family</span></label>
@@ -708,6 +745,8 @@
             <blockquote>&ldquo;My adult children needed help with their 1st time mortgages! Tracy and Homesite Mortgage helped them throughout the process. Highly recommended!!!&rdquo;<cite>Kevin Baker &middot; Google review</cite></blockquote>
             <blockquote>&ldquo;Tracy and Tom are amazing. They have helped me a few times over the years. I highly recommend!&rdquo;<cite>Lisa Hamor &middot; Google review</cite></blockquote>
           </div>
+
+          <p class="privacy-note">&#128274; Your information is encrypted in transit, goes only to our licensed team, and is never sold. <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a></p>
 
           <!-- Turnstile bot check — rendered when this step becomes visible. -->
           <div id="turnstile-slot" style="margin-top:16px;min-height:0;"></div>
@@ -790,6 +829,33 @@
           }
         }
 
+        // Insert or clear a short message under a control. A red border on its
+        // own reads as "nothing happened": the visitor presses Continue, the page
+        // does not move, and no reason is given anywhere on screen.
+        function setFieldError(anchor, msg) {
+          var next = anchor.nextElementSibling;
+          var existing = (next && next.classList && next.classList.contains('field-error')) ? next : null;
+          if (!msg) {
+            if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+            anchor.removeAttribute('aria-invalid');
+            return;
+          }
+          if (!existing) {
+            existing = document.createElement('p');
+            existing.className = 'field-error';
+            anchor.parentNode.insertBefore(existing, anchor.nextSibling);
+          }
+          existing.textContent = msg;
+          anchor.setAttribute('aria-invalid', 'true');
+        }
+
+        function messageFor(el) {
+          if (el.type === 'email') return 'Enter a valid email address.';
+          if (el.type === 'tel') return 'Enter a phone number we can reach you on.';
+          if (el.tagName === 'SELECT') return 'Choose an option to continue.';
+          return 'This one is needed to continue.';
+        }
+
         function validateStep(n) {
           var step = form.querySelector('[data-step="' + n + '"]');
           if (!step) return true;
@@ -808,8 +874,10 @@
               allValid = false;
               badFields.push(group.dataset.name || 'radio-group');
               group.classList.add('is-invalid');
+              setFieldError(group, 'Pick one to continue.');
             } else {
               group.classList.remove('is-invalid');
+              setFieldError(group, '');
             }
           });
           // Check text/email/tel/select/checkbox
@@ -818,8 +886,10 @@
               allValid = false;
               badFields.push(el.name || el.id || 'field');
               el.classList.add('is-invalid');
+              setFieldError(el, messageFor(el));
             } else {
               el.classList.remove('is-invalid');
+              setFieldError(el, '');
             }
           });
           if (!allValid) {
@@ -953,15 +1023,23 @@
         }
 
         // Clear .is-invalid on input + persist on every change
-        form.addEventListener('input', function(e) {
-          var t = e.target;
+        function clearErrorFor(t) {
           if (t.classList) t.classList.remove('is-invalid');
           var grp = t.closest && t.closest('.radio-cards');
-          if (grp) grp.classList.remove('is-invalid');
+          if (grp) { grp.classList.remove('is-invalid'); setFieldError(grp, ''); }
+          else if (t.nodeType === 1) { setFieldError(t, ''); }
+        }
+
+        form.addEventListener('input', function(e) {
+          var t = e.target;
+          clearErrorFor(t);
           if (!startTracked) { startTracked = true; track('prequal_form_start', { step: currentStep }); }
           saveDraft();
         });
-        form.addEventListener('change', saveDraft);
+        form.addEventListener('change', function(e) {
+          if (e.target) clearErrorFor(e.target);
+          saveDraft();
+        });
 
         // Next / Back navigation
         form.addEventListener('click', function(e) {
