@@ -418,6 +418,86 @@
         position: absolute; left: -10000px;
         top: auto; width: 1px; height: 1px; overflow: hidden;
     }
+
+    /* Inline validation messages. A red border alone reads as "nothing
+       happened" — the visitor presses Continue and sees no explanation. */
+    .field-error {
+        margin: 6px 0 0; font-size: 0.85rem;
+        color: #b81f00; font-weight: 700;
+    }
+
+    /* --- Broker trust row ---
+       Deliberately inline rather than a bordered card: a block card cost 144px
+       of above-the-fold space and pushed the first radio back below the capped
+       cookie banner, undoing the header compression. A face is worth having;
+       it is not worth the first question. */
+    .broker-row {
+        display: flex; align-items: center; justify-content: center;
+        gap: 10px; margin: 10px 0 0; text-align: left;
+    }
+    .broker-row img {
+        width: 38px; height: 38px; border-radius: 50%;
+        object-fit: cover; flex-shrink: 0;
+    }
+    .broker-row span {
+        font-size: 0.86rem; color: #6b7280; line-height: 1.4;
+    }
+    .broker-row strong { color: var(--primary-navy); }
+
+    .privacy-note {
+        margin: 18px 0 0; font-size: 0.85rem;
+        color: #4b5563; line-height: 1.55; text-align: center;
+    }
+    .privacy-note a { color: var(--primary-navy); font-weight: 700; }
+
+    /* --- Trust line under the headline --- */
+    .trust-line {
+        text-align: center; font-size: 0.9rem;
+        margin: 8px 0 0; color: #6b7280; line-height: 1.5;
+    }
+    .trust-line .stars { color: #f5a623; letter-spacing: 1px; }
+    .trust-line a { color: var(--primary-navy); font-weight: 700; }
+    .call-link { white-space: nowrap; }
+
+    /* Two real reviews shown directly above the submit button, where the
+       decision actually happens. Quotes and names are the live Google
+       reviews already published on index.html — never invented. */
+    .review-proof {
+        margin: 28px 0 4px; padding: 16px 18px;
+        background: #fafafa; border: 1px solid #ececf0;
+        border-radius: 12px;
+    }
+    .review-proof blockquote {
+        margin: 0 0 12px; font-size: 0.9rem;
+        line-height: 1.55; color: #444;
+    }
+    .review-proof blockquote:last-of-type { margin-bottom: 0; }
+    .review-proof cite {
+        display: block; margin-top: 4px;
+        font-style: normal; font-size: 0.82rem; color: #6b7280;
+    }
+
+    /* --- CookieYes banner containment ---
+       The default bottom banner renders roughly 387px tall and position:fixed,
+       which on a 375x812 screen covers the first form field, the progress bar
+       and the phone number for every arriving visitor — it does not move on
+       scroll. Cap its height, let it scroll internally, and pad the body while
+       it is present so page content can always be scrolled clear of it.
+       The banner stays fully functional: Consent Mode and the Florida-gated
+       Facebook Pixel both depend on it. */
+    @media (max-width: 768px) {
+      .cky-consent-container {
+        max-height: 32vh !important;
+        overflow-y: auto !important;
+      }
+      body:has(.cky-consent-container) { padding-bottom: 36vh; }
+      /* Three step labels wrap to two lines at 375px and push the first question
+         down. The progress bar itself already conveys position; the current step
+         name is enough. */
+      .step-labels .step-label { display: none; }
+      .step-labels .step-label.is-current { display: inline; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
     }
@@ -435,10 +515,20 @@
 
   <main role="main" id="main-content">
     <div class="container">
-      <h2>Let's Get Started 🏠</h2>
-      <p class="subtitle">A few quick questions so Tom can review your options personally.</p>
-      <p style="text-align:center;color:#4b5563;font-size:0.92rem;margin:6px 0 0;">No hard credit pull &middot; No obligation &middot; A real person follows up with you personally</p>
-      <p style="text-align:center;font-size:0.9rem;margin:10px 0 0;color:#6b7280;"><span style="color:#f5a623;letter-spacing:1px;" aria-hidden="true">★★★★★</span> 5.0 on Google &middot; NMLS #353790 &middot; Prefer to talk? <a href="tel:3217514403" style="color:var(--primary-navy);font-weight:700;white-space:nowrap;">Call 321-751-4403</a></p>
+      <!-- Kept compact on purpose: on a 375px screen every pixel above the first
+           radio card is a pixel the arriving visitor has to scroll past before
+           they can act. Heading order (h1 in the header -> h2 here -> h3 per
+           question) is preserved for screen readers. -->
+      <h2 style="font-size:1.2em;margin-bottom:8px;">Start Your Prequalification</h2>
+      <p class="subtitle" style="font-size:1rem;margin-bottom:10px;">A few quick questions. No hard credit pull, no obligation.</p>
+      <p class="trust-line"><span class="stars" aria-hidden="true">★★★★★</span> <strong>5.0</strong> average &middot; <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener"><strong>28</strong> verified Google reviews</a> &middot; NMLS #353790</p>
+      <!-- The one advantage a two-person brokerage has over Rocket and the
+           aggregators is that a named human picks this up. The headshot already
+           existed in the repo and was only ever used on the homepage. -->
+      <div class="broker-row">
+        <img src="images/tom-culpepper.webp" alt="Tom Culpepper, Principal Broker at Homesite Mortgage" width="38" height="38">
+        <span><strong>Tom Culpepper</strong>, Principal Broker &middot; Melbourne, FL since 1999<br>Reviews every submission himself &middot; <a href="tel:3217514403" class="call-link">321-751-4403</a></span>
+      </div>
 
       <!-- Pre-fill banner shown when ?type= param is present -->
       <div id="program-banner" role="status" aria-live="polite" hidden style="background:#fff7e6;border:1px solid var(--accent-gold);border-radius:12px;padding:14px 18px;margin:18px 0 22px;font-size:0.95em;color:var(--primary-navy);">
@@ -564,14 +654,6 @@
             Homesite Mortgage is licensed in Florida. Tom will personally reach out and connect you with a trusted partner in your state.
           </div>
 
-          <h3 class="step-q">What's your estimated credit score range?</h3>
-          <div class="radio-cards" data-name="Estimated Credit Score" role="radiogroup" aria-label="Estimated credit score range">
-            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Excellent (740+)" required><span class="radio-label"><strong>Excellent</strong> · 740+</span></label>
-            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Good (700–739)"><span class="radio-label"><strong>Good</strong> · 700–739</span></label>
-            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Fair (660–699)"><span class="radio-label"><strong>Fair</strong> · 660–699</span></label>
-            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Needs Work (below 660)"><span class="radio-label"><strong>Needs Work</strong> · Below 660</span></label>
-          </div>
-
           <div class="step-nav">
             <button type="button" class="btn-primary" data-next>Continue →</button>
           </div>
@@ -589,7 +671,7 @@
 
           <h3 class="step-q">What type of property?</h3>
           <div class="radio-cards" data-name="Property Type" role="radiogroup" aria-label="Property type">
-            <label class="radio-card"><input type="radio" name="Property Type" value="Primary Residence" required><span class="radio-label">Primary Residence</span></label>
+            <label class="radio-card"><input type="radio" name="Property Type" value="Primary Residence"><span class="radio-label">Primary Residence</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Second Home"><span class="radio-label">Second Home</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Investment"><span class="radio-label">Investment</span></label>
             <label class="radio-card"><input type="radio" name="Property Type" value="Multi-Family"><span class="radio-label">Multi-Family</span></label>
@@ -601,6 +683,21 @@
             <label class="radio-card"><input type="radio" name="Timeline" value="1–3 Months"><span class="radio-label">1–3 Months</span></label>
             <label class="radio-card"><input type="radio" name="Timeline" value="3–6 Months"><span class="radio-label">3–6 Months</span></label>
             <label class="radio-card"><input type="radio" name="Timeline" value="Just Exploring"><span class="radio-label">Just Exploring</span></label>
+          </div>
+
+          <!-- Credit score sits here, not on step 1. It is the most self-conscious
+               question on the form; asking it before the visitor has invested
+               anything invites self-disqualification, and a broker's economics
+               depend on reaching borrowers other channels turn away. Every major
+               advertiser defers it to the back third of the funnel for the same
+               reason. Still required — the position was the problem, not the field. -->
+          <h3 class="step-q">What's your estimated credit score range?</h3>
+          <p style="margin:-4px 0 10px;font-size:0.86rem;color:#6b7280;">Not sure? Your best guess is fine — we confirm this later, and there's no hard credit pull to get started.</p>
+          <div class="radio-cards" data-name="Estimated Credit Score" role="radiogroup" aria-label="Estimated credit score range">
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Excellent (740+)" required><span class="radio-label"><strong>Excellent</strong> · 740+</span></label>
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Good (700–739)"><span class="radio-label"><strong>Good</strong> · 700–739</span></label>
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Fair (660–699)"><span class="radio-label"><strong>Fair</strong> · 660–699</span></label>
+            <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Needs Work (below 660)"><span class="radio-label"><strong>Needs Work</strong> · Below 660</span></label>
           </div>
 
           <h3 class="step-q">Found a place you love? <span style="font-weight:400;font-size:0.85em;color:#6b7280;">(optional)</span></h3>
@@ -639,13 +736,26 @@
             </label>
           </div>
 
+          <!-- Real Google reviews, already published on index.html. Placed here
+               because this is the moment the visitor decides whether to hand over
+               their phone number to a small brokerage they have not heard of.
+               Never invent or incentivise these (RESPA Section 8). -->
+          <div class="review-proof">
+            <p style="margin:0 0 12px;font-size:0.86rem;color:#6b7280;"><span class="stars" aria-hidden="true">★★★★★</span> <strong>5.0</strong> from <a href="https://www.google.com/maps/search/Homesite+Mortgage+Melbourne+FL" target="_blank" rel="noopener" style="color:var(--primary-navy);font-weight:700;">28 verified Google reviews</a></p>
+            <blockquote>&ldquo;My adult children needed help with their 1st time mortgages! Tracy and Homesite Mortgage helped them throughout the process. Highly recommended!!!&rdquo;<cite>Kevin Baker &middot; Google review</cite></blockquote>
+            <blockquote>&ldquo;Tracy and Tom are amazing. They have helped me a few times over the years. I highly recommend!&rdquo;<cite>Lisa Hamor &middot; Google review</cite></blockquote>
+          </div>
+
+          <p class="privacy-note">&#128274; Your information is encrypted in transit, goes only to our licensed team, and is never sold. <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a></p>
+
           <!-- Turnstile bot check — rendered when this step becomes visible. -->
           <div id="turnstile-slot" style="margin-top:16px;min-height:0;"></div>
 
           <div class="step-nav">
             <button type="button" class="btn-secondary" data-back>← Back</button>
-            <button type="submit" class="btn-primary">Get My Options →</button>
+            <button type="submit" class="btn-primary" id="prequal-submit">Get My Options →</button>
           </div>
+          <p style="margin-top:12px;font-size:0.84rem;color:#6b7280;text-align:center;">Tom reviews every submission personally. No hard credit pull.</p>
           <p style="margin-top:18px;font-size:0.78rem;color:#999;line-height:1.6;text-align:center;">This is not a commitment to lend. All loans subject to credit approval. Homesite Mortgage originates loans in Florida only.</p>
         </fieldset>
       </form>
@@ -719,6 +829,33 @@
           }
         }
 
+        // Insert or clear a short message under a control. A red border on its
+        // own reads as "nothing happened": the visitor presses Continue, the page
+        // does not move, and no reason is given anywhere on screen.
+        function setFieldError(anchor, msg) {
+          var next = anchor.nextElementSibling;
+          var existing = (next && next.classList && next.classList.contains('field-error')) ? next : null;
+          if (!msg) {
+            if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+            anchor.removeAttribute('aria-invalid');
+            return;
+          }
+          if (!existing) {
+            existing = document.createElement('p');
+            existing.className = 'field-error';
+            anchor.parentNode.insertBefore(existing, anchor.nextSibling);
+          }
+          existing.textContent = msg;
+          anchor.setAttribute('aria-invalid', 'true');
+        }
+
+        function messageFor(el) {
+          if (el.type === 'email') return 'Enter a valid email address.';
+          if (el.type === 'tel') return 'Enter a phone number we can reach you on.';
+          if (el.tagName === 'SELECT') return 'Choose an option to continue.';
+          return 'This one is needed to continue.';
+        }
+
         function validateStep(n) {
           var step = form.querySelector('[data-step="' + n + '"]');
           if (!step) return true;
@@ -737,8 +874,10 @@
               allValid = false;
               badFields.push(group.dataset.name || 'radio-group');
               group.classList.add('is-invalid');
+              setFieldError(group, 'Pick one to continue.');
             } else {
               group.classList.remove('is-invalid');
+              setFieldError(group, '');
             }
           });
           // Check text/email/tel/select/checkbox
@@ -747,8 +886,10 @@
               allValid = false;
               badFields.push(el.name || el.id || 'field');
               el.classList.add('is-invalid');
+              setFieldError(el, messageFor(el));
             } else {
               el.classList.remove('is-invalid');
+              setFieldError(el, '');
             }
           });
           if (!allValid) {
@@ -882,15 +1023,23 @@
         }
 
         // Clear .is-invalid on input + persist on every change
-        form.addEventListener('input', function(e) {
-          var t = e.target;
+        function clearErrorFor(t) {
           if (t.classList) t.classList.remove('is-invalid');
           var grp = t.closest && t.closest('.radio-cards');
-          if (grp) grp.classList.remove('is-invalid');
+          if (grp) { grp.classList.remove('is-invalid'); setFieldError(grp, ''); }
+          else if (t.nodeType === 1) { setFieldError(t, ''); }
+        }
+
+        form.addEventListener('input', function(e) {
+          var t = e.target;
+          clearErrorFor(t);
           if (!startTracked) { startTracked = true; track('prequal_form_start', { step: currentStep }); }
           saveDraft();
         });
-        form.addEventListener('change', saveDraft);
+        form.addEventListener('change', function(e) {
+          if (e.target) clearErrorFor(e.target);
+          saveDraft();
+        });
 
         // Next / Back navigation
         form.addEventListener('click', function(e) {
@@ -918,6 +1067,7 @@
         var turnstilePendingSubmit = false;
         var turnstileErrored = false;
         var turnstileTimer = null;
+        var turnstileRetryPending = false;
 
         // Release a submit that was held waiting on the challenge. Safe to call
         // more than once.
@@ -930,10 +1080,22 @@
           form.submit();
         }
 
-        function renderTurnstile() {
+        function renderTurnstile(attempt) {
           if (turnstileWidgetId !== null) return;
           if (TURNSTILE_SITE_KEY.indexOf('PENDING') !== -1) return;
-          if (typeof turnstile === 'undefined' || !window.turnstile) return;
+          // api.js is loaded async, so a restored draft that opens straight on
+          // step 3 can reach this before the script has executed. Bailing out
+          // once left turnstileWidgetId null forever and the submit button
+          // silently dead — for exactly the visitors most likely to convert,
+          // the ones who came back to finish. Retry for ~6s instead of giving up.
+          if (typeof turnstile === 'undefined' || !window.turnstile) {
+            var n = attempt || 0;
+            if (n >= 40) return;
+            if (n === 0 && turnstileRetryPending) return; // a chain is already running
+            turnstileRetryPending = true;
+            setTimeout(function() { renderTurnstile(n + 1); }, 150);
+            return;
+          }
           var slot = document.getElementById('turnstile-slot');
           if (!slot) return;
           turnstileWidgetId = turnstile.render(slot, {
@@ -958,7 +1120,10 @@
         // mode, corporate DNS — tell the visitor on step 3 instead of letting them
         // finish the form and hit a bare plain-text error from the Worker.
         function noticeIfTurnstileBlocked() {
+          // Fires after renderTurnstile's ~6s retry window gives up, so a widget
+          // that was merely slow to load never shows the visitor a scary notice.
           setTimeout(function() {
+            if (turnstileWidgetId !== null) return;
             if (typeof turnstile !== 'undefined' && window.turnstile) return;
             var slot = document.getElementById('turnstile-slot');
             if (!slot || slot.dataset.blockedNotice) return;
@@ -973,7 +1138,20 @@
               'doesn\'t go through, call us at <a href="tel:3217514403" style="font-weight:700;' +
               'white-space:nowrap;color:var(--primary-navy);">321-751-4403</a> and we\'ll take it ' +
               'over the phone.</p>';
-          }, 3000);
+          }, 6500);
+        }
+
+        // Visible submit state. The .btn-primary:disabled rule already existed but
+        // nothing ever set it, so the final tap produced no feedback at all — for
+        // up to 6s while Turnstile resolves, then again while the Worker responds.
+        // A dead-looking button invites a second tap or an abandon.
+        var submitBtn = document.getElementById('prequal-submit');
+        var submitBtnLabel = submitBtn ? submitBtn.textContent : '';
+        function setSubmitting(on) {
+          if (!submitBtn) return;
+          submitBtn.disabled = on;
+          submitBtn.setAttribute('aria-busy', on ? 'true' : 'false');
+          submitBtn.textContent = on ? 'Sending…' : submitBtnLabel;
         }
 
         // Submission — validate, ensure a Turnstile token, clear draft, POST to Worker.
@@ -989,6 +1167,10 @@
           // generate_lead on thank-you.html: the gap between the two is exactly
           // the submits the Worker rejected (bad token, network, 400).
           if (!submitTracked) { submitTracked = true; track('prequal_submit_attempt', {}); }
+          setSubmitting(true);
+          // Safety net: if navigation never happens (offline, blocked POST), hand the
+          // button back rather than stranding the visitor on a dead control.
+          setTimeout(function() { setSubmitting(false); }, 12000);
           if (form.dataset.turnstileSubmitted) return; // second pass — already tokenized
           var tokenField = form.querySelector('input[name="cf-turnstile-response"]');
           var token = tokenField && tokenField.value;
@@ -1039,7 +1221,7 @@
             <p style="margin: 3px 0;">Verify at <a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener" style="color: var(--accent-gold);">nmlsconsumeraccess.org</a></p>
         </div>
     </div>
-    <p>© 2026 Homesite Mortgage. All rights reserved. Licensed Mortgage Lender. Equal Housing Opportunity.</p>
+    <p>© 2026 Homesite Mortgage. All rights reserved. Licensed Mortgage Broker. Equal Housing Opportunity.</p>
     <div class="footer-links">
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="accessibility.html">Accessibility</a>
