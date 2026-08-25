@@ -1,26 +1,89 @@
 User-agent: *
 Allow: /
 
-# AI answer-engine crawlers — explicitly welcomed (AEO)
+# ---------------------------------------------------------------------------
+# AI crawlers — all explicitly welcomed.
+#
+# The blanket "User-agent: * / Allow: /" above already permits every one of
+# these, so the named blocks below are documentation rather than mechanism.
+# They exist so that nobody "tidies up" this file later by adding a Disallow
+# and quietly cuts off a channel that already produced a real lead: a
+# prequalification arrived 2026-08-20 with utm_source=chatgpt.com.
+#
+# The three groups do genuinely different things and we want all three:
+#
+#   TRAINING      — pages enter model training corpora. Slow, unattributable,
+#                   but it is how you become the default answer to
+#                   "mortgage broker Melbourne FL" with no fetch at all.
+#   RETRIEVAL     — builds the live index an assistant queries while answering.
+#                   Blocking one of these removes you from answers today.
+#   USER-TRIGGERED— fetches this page right now because a human asked the
+#                   assistant about us by name. Never block these; it is
+#                   blocking a prospect mid-question.
+# ---------------------------------------------------------------------------
+
+# --- Training crawlers ---
 User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: PerplexityBot
 Allow: /
 
 User-agent: ClaudeBot
 Allow: /
 
-User-agent: Claude-Web
+User-agent: CCBot
 Allow: /
 
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Google-CloudVertexBot
+Allow: /
+
+# Google-Extended and Applebot-Extended are robots.txt control tokens, not
+# crawlers. They govern whether already-crawled content may be used for
+# Gemini / Apple Intelligence grounding and training. Opt-out only, so
+# allowing them is what keeps us eligible.
 User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# --- Retrieval / index crawlers (the tier that matters near-term) ---
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# --- User-triggered fetchers (a human is asking about us right now) ---
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-Web
 Allow: /
 
 Sitemap: https://homesitemortgage.online/sitemap.xml
