@@ -25,7 +25,52 @@
               'utm_campaign', 'utm_term', 'utm_content', 'ref',
               // Google Ads ValueTrack — see Final URL suffix on the campaign
               'adkeyword', 'matchtype', 'adnetwork', 'addevice',
-              'campaignid', 'adgroupid', 'creativeid'];
+              'campaignid', 'adgroupid', 'creativeid',
+              // Where the visit came from when it was not a paid click.
+              // Set from document.referrer below, not from the URL.
+              'referrer_source'];
+
+  // AI assistants that send real traffic. The 2026-08-20 prequal lead arrived
+  // with utm_source=chatgpt.com and no gclid — an assistant recommended us and
+  // it cost nothing. That was noticed by luck; this makes it countable.
+  //
+  // Some assistants append utm_source, some send only a Referer header, and
+  // some send neither. Capturing both paths catches more of them than either
+  // alone, and neither path is reliable on its own.
+  var AI_HOSTS = [
+    [/(^|\.)chatgpt\.com$/i,            'ChatGPT'],
+    [/(^|\.)openai\.com$/i,             'ChatGPT'],
+    [/(^|\.)perplexity\.ai$/i,          'Perplexity'],
+    [/(^|\.)claude\.ai$/i,              'Claude'],
+    [/(^|\.)anthropic\.com$/i,          'Claude'],
+    [/(^|\.)gemini\.google\.com$/i,     'Gemini'],
+    [/(^|\.)copilot\.microsoft\.com$/i, 'Copilot'],
+    [/(^|\.)grok\.com$/i,               'Grok'],
+    [/(^|\.)x\.ai$/i,                   'Grok'],
+    [/(^|\.)you\.com$/i,                'You.com'],
+    [/(^|\.)phind\.com$/i,              'Phind']
+  ];
+
+  function label(host) {
+    for (var i = 0; i < AI_HOSTS.length; i++) {
+      if (AI_HOSTS[i][0].test(host)) return AI_HOSTS[i][1];
+    }
+    return null;
+  }
+
+  // HOSTNAME ONLY, never the full referrer URL. A referring search page can
+  // carry the visitor's query — and sometimes their own details — in its query
+  // string, and that is nonpublic personal information the moment it concerns a
+  // borrower. The host answers "which channel sent them" without any of that.
+  function referrerSource() {
+    try {
+      if (!document.referrer) return null;
+      var host = new URL(document.referrer).hostname;
+      if (!host || host === window.location.hostname) return null; // internal nav
+      return label(host) || host;
+    } catch (e) { return null; }
+  }
+
   try {
     var url = new URLSearchParams(window.location.search);
     KEYS.forEach(function (k) {
@@ -33,6 +78,14 @@
       // first touch wins: never overwrite a value already captured this session
       if (v && !sessionStorage.getItem(k)) sessionStorage.setItem(k, v);
     });
+
+    if (!sessionStorage.getItem('referrer_source')) {
+      // An assistant that stamps utm_source=chatgpt.com is more reliable than a
+      // Referer header, so prefer it and normalise it to the same label.
+      var fromUtm = url.get('utm_source');
+      var src = (fromUtm && label(fromUtm)) || referrerSource();
+      if (src) sessionStorage.setItem('referrer_source', src);
+    }
   } catch (e) { /* storage blocked — best effort, never break the page */ }
 
   // Let form pages pull whatever was captured, wherever it was captured.
