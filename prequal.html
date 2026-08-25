@@ -760,6 +760,27 @@
           <label class="contact-label" for="phone">Phone Number</label>
           <input type="tel" id="phone" name="Phone Number" inputmode="tel" autocomplete="tel" required placeholder="(555) 123-4567">
 
+          <!-- Most assistant traffic arrives with no referrer and no utm, so the
+               detected source misses it. This is the only signal that survives
+               that, and it costs one optional field. FIXED OPTIONS ONLY, never
+               free text: a free-text box here would collect whatever the visitor
+               typed, and anything a borrower types is potentially NPI under GLBA.
+               Deliberately NOT required - it is measurement, not qualification,
+               and it must never cost a lead. -->
+          <label class="contact-label" for="heard-about-us">How did you hear about us? <span style="font-weight:400;font-size:0.85em;color:#6b7280;">(optional)</span></label>
+          <select id="heard-about-us" name="heard_about_us"
+                  style="width:100%;min-height:52px;padding:14px 16px;border:1px solid #e0e0e0;border-radius:var(--input-radius);background:#fafafa;font-size:16px;font-family:'Lato',sans-serif;margin-top:8px;appearance:none;-webkit-appearance:none;color:var(--text-dark);">
+            <option value="">Select one (optional)</option>
+            <option value="AI assistant (ChatGPT, Claude, etc.)">AI assistant (ChatGPT, Claude, etc.)</option>
+            <option value="Google search">Google search</option>
+            <option value="Google ad">Google ad</option>
+            <option value="Google reviews / Maps">Google reviews / Maps</option>
+            <option value="Referred by a friend or agent">Referred by a friend or agent</option>
+            <option value="Facebook or Instagram">Facebook or Instagram</option>
+            <option value="Used Homesite before">Used Homesite before</option>
+            <option value="Other">Other</option>
+          </select>
+
           <div class="tcpa-box">
             <label class="tcpa-label">
               <input type="checkbox" name="tcpa_consent" class="tcpa-checkbox">

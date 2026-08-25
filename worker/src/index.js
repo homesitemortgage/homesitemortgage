@@ -218,7 +218,11 @@ export default {
     const lead_score = scoreLead(fields, tcpaStatus);
 
     // ----- Email via Resend (primary path) -----
-    const subject = `[${lead_score.band}] New ${formSource === 'prequal' ? 'Prequalification' : 'Contact'} Lead — ${name}`;
+    // Source rides in the subject line so it is visible in the inbox list
+    // without opening anything, and so a single Gmail filter can count a
+    // month of AI-sourced leads. Cheaper and more reliable than a dashboard.
+    const sourceTag = fields.heard_about_us || fields.referrer_source || '';
+    const subject = `[${lead_score.band}] New ${formSource === 'prequal' ? 'Prequalification' : 'Contact'} Lead — ${name}${sourceTag ? ` · via ${sourceTag}` : ''}`;
     let resendOk = false;
     try {
       const r = await fetch('https://api.resend.com/emails', {
@@ -316,6 +320,7 @@ const SUMMARY_SKIP_KEYS = new Set([
   'adgroupid',
   'creativeid',
   'referrer_source',
+  'heard_about_us',
   'lead_source_page',
   'tcpa_consent',
 ]);
@@ -494,7 +499,10 @@ function utmEntries(fields) {
     // very top because the 2026-08-20 lead came from ChatGPT with no gclid, and
     // nobody knew until someone happened to read the raw utm_source. A free
     // channel that produces $500K buyers deserves a line of its own.
-    ['Found us via', fields.referrer_source],
+    // What the visitor SAID, which is the only signal that survives a stripped
+    // referrer — and most assistant traffic arrives with no referrer at all.
+    ['Told us they found us via', fields.heard_about_us],
+    ['Detected referrer', fields.referrer_source],
     // The keyword goes FIRST among the paid fields — it is the direct answer to
     // "which keyword produced this lead", which no Google Ads report will tell
     // you from a gclid alone.
