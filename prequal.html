@@ -609,6 +609,10 @@
         <input type="hidden" id="campaignid" name="campaignid" value="">
         <input type="hidden" id="adgroupid" name="adgroupid" value="">
         <input type="hidden" id="creativeid" name="creativeid" value="">
+        <!-- Which channel sent them when it was not a paid click. Populated
+             from document.referrer hostname (or a recognised utm_source) by
+             js/attribution.js. Hostname only, never the full referrer URL. -->
+        <input type="hidden" id="referrer_source" name="referrer_source" value="">
         <!-- Turnstile injects its cf-turnstile-response hidden input into this form
              when the widget renders in #turnstile-slot (step 3). -->
 
@@ -1269,7 +1273,8 @@
                   'utm_campaign', 'utm_term', 'utm_content', 'ref',
                   // Google Ads ValueTrack, set by the campaign's Final URL suffix
                   'adkeyword', 'matchtype', 'adnetwork', 'addevice',
-                  'campaignid', 'adgroupid', 'creativeid'];
+                  'campaignid', 'adgroupid', 'creativeid',
+                  'referrer_source'];
       try {
         var url = new URLSearchParams(window.location.search);
         keys.forEach(function(k) {

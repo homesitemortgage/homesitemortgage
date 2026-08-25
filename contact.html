@@ -325,6 +325,7 @@
 
                 <!-- Lead-source page + UTM attribution (populated by inline JS below). -->
                 <input type="hidden" name="lead_source_page" value="contact">
+                <input type="hidden" id="referrer_source" name="referrer_source" value="">
                 <input type="hidden" id="utm_source" name="utm_source" value="">
                 <input type="hidden" id="utm_medium" name="utm_medium" value="">
                 <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
@@ -422,7 +423,7 @@
       (function() {
         // gbraid/wbraid replace gclid on iOS ad clicks — see prequal.html.
         var keys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium',
-                    'utm_campaign', 'utm_term', 'utm_content', 'ref'];
+                    'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referrer_source'];
         try {
           var url = new URLSearchParams(window.location.search);
           keys.forEach(function(k) {

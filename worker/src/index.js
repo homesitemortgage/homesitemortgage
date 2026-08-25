@@ -315,6 +315,7 @@ const SUMMARY_SKIP_KEYS = new Set([
   'campaignid',
   'adgroupid',
   'creativeid',
+  'referrer_source',
   'lead_source_page',
   'tcpa_consent',
 ]);
@@ -489,9 +490,14 @@ function utmEntries(fields) {
   const kw = fields.adkeyword;
   const mt = fields.matchtype;
   return [
-    // The keyword goes FIRST — it is the single most useful line in the email.
-    // It is the direct answer to "which keyword produced this lead", which no
-    // Google Ads report will tell you from a gclid alone.
+    // Where the visit came from when it was NOT a paid click. This goes at the
+    // very top because the 2026-08-20 lead came from ChatGPT with no gclid, and
+    // nobody knew until someone happened to read the raw utm_source. A free
+    // channel that produces $500K buyers deserves a line of its own.
+    ['Found us via', fields.referrer_source],
+    // The keyword goes FIRST among the paid fields — it is the direct answer to
+    // "which keyword produced this lead", which no Google Ads report will tell
+    // you from a gclid alone.
     ['Ad keyword', kw ? (mt ? `${kw}  (${MATCH_TYPES[mt] || mt} match)` : kw) : ''],
     ['Ad network', AD_NETWORKS[fields.adnetwork] || fields.adnetwork],
     ['Device', AD_DEVICES[fields.addevice] || fields.addevice],
