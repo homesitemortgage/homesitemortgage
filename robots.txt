@@ -86,4 +86,40 @@ Allow: /
 User-agent: Claude-Web
 Allow: /
 
+
+# ---------------------------------------------------------------------------
+# Near-duplicate city pages, withheld from crawlers entirely.
+#
+# These 19 pages already carry noindex and are absent from sitemap.xml, so they
+# were never meant to be found. But noindex is an INDEXING directive, not a
+# fetching one - AI crawlers still retrieve them, which means an assistant asking
+# about Homesite can pull nineteen near-identical copies of the same document.
+# Measured: the Brevard and Orlando pages differ by 144 word tokens out of ~2,969,
+# about 2.4% unique.
+#
+# Disallow stops the fetch, which noindex does not. The pages stay served, so no
+# links break and this is reversible by deleting this block. The Brevard county
+# page is deliberately NOT here - it is the one being kept and rewritten.
+# ---------------------------------------------------------------------------
+User-agent: *
+Disallow: /first-time-home-buyer-bradenton-fl.html
+Disallow: /first-time-home-buyer-broward-county-fl.html
+Disallow: /first-time-home-buyer-fort-myers-fl.html
+Disallow: /first-time-home-buyer-gainesville-fl.html
+Disallow: /first-time-home-buyer-jacksonville-fl.html
+Disallow: /first-time-home-buyer-lake-county-fl.html
+Disallow: /first-time-home-buyer-lakeland-fl.html
+Disallow: /first-time-home-buyer-miami-dade-fl.html
+Disallow: /first-time-home-buyer-naples-fl.html
+Disallow: /first-time-home-buyer-ocala-fl.html
+Disallow: /first-time-home-buyer-palm-beach-county-fl.html
+Disallow: /first-time-home-buyer-pasco-county-fl.html
+Disallow: /first-time-home-buyer-pensacola-fl.html
+Disallow: /first-time-home-buyer-pinellas-county-fl.html
+Disallow: /first-time-home-buyer-port-st-lucie-fl.html
+Disallow: /first-time-home-buyer-sarasota-fl.html
+Disallow: /first-time-home-buyer-st-johns-county-fl.html
+Disallow: /first-time-home-buyer-tallahassee-fl.html
+Disallow: /first-time-home-buyer-tampa-fl.html
+
 Sitemap: https://homesitemortgage.online/sitemap.xml
