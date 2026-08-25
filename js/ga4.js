@@ -34,6 +34,25 @@
         event_label: 'form_submission'
       });
     }
+
+    // Which assistant sent this visit, if any. js/attribution.js classifies the
+    // referrer and stores it first-touch; this reports it so AI traffic can be
+    // segmented in GA4 rather than sitting in the generic Referral bucket where
+    // "chatgpt.com" is indistinguishable from any other site.
+    //
+    // Reported for every visit, not only ones that convert — the interesting
+    // number is how many people an assistant sends versus how many of them
+    // become leads, and the second is useless without the first.
+    try {
+      var src = sessionStorage.getItem('referrer_source');
+      if (src) {
+        window.gtag('event', 'referral_source_seen', {
+          event_category: 'acquisition',
+          event_label: src,
+          page_path: location.pathname
+        });
+      }
+    } catch (e) { /* storage blocked — never break the page for analytics */ }
   }
 
   // Always load. Consent Mode (js/consent-mode.js) gates whether this writes
@@ -57,6 +76,27 @@
       window.gtag('event', 'prequal_cta_click', { event_category: 'lead', event_label: label, page_path: location.pathname });
     } else if (/mortgage-calculator\.html/.test(href)) {
       window.gtag('event', 'calculator_cta_click', { event_category: 'engagement', event_label: label, page_path: location.pathname });
+    } else if (/^tel:/.test(href)) {
+      // Most borrowers here call rather than fill in a form — three calls
+      // arrived on 2026-08-20 with no attribution at all. There are 175 tel:
+      // links across the site and none of them were reporting anything.
+      //
+      // This counts the TAP, which is not the same as a connected call: it
+      // misses anyone who reads the number and dials it by hand, and it counts
+      // taps that never connect. It is a floor on call volume and a channel
+      // comparison, not a call log. Say that plainly before anyone treats it
+      // as one.
+      window.gtag('event', 'click_to_call', {
+        event_category: 'lead',
+        event_label: label || 'phone',
+        page_path: location.pathname
+      });
+    } else if (/^mailto:/.test(href)) {
+      window.gtag('event', 'click_to_email', {
+        event_category: 'lead',
+        event_label: label || 'email',
+        page_path: location.pathname
+      });
     }
   });
 })();
