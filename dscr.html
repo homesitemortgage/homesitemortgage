@@ -455,12 +455,12 @@
     <section class="section section-alt">
       <div class="section-inner">
         <div class="section-eyebrow">Florida-Only · Why Homesite</div>
-        <h2 class="section-title">Family-Owned, Florida-Only, <span class="years-in-business"></span>+ Years In</h2>
+        <h2 class="section-title">Family-Owned, Florida-Only, Serving Since 1999</h2>
         <p class="section-sub">
           Homesite Mortgage is licensed in Florida. We finance Florida properties for Florida investors — no out-of-area surprises at closing.
         </p>
         <ul class="feature-list">
-          <li><strong><span class="years-in-business"></span>+ years</strong> originating loans for Florida real estate.</li>
+          <li><strong>Since 1999</strong> originating loans for Florida real estate.</li>
           <li><strong>Licensed statewide.</strong> Homesite Mortgage originates loans in Florida only.</li>
           <li><strong>Direct access to our team</strong> on every deal — no junior loan officers, no call centers.</li>
           <li><strong>Processing and closing handled by our team</strong> — who know what investor files look like.</li>
@@ -619,10 +619,6 @@
   <script>
     // Years auto-calc + copyright + nav hamburger toggle
     (function() {
-      var yr = new Date().getFullYear() - 1999;
-      document.querySelectorAll('.years-in-business').forEach(function(el) {
-        el.textContent = yr;
-      });
       var cy = document.getElementById('copy-year');
       if (cy) cy.textContent = new Date().getFullYear();
 

@@ -495,12 +495,12 @@
     <section class="section section-alt">
       <div class="section-inner">
         <div class="section-eyebrow">Why Homesite Mortgage</div>
-        <h2 class="section-title">Family-Owned, Florida-Only, <span class="years-in-business"></span>+ Years In</h2>
+        <h2 class="section-title">Family-Owned, Florida-Only, Serving Since 1999</h2>
         <p class="section-sub">
           Since 1999, Homesite Mortgage has been a family-owned brokerage serving Florida borrowers. No call centers. No handoffs. The same small team you start with is the same team that gets you to closing.
         </p>
         <ul class="feature-list">
-          <li><strong><span class="years-in-business"></span>+ years</strong> helping Florida families buy homes.</li>
+          <li><strong>Since 1999</strong> helping Florida families buy homes.</li>
           <li><strong>Licensed statewide.</strong> Homesite Mortgage originates loans in Florida only.</li>
           <li><strong>Every prequal is reviewed personally.</strong> Direct line, real conversations.</li>
           <li><strong>Processing and closing handled by our team.</strong> Same names on every email, every call.</li>
@@ -659,10 +659,6 @@
   <script>
     // Years auto-calc + copyright + nav hamburger toggle
     (function() {
-      var yr = new Date().getFullYear() - 1999;
-      document.querySelectorAll('.years-in-business').forEach(function(el) {
-        el.textContent = yr;
-      });
       var cy = document.getElementById('copy-year');
       if (cy) cy.textContent = new Date().getFullYear();
 
