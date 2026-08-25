@@ -209,7 +209,7 @@
 
     <!-- COMPLIANCE DISCLAIMER -->
     <section class="ty-disclaimer">
-      <p>This is not a commitment to lend. All loans are subject to credit approval. Homesite Mortgage originates loans in Florida only. Family-owned Florida mortgage broker since 1999 — <span class="years-in-business"></span> years serving borrowers statewide.</p>
+      <p>This is not a commitment to lend. All loans are subject to credit approval. Homesite Mortgage originates loans in Florida only. Family-owned Florida mortgage broker since 1999, serving borrowers statewide.</p>
     </section>
   </main>
 
@@ -260,8 +260,6 @@
   <script>
     // Years auto-calc + copyright + nav hamburger
     (function() {
-      var yr = new Date().getFullYear() - 1999;
-      document.querySelectorAll('.years-in-business').forEach(function(el) { el.textContent = yr; });
       var cy = document.getElementById('copy-year');
       if (cy) cy.textContent = new Date().getFullYear();
       var nav = document.querySelector('.nav');
