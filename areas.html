@@ -64,7 +64,23 @@
         .footer-links a:hover { text-decoration: underline; }
         @media (max-width: 600px) { .nav-phone span { display: none; } .area-hero h1 { font-size: 1.6em; } .container { padding: 18px; } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.001ms !important; } }
-    </style>
+    
+    /* --- CookieYes banner containment ---
+       The default bottom banner renders roughly 387px tall and position:fixed,
+       and it does not move on scroll, so on a 375x812 screen it covers whatever
+       sits at the bottom of the viewport - here that is the call button and the
+       primary CTA. Cap its height, let it scroll internally, and pad the body
+       while it is present so content can always be scrolled clear of it.
+       The banner stays fully functional: Consent Mode and the Florida-gated
+       Facebook Pixel both depend on it. */
+    @media (max-width: 768px) {
+      .cky-consent-container {
+        max-height: 32vh !important;
+        overflow-y: auto !important;
+      }
+      body:has(.cky-consent-container) { padding-bottom: 36vh; }
+    }
+  </style>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
