@@ -625,9 +625,9 @@
             <label class="radio-card"><input type="radio" name="Intent" value="Investment Property"><span class="radio-label">Investment Property</span></label>
           </div>
 
-          <h3 class="step-q">What state is the property in?</h3>
+          <h3 class="step-q" id="state-q">What state is the property in?</h3>
           <div class="state-wrap">
-            <select id="property-state" name="Property State" required>
+            <select id="property-state" name="Property State" aria-labelledby="state-q" required>
               <option value="Florida" selected>Florida</option>
               <option value="Alabama">Alabama</option>
               <option value="Alaska">Alaska</option>
@@ -731,8 +731,8 @@
             <label class="radio-card"><input type="radio" name="Estimated Credit Score" value="Needs Work (below 660)"><span class="radio-label"><strong>Needs Work</strong> · Below 660</span></label>
           </div>
 
-          <h3 class="step-q">Found a place you love? <span style="font-weight:400;font-size:0.85em;color:#6b7280;">(optional)</span></h3>
-          <input type="text" name="Property of Interest" maxlength="200"
+          <h3 class="step-q" id="property-q">Found a place you love? <span style="font-weight:400;font-size:0.85em;color:#6b7280;">(optional)</span></h3>
+          <input type="text" name="Property of Interest" aria-labelledby="property-q" maxlength="200"
             placeholder="Property address or listing link — or leave blank if still looking"
             autocomplete="off"
             style="width:100%;padding:14px 16px;font-size:1rem;border:1px solid #d1d5db;border-radius:10px;font-family:inherit;box-sizing:border-box;" />
@@ -803,6 +803,14 @@
           <!-- Turnstile bot check — rendered when this step becomes visible. -->
           <div id="turnstile-slot" style="margin-top:16px;min-height:0;"></div>
 
+          <div id="verify-error" role="alert" hidden
+               style="margin-top:14px;padding:14px 16px;border:1px solid #fecaca;background:#fef2f2;border-radius:10px;font-size:0.9rem;color:#7f1d1d;line-height:1.6;">
+            We couldn't finish the security check on this device, so we haven't sent your
+            information yet — nothing you typed has been lost.
+            <strong>Reload the page to try again</strong>, or call us and we'll take it over the phone:
+            <a href="tel:3217514403" style="color:#7f1d1d;font-weight:700;white-space:nowrap;">(321) 751-4403</a>.
+          </div>
+
           <div class="step-nav">
             <button type="button" class="btn-secondary" data-back>← Back</button>
             <button type="submit" class="btn-primary" id="prequal-submit">Get My Options →</button>
@@ -813,10 +821,14 @@
       </form>
     </div>
 
-    <!-- P3 — 3-step form controller: progress, validation, localStorage draft, ?type= prefill -->
+    <!-- P3 — 3-step form controller: progress, validation, sessionStorage draft, ?type= prefill -->
     <script>
       (function() {
         var STORAGE_KEY = 'homesite_prequal_draft';
+        // The draft used to live in localStorage, which survives browser close and
+        // carries the credit band, loan amount and employment answers with it.
+        // It is sessionStorage now; clear anything a previous visit left behind.
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
 
         // ?type= maps to a display label (used for the banner above the form)
         var TYPE_LABELS = {
@@ -979,13 +991,13 @@
             fd.forEach(function(v, k) { if (!DRAFT_SKIP[k]) obj[k] = v; });
             obj.__step = currentStep;
             obj.__ts = Date.now();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
           } catch (e) { /* storage blocked; best-effort */ }
         }
 
         function restoreDraft() {
           try {
-            var raw = localStorage.getItem(STORAGE_KEY);
+            var raw = sessionStorage.getItem(STORAGE_KEY);
             if (!raw) return;
             var obj = JSON.parse(raw);
             // Discard stale drafts rather than letting them sit on the device forever.
@@ -1018,7 +1030,7 @@
         }
 
         function clearDraft() {
-          try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+          try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
         }
 
         function applyTypeParam() {
@@ -1128,6 +1140,15 @@
           turnstilePendingSubmit = false;
           clearTimeout(turnstileTimer);
           turnstileTimer = null;
+          // The widget never produced a token. Submitting now is a guaranteed 400
+          // from the Worker (TURNSTILE_SECRET is set), which would navigate away
+          // and bin everything they typed. Keep them here instead.
+          var tf = form.querySelector('input[name="cf-turnstile-response"]');
+          if (!tf || !tf.value) {
+            setSubmitting(false);
+            showVerifyError();
+            return;
+          }
           form.dataset.turnstileSubmitted = '1';
           form.submit();
         }
@@ -1199,6 +1220,16 @@
         // A dead-looking button invites a second tap or an abandon.
         var submitBtn = document.getElementById('prequal-submit');
         var submitBtnLabel = submitBtn ? submitBtn.textContent : '';
+        // Shown instead of POSTing a token we know the Worker will reject.
+        function showVerifyError() {
+          var box = document.getElementById('verify-error');
+          if (box) {
+            box.hidden = false;
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          track('prequal_verify_failed', {});
+        }
+
         function setSubmitting(on) {
           if (!submitBtn) return;
           submitBtn.disabled = on;
@@ -1206,10 +1237,10 @@
           submitBtn.textContent = on ? 'Sending…' : submitBtnLabel;
         }
 
-        // Submission — validate, ensure a Turnstile token, clear draft, POST to Worker.
-        // If the Turnstile script failed to load, the form submits without a
-        // token and the Worker either skips the check (secret unset) or
-        // returns 400 with the phone fallback (secret set).
+        // Submission — validate, ensure a Turnstile token, POST to Worker.
+        // A tokenless POST is never attempted: TURNSTILE_SECRET is deployed, so
+        // the Worker would 400 it and the visitor would lose everything they
+        // typed. When no token can be obtained we surface #verify-error instead.
         form.addEventListener('submit', function(e) {
           if (!validateStep(currentStep)) {
             e.preventDefault();
@@ -1226,20 +1257,28 @@
           if (form.dataset.turnstileSubmitted) return; // second pass — already tokenized
           var tokenField = form.querySelector('input[name="cf-turnstile-response"]');
           var token = tokenField && tokenField.value;
-          // Only hold the submit while a live widget might still produce a token.
-          // If it already errored, or the script never loaded, let it through — a
-          // stranded visitor is worse than an unverified POST.
-          if (!token && !turnstileErrored && typeof turnstile !== 'undefined' && window.turnstile &&
-              TURNSTILE_SITE_KEY.indexOf('PENDING') === -1) {
+          // No token means the POST cannot succeed — the Worker 400s it. So never
+          // let one through; the only question is whether a live widget might
+          // still produce one.
+          if (!token) {
             e.preventDefault();
-            renderTurnstile();
-            turnstilePendingSubmit = true;
-            // Backstop: never hang on a challenge that never resolves. Arm it once —
-            // re-arming on every click would let an impatient visitor clicking
-            // repeatedly push the deadline back forever and never submit.
-            if (turnstileTimer === null) {
-              turnstileTimer = setTimeout(finishPendingSubmit, 6000);
+            var widgetAlive = !turnstileErrored && typeof turnstile !== 'undefined' &&
+                              window.turnstile && TURNSTILE_SITE_KEY.indexOf('PENDING') === -1;
+            if (widgetAlive) {
+              renderTurnstile();
+              turnstilePendingSubmit = true;
+              // Backstop: never hang on a challenge that never resolves. Arm it once —
+              // re-arming on every click would let an impatient visitor clicking
+              // repeatedly push the deadline back forever and never submit.
+              if (turnstileTimer === null) {
+                turnstileTimer = setTimeout(finishPendingSubmit, 6000);
+              }
+              return;
             }
+            // Script blocked, widget errored, or key not configured. Nothing will
+            // ever produce a token here.
+            setSubmitting(false);
+            showVerifyError();
             return;
           }
           // Note: the draft is deliberately NOT cleared here. This handler also runs

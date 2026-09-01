@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Contact Homesite Mortgage by phone or email. Tom Culpepper, Principal Broker, NMLS #353539. Serving all of Florida online and by appointment.">
-    <meta name="keywords" content="contact Homesite Mortgage, mortgage inquiry, home loan support, pre-approval, mortgage experts, Florida lender">
+    <meta name="keywords" content="contact Homesite Mortgage, mortgage inquiry, home loan support, pre-approval, mortgage experts, Florida mortgage broker">
     <meta name="author" content="Homesite Mortgage">
     <meta name="robots" content="index, follow">
     <title>Contact Us | Homesite Mortgage — Melbourne, FL</title>
@@ -179,7 +179,12 @@
             width: 100%;
         }
 
-        .btn-gold:hover {
+        .btn-gold:disabled {
+            opacity: 0.6;
+            cursor: wait;
+            transform: none;
+        }
+        .btn-gold:hover:not(:disabled) {
             background-color: var(--accent-gold-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(197, 160, 89, 0.6);
@@ -307,7 +312,7 @@
 
     <header class="header" role="banner">
         <a href="index.html">
-            <img src="https://homesitemortgage.online/images/Homesitelogo.png" alt="Homesite Mortgage Logo" style="max-width: 200px;">
+            <img src="https://homesitemortgage.online/images/Homesitelogo.webp" alt="Homesite Mortgage Logo" style="max-width: 200px;">
         </a>
         <h1>Contact Us</h1>
         </header>
@@ -369,7 +374,15 @@
                 <!-- Turnstile bot check — invisible for real people (managed mode). -->
                 <div id="turnstile-slot" style="margin-top:18px;"></div>
 
-                <button type="submit" class="btn-gold">Send Message</button>
+                <div id="verify-error" role="alert" hidden
+                     style="margin-top:14px;padding:14px 16px;border:1px solid #fecaca;background:#fef2f2;border-radius:10px;font-size:0.9rem;color:#7f1d1d;line-height:1.6;text-align:left;">
+                    We couldn't finish the security check on this device, so your message
+                    hasn't been sent — nothing you typed has been lost.
+                    <strong>Reload the page to try again</strong>, or call us:
+                    <a href="tel:3217514403" style="color:#7f1d1d;font-weight:700;white-space:nowrap;">(321) 751-4403</a>.
+                </div>
+
+                <button type="submit" class="btn-gold" id="contact-submit">Send Message</button>
             </form>
             <p style="margin-top:20px;font-size:0.78rem;color:#999;line-height:1.6;text-align:center;">This is not a commitment to lend. All loans subject to credit approval. Homesite Mortgage originates loans in Florida only.</p>
         </div>
@@ -467,6 +480,30 @@
         var form = document.querySelector('form[action*="homesite-form-handler"]');
         if (!form) return;
         var widgetId = null, pendingSubmit = false;
+        var submitBtn = form.querySelector('button[type="submit"]');
+        var submitLabel = submitBtn ? submitBtn.textContent : '';
+        var backstop = null;
+
+        function setSubmitting(on) {
+          if (!submitBtn) return;
+          submitBtn.disabled = on;
+          submitBtn.setAttribute('aria-busy', on ? 'true' : 'false');
+          submitBtn.textContent = on ? 'Sending…' : submitLabel;
+        }
+
+        // Shown instead of POSTing a token the Worker is certain to reject.
+        function showVerifyError() {
+          setSubmitting(false);
+          var box = document.getElementById('verify-error');
+          if (box) { box.hidden = false; box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        }
+
+        function submitWithToken() {
+          var fld = form.querySelector('input[name="cf-turnstile-response"]');
+          if (!fld || !fld.value) { showVerifyError(); return; }
+          form.dataset.tsDone = '1';
+          form.submit();
+        }
 
         function render() {
           if (widgetId !== null) return;
@@ -478,12 +515,17 @@
             action: 'turnstile-spin-v1',
             'refresh-expired': 'auto',
             'error-callback': function() {
-              // Don't strand the visitor if the challenge errors — submit and let
-              // the Worker respond with its message + phone fallback.
-              if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
+              // The challenge errored, so no token will arrive. Submitting anyway
+              // is a guaranteed 400 that discards their message — show the
+              // fallback in place instead.
+              if (pendingSubmit) {
+                pendingSubmit = false;
+                clearTimeout(backstop);
+                showVerifyError();
+              }
             },
             callback: function() {
-              if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
+              if (pendingSubmit) { pendingSubmit = false; clearTimeout(backstop); submitWithToken(); }
             }
           });
         }
@@ -497,17 +539,22 @@
         }, 250);
 
         form.addEventListener('submit', function(e) {
-          if (form.dataset.tsDone) return; // token already in hand — let it POST
+          if (form.dataset.tsDone) return;  // token already in hand — let it POST
           var field = form.querySelector('input[name="cf-turnstile-response"]');
           if (field && field.value) return; // widget already solved
-          if (typeof turnstile === 'undefined' || !window.turnstile) return; // script blocked; Worker decides
-          e.preventDefault();       // hold submit until the check finishes
+          e.preventDefault();               // hold submit until the check finishes
+          setSubmitting(true);
+          if (typeof turnstile === 'undefined' || !window.turnstile) {
+            // Script blocked by an extension or network. No token is coming, and
+            // the Worker 400s a tokenless POST, so do not send them there.
+            showVerifyError();
+            return;
+          }
           render();
           pendingSubmit = true;
-          // Backstop: never leave the button dead if the widget never resolves
-          // (mirrors prequal.html). After 6s, submit anyway; the Worker decides.
-          setTimeout(function () {
-            if (pendingSubmit) { pendingSubmit = false; form.dataset.tsDone = '1'; form.submit(); }
+          // Backstop: never leave the button dead if the widget never resolves.
+          backstop = setTimeout(function () {
+            if (pendingSubmit) { pendingSubmit = false; submitWithToken(); }
           }, 6000);
         });
       })();

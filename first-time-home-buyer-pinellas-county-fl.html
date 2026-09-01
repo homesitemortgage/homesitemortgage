@@ -308,6 +308,22 @@
         overflow-y: auto !important;
       }
       body:has(.cky-consent-container) { padding-bottom: 36vh; }
+
+      /* The sticky call/prequal bar is ALSO position:fixed bottom:0, and
+         CookieYes outranks it on z-index - so while the banner is up, both
+         conversion controls on the page are hidden behind it. Lift the bar to
+         sit directly above the banner rather than raising its z-index, which
+         would cover the Accept/Reject buttons and break consent capture. */
+      body:has(.cky-consent-container) .sticky-cta { bottom: 33vh; }
+      body:has(.cky-consent-container) { padding-bottom: calc(36vh + 80px); }
+
+      /* Release it the moment CookieYes hides the banner. :has() still matches a
+         display:none element, so the removal case alone is not enough - most
+         consent banners hide via an inline style rather than unmounting. */
+      body:has(.cky-consent-container[style*="display: none"]) .sticky-cta,
+      body:has(.cky-consent-container[style*="display:none"]) .sticky-cta { bottom: 0; }
+      body:has(.cky-consent-container[style*="display: none"]),
+      body:has(.cky-consent-container[style*="display:none"]) { padding-bottom: 80px; }
     }
   </style>
   <script type="application/ld+json">
@@ -403,7 +419,7 @@
   <nav class="nav" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo" aria-label="Homesite Mortgage — Home">
-        <img src="images/Homesitelogo.png" alt="Homesite Mortgage Logo" width="160" height="44" />
+        <img src="images/Homesitelogo.webp" alt="Homesite Mortgage Logo" width="161" height="52" />
       </a>
       <button class="nav-toggle" type="button" aria-label="Open menu" aria-controls="nav-menu" aria-expanded="false">
         <span class="nav-toggle-icon" aria-hidden="true">☰</span>
@@ -465,7 +481,7 @@
         <ul class="feature-list">
           <li><strong>1. Get prequalified.</strong> A free prequal gives you a realistic budget before you shop, so you're looking at homes you can actually finance — not falling in love with one you can't.</li>
           <li><strong>2. Understand your loan options.</strong> First-time buyers in Florida often consider FHA, VA, or conventional loans. We'll explain the trade-offs and which may fit your situation.</li>
-          <li><strong>3. Find a home and make an offer.</strong> With a prequal in hand, your offer carries more weight. A local real estate agent and a Florida-licensed lender working together makes this smoother.</li>
+          <li><strong>3. Find a home and make an offer.</strong> With a prequal in hand, your offer carries more weight. A local real estate agent and a Florida-licensed mortgage broker working together makes this smoother.</li>
           <li><strong>4. Underwriting and the appraisal.</strong> Your file is reviewed and the home is appraised. We handle the documentation and keep you updated so there are no surprises.</li>
           <li><strong>5. Close and get your keys.</strong> You review and sign your final documents, and the home is yours. Our team processes and closes your loan in-house.</li>
         </ul>
@@ -616,7 +632,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <span style="background:#ffffff; border-radius:6px; padding:3px 8px; display:inline-flex; align-items:center;">
-            <img src="images/Homesitelogo.png" alt="Homesite Mortgage" width="140" height="38" />
+            <img src="images/Homesitelogo.webp" alt="Homesite Mortgage" width="124" height="40" />
           </span>
           <p style="margin-top:12px;">Family-owned Florida mortgage brokerage since 1999. Serving borrowers statewide — by phone, email, and secure online tools.</p>
         </div>
