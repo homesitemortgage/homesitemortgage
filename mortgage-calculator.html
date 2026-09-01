@@ -89,8 +89,13 @@
     input[type=number], select { padding:12px 14px; border:1.5px solid #d7dde6; border-radius:9px; font-size:1rem; font-family:inherit; color:var(--navy); width:100%; -moz-appearance:textfield; }
     input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
     input:focus, select:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(197,160,89,0.18); }
-    input[type=range] { -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:999px; background:#e3e8ef; outline:none; margin-top:2px; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:28px; height:28px; border-radius:50%; background:var(--navy); border:3px solid #fff; box-shadow:0 1px 6px rgba(0,0,0,0.3); cursor:pointer; }
+    /* The border box IS the touch target when appearance:none, and this was
+       6px tall. Grow the element to 28px and move the visible 6px bar into
+       the track pseudo-elements so it looks identical but can be hit. */
+    input[type=range] { -webkit-appearance:none; appearance:none; width:100%; height:28px; background:transparent; outline:none; margin-top:0; }
+    input[type=range]::-webkit-slider-runnable-track { height:6px; border-radius:999px; background:#e3e8ef; }
+    input[type=range]::-moz-range-track { height:6px; border-radius:999px; background:#e3e8ef; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; margin-top:-11px; width:28px; height:28px; border-radius:50%; background:var(--navy); border:3px solid #fff; box-shadow:0 1px 6px rgba(0,0,0,0.3); cursor:pointer; }
     input[type=range]::-moz-range-thumb { width:28px; height:28px; border-radius:50%; background:var(--navy); border:3px solid #fff; box-shadow:0 1px 6px rgba(0,0,0,0.3); cursor:pointer; }
     .dp-row { display:flex; gap:8px; }
     .dp-row input[type=number] { flex:1; }
@@ -199,7 +204,7 @@
         <img src="images/Homesitelogo.webp" alt="Homesite Mortgage Logo" width="155" height="50" />
       </a>
       <div class="nav-actions">
-        <a href="tel:3217514403" class="nav-phone"><span>321-751-4403</span></a>
+        <a href="tel:3217514403" class="nav-phone" aria-label="Call us at 321-751-4403"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.95.68l1.5 4.5a1 1 0 01-.5 1.2l-2.26 1.13a11 11 0 005.5 5.5l1.13-2.26a1 1 0 011.2-.5l4.5 1.5a1 1 0 01.68.95V19a2 2 0 01-2 2h-1C9.7 21 3 14.3 3 6V5z"/></svg><span>321-751-4403</span></a>
         <a href="prequal.html" class="btn btn-gold">Get Pre-Approved</a>
       </div>
     </div>
