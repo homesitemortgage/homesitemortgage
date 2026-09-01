@@ -525,6 +525,17 @@ function utmEntries(fields) {
 }
 
 // ---------- HubSpot upsert ----------
+/**
+ * HubSpot echoes rejected property values back inside `message` - on
+ * INVALID_EMAIL that is the borrower's own email address. Never log the body;
+ * correlationId is what HubSpot support asks for and carries no borrower data.
+ */
+async function hsErr(res) {
+  const b = await res.json().catch(() => null);
+  if (!b) return '(unparseable error body withheld)';
+  return { correlationId: b.correlationId, category: b.category, status: b.status };
+}
+
 async function upsertHubspot(token, { email, name, phone, fields, formSource, tcpaStatus }) {
   if (!token) {
     console.error('HubSpot skipped: no token');
@@ -600,7 +611,7 @@ async function upsertHubspot(token, { email, name, phone, fields, formSource, tc
     }),
   });
   if (!searchRes.ok) {
-    console.error('HubSpot search failed:', searchRes.status, await searchRes.text());
+    console.error('HubSpot search failed:', searchRes.status, await hsErr(searchRes));
     return;
   }
   const search = await searchRes.json();
@@ -612,7 +623,7 @@ async function upsertHubspot(token, { email, name, phone, fields, formSource, tc
       body: JSON.stringify({ properties }),
     });
     if (!patchRes.ok) {
-      console.error('HubSpot update failed:', patchRes.status, await patchRes.text());
+      console.error('HubSpot update failed:', patchRes.status, await hsErr(patchRes));
     }
   } else {
     const createRes = await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
@@ -621,7 +632,7 @@ async function upsertHubspot(token, { email, name, phone, fields, formSource, tc
       body: JSON.stringify({ properties }),
     });
     if (!createRes.ok) {
-      console.error('HubSpot create failed:', createRes.status, await createRes.text());
+      console.error('HubSpot create failed:', createRes.status, await hsErr(createRes));
     }
   }
 }
@@ -655,7 +666,7 @@ async function ensureConsentProperty(headers) {
       consentPropReady = true; // created, or already exists
       return true;
     }
-    console.error('ensureConsentProperty failed:', res.status, await res.text());
+    console.error('ensureConsentProperty failed:', res.status, await hsErr(res));
     return false;
   } catch (err) {
     console.error('ensureConsentProperty exception:', err && err.message);

@@ -171,6 +171,22 @@
         overflow-y: auto !important;
       }
       body:has(.cky-consent-container) { padding-bottom: 36vh; }
+
+      /* The sticky call/prequal bar is ALSO position:fixed bottom:0, and
+         CookieYes outranks it on z-index - so while the banner is up, both
+         conversion controls on the page are hidden behind it. Lift the bar to
+         sit directly above the banner rather than raising its z-index, which
+         would cover the Accept/Reject buttons and break consent capture. */
+      body:has(.cky-consent-container) .sticky-cta { bottom: 33vh; }
+      body:has(.cky-consent-container) { padding-bottom: calc(36vh + 80px); }
+
+      /* Release it the moment CookieYes hides the banner. :has() still matches a
+         display:none element, so the removal case alone is not enough - most
+         consent banners hide via an inline style rather than unmounting. */
+      body:has(.cky-consent-container[style*="display: none"]) .sticky-cta,
+      body:has(.cky-consent-container[style*="display:none"]) .sticky-cta { bottom: 0; }
+      body:has(.cky-consent-container[style*="display: none"]),
+      body:has(.cky-consent-container[style*="display:none"]) { padding-bottom: 80px; }
     }
   </style>
 </head>

@@ -103,7 +103,7 @@
     .ty-contact-card p { color: var(--gray-600); margin-bottom: 16px; }
     .ty-contact-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
     .ty-disclaimer { max-width: 760px; margin: 0 auto; padding: 0 24px 56px; }
-    .ty-disclaimer p { color: var(--gray-400); font-size: 0.78rem; line-height: 1.7; text-align: center; }
+    .ty-disclaimer p { color: var(--gray-600); font-size: 0.78rem; line-height: 1.7; text-align: center; }
 
     /* Footer (matches site) */
     .footer { background: #050d1a; border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 24px 32px; }
@@ -152,7 +152,7 @@
   <nav class="nav" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo" aria-label="Homesite Mortgage — Home">
-        <img src="images/Homesitelogo.png" alt="Homesite Mortgage Logo" width="160" height="44" />
+        <img src="images/Homesitelogo.webp" alt="Homesite Mortgage Logo" width="161" height="52" />
       </a>
       <button class="nav-toggle" type="button" aria-label="Open menu" aria-controls="nav-menu" aria-expanded="false">
         <span class="nav-toggle-icon" aria-hidden="true">☰</span>
@@ -298,7 +298,8 @@
        Clearing it on the prequal page's submit handler instead would wipe the visitor's
        answers on attempts the Worker rejects, forcing them to start over. -->
   <script>
-    try { localStorage.removeItem('homesite_prequal_draft'); } catch (e) {}
+    try { sessionStorage.removeItem('homesite_prequal_draft'); } catch (e) {}
+    try { localStorage.removeItem('homesite_prequal_draft'); } catch (e) {} // legacy key
   </script>
 
   <!-- Facebook Pixel — gated behind CookieYes "Advertisement" consent. Fires a
