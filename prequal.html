@@ -604,8 +604,13 @@
              homesite-form-handler Worker (Resend email + HubSpot upsert, 303 → thank-you.html).
              No third-party form processor; Worker persists nothing (no KV/D1/R2). -->
 
-        <!-- Honeypot — must remain empty; bots fill it, real users never see it. -->
-        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp-trap">
+        <!-- Honeypot — must remain empty; bots fill it, real users never see it.
+             Named hp_field rather than "website" on purpose: a filled honeypot makes
+             the Worker silently redirect to thank-you WITHOUT emailing anyone, so a
+             browser or password manager autofilling it would destroy a real lead and
+             show that person a success page. "website" is a common autofill target;
+             this is not. Bots fill every field regardless of its name. -->
+        <input type="text" name="hp_field" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp-trap">
 
         <!-- Lead-source page + UTM attribution (populated by inline JS at bottom of page). -->
         <input type="hidden" name="lead_source_page" value="prequal">

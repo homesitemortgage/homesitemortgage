@@ -133,8 +133,23 @@ export default {
     }
 
     // ----- Honeypot — silently accept and redirect bots -----
-    const honeypot = String(form.get('website') || '').trim();
+    // Checks BOTH names: the field was renamed from `website` to `hp_field`
+    // because `website` is a common browser-autofill target, and a false
+    // positive here destroys a real lead while showing that person a success
+    // page. The old name stays wired up so bots that learned it are still
+    // caught and there is no gap across the deploy.
+    //
+    // This is logged deliberately. A silently discarded submission is otherwise
+    // indistinguishable from a successful one, so if this ever fires on a real
+    // person there has to be something to find. Field NAMES only, never values.
+    const honeypot = String(form.get('hp_field') || form.get('website') || '').trim();
     if (honeypot) {
+      console.error('Honeypot tripped — submission dropped:', {
+        field: form.get('hp_field') ? 'hp_field' : 'website',
+        formSource: String(form.get('lead_source_page') || 'unknown'),
+        hasEmail: Boolean(form.get('Email Address') || form.get('email')),
+        hasTurnstile: Boolean(form.get('cf-turnstile-response')),
+      });
       return Response.redirect(THANK_YOU_URL, 303);
     }
 
@@ -143,7 +158,7 @@ export default {
     for (const [k, v] of form.entries()) {
       if (k === 'access_key' || k === 'subject' || k === 'redirect') continue;
       if (k.startsWith('_')) continue; // _next, _cc, _captcha, etc.
-      if (k === 'website') continue; // honeypot
+      if (k === 'website' || k === 'hp_field') continue; // honeypot (both names)
       if (k === 'g-recaptcha-response') continue; // legacy verification token, not lead data
       if (k === 'cf-turnstile-response') continue; // Turnstile token, not lead data
       fields[k] = String(v || '');
