@@ -456,6 +456,55 @@
             <p style="font-style: italic; color: var(--primary-navy);">“Family-owned Florida mortgage broker since 1999, serving borrowers statewide”</p>
         </div>
 
+        <div class="trust-card">
+            <h3>Visit the Office</h3>
+            <p><strong>📍 Address:</strong> 2754 Aurora Road, Melbourne, FL 32935</p>
+            <p style="margin:10px 0 0;color:#555;font-size:0.92rem;line-height:1.6;">
+              We work <strong>by appointment only</strong>, so please call before you come by &mdash;
+              that way someone is here for you rather than out at a closing.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+              <a href="https://www.google.com/maps/dir/?api=1&amp;destination=2754+Aurora+Road%2C+Melbourne%2C+FL+32935"
+                 target="_blank" rel="noopener"
+                 style="text-decoration:none;display:inline-block;padding:12px 22px;background:var(--accent-gold);color:var(--primary-navy);border-radius:var(--btn-radius);font-weight:700;">Get directions &rarr;</a>
+              <a href="tel:3217514403"
+                 style="text-decoration:none;display:inline-block;padding:12px 22px;border:1.5px solid var(--accent-gold);border-radius:var(--btn-radius);color:var(--primary-navy);font-weight:700;">Call first: (321) 751-4403</a>
+            </div>
+
+            <!--
+              Click-to-load map. The Google Maps embed is a third-party frame that sets
+              cookies, so loading it automatically would fire a tracker before the visitor
+              has answered the consent banner sitting on the same page. Nothing is requested
+              from Google until someone actually asks for the map. It also keeps roughly
+              half a megabyte off the initial mobile load.
+            -->
+            <div id="map-holder" style="margin-top:18px;">
+              <button type="button" id="map-load"
+                      style="width:100%;padding:22px 16px;background:#f4f6f9;border:1.5px dashed #c9d2dd;border-radius:var(--btn-radius);color:var(--primary-navy);font-weight:700;font-family:inherit;font-size:0.95rem;cursor:pointer;">
+                Show map of 2754 Aurora Road
+                <span style="display:block;font-weight:400;font-size:0.8rem;color:#666;margin-top:6px;">Loads Google Maps, which sets its own cookies</span>
+              </button>
+            </div>
+        </div>
+
+        <script>
+          (function () {
+            var btn = document.getElementById('map-load');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+              var holder = document.getElementById('map-holder');
+              var frame = document.createElement('iframe');
+              frame.src = 'https://maps.google.com/maps?q=2754+Aurora+Road,+Melbourne,+FL+32935&z=15&output=embed';
+              frame.title = 'Map showing Homesite Mortgage at 2754 Aurora Road, Melbourne, Florida';
+              frame.loading = 'lazy';
+              frame.referrerPolicy = 'no-referrer-when-downgrade';
+              frame.style.cssText = 'width:100%;height:300px;border:0;border-radius:var(--btn-radius);display:block;';
+              holder.innerHTML = '';
+              holder.appendChild(frame);
+            });
+          })();
+        </script>
+
         <div class="trust-card" style="text-align:center;">
             <div style="color:#f5a623;font-size:1.4rem;letter-spacing:2px;" aria-hidden="true">★★★★★</div>
             <p style="margin:6px 0 0;"><a href="https://maps.google.com/?cid=11707789900640130591" target="_blank" rel="noopener" style="color:var(--primary-navy);text-decoration:none;font-weight:700;"><strong>5.0</strong> &middot; 28 verified Google reviews</a></p>
