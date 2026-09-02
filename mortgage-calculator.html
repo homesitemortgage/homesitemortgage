@@ -156,6 +156,24 @@
     @media (max-width:600px){
       .grid, .adv.show { grid-template-columns:1fr; }
       .hero h1 { font-size:1.65rem; }
+      /* Measured on a 375x812 viewport: the capped cookie banner covers from
+         y=552, and the hero alone ran 69-421 - so the price field was the only
+         input on screen and the down payment, rate, term and result all sat
+         below the banner. That matters more now the calculator deliberately
+         starts with no down payment or term filled in (Reg Z 1026.24(d)): the
+         visitor has to reach three more controls before anything computes, so
+         they need to be able to see that those controls exist. */
+      .hero { padding:20px 24px 16px; }
+      .hero .eyebrow { margin-bottom:6px; }
+      .hero h1 { margin-bottom:8px; }
+      .hero p { font-size:0.94rem; line-height:1.5; }
+      .wrap { padding:22px 16px 8px; }
+      .calc { padding:18px 16px; }
+      .grid { gap:14px 16px; }
+      .field { gap:5px; }
+      /* 11px, not 10: at 10 the inputs measure 43px tall and these are the
+         controls a thumb has to hit on a financial form. 11 keeps them at 45. */
+      input[type=number], select { padding:11px 12px; }
       .result .big { font-size:2.2rem; }
       .nav-phone span { display:none; }
       .sticky-cta.show { display:flex; }
