@@ -1183,11 +1183,18 @@
         // answer is ever written into it. Contact and financial details are
         // nonpublic personal information under GLBA and must not reach a URL, a
         // referrer header or a browser history entry.
+        // Counts entries THIS page load pushed. A restored draft can open straight
+        // on step 2 or 3 without any, and routing Back through history then would
+        // leave the form entirely.
+        var stepHistoryDepth = 0;
         function pushStepHistory() {
-          try { history.pushState({ hsStep: true }, '', location.href); }
-          catch (e) { /* history unavailable - back simply behaves as before */ }
+          try {
+            history.pushState({ hsStep: true }, '', location.href);
+            stepHistoryDepth++;
+          } catch (e) { /* history unavailable - back simply behaves as before */ }
         }
         window.addEventListener('popstate', function() {
+          if (stepHistoryDepth > 0) stepHistoryDepth--;
           if (currentStep > 1) showStep(currentStep - 1, true);
         });
 
@@ -1203,9 +1210,15 @@
           }
           if (backBtn) {
             e.preventDefault();
-            // Go through history rather than calling showStep directly, so the
-            // Back button and the back gesture stay on the same entry stack.
-            if (currentStep > 1) history.back();
+            if (currentStep <= 1) return;
+            // Route through history only when this page load actually pushed an
+            // entry, so the Back button and the back gesture share one stack.
+            // With no pushes - a draft restored straight onto step 2 or 3 -
+            // history.back() would navigate off the form, and Full Name, Email
+            // and Phone are deliberately excluded from the saved draft, so those
+            // would be gone. Step in place instead.
+            if (stepHistoryDepth > 0) history.back();
+            else showStep(currentStep - 1, true);
           }
         });
 
