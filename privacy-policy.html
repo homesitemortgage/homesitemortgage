@@ -181,6 +181,13 @@
         overflow-y: auto !important;
       }
       body:has(.cky-consent-container) { padding-bottom: 36vh; }
+      /* Release it the moment CookieYes hides the banner. :has() still matches
+         a display:none element, so waiting for the node to be removed is not
+         enough - CookieYes hides via an inline style rather than unmounting,
+         which left 36vh of dead space below the footer permanently, for every
+         returning visitor who had already consented. */
+      body:has(.cky-consent-container[style*="display: none"]),
+      body:has(.cky-consent-container[style*="display:none"]) { padding-bottom: 0; }
     }
   </style>
 </head>
