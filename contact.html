@@ -124,6 +124,27 @@
             font-size: 1.1em;
         }
 
+        .call-first {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin: 0 0 28px;
+            padding: 16px 18px;
+            background: #fff7e6;
+            border: 1px solid var(--accent-gold);
+            border-radius: var(--btn-radius);
+        }
+        .call-first a {
+            font-weight: 700;
+            font-size: 1.15em;
+            color: var(--primary-navy);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .call-first a:hover, .call-first a:focus-visible { text-decoration: underline; }
+        .call-first-note { color: #5a5a5a; font-size: 0.92em; }
+
         /* --- Form Styling --- */
         form {
             display: flex;
@@ -368,6 +389,20 @@
         <div class="container">
             <h2>Get in Touch</h2>
             <p class="intro">Have a question about your mortgage options? We are here to help you every step of the way.</p>
+
+            <!--
+              The phone number used to live below the form, in the "Direct Contact
+              Info" card. Someone who came here specifically to talk to a person had
+              to scroll past four required fields to find it - and this page has no
+              nav and no sticky call bar, so there was nothing else offering it
+              either. Calling is a completed lead, so it goes above the form.
+            -->
+            <div class="call-first">
+              <a href="tel:3217514403" aria-label="Call Homesite Mortgage at 321-751-4403">
+                <span aria-hidden="true">&#128222;</span> Call (321)&nbsp;751-4403
+              </a>
+              <span class="call-first-note">A real person answers &mdash; or send a message below.</span>
+            </div>
             
             <!--
               P1.6.2 — Form action points to the homesite-form-handler Cloudflare Worker.
