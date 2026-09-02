@@ -227,15 +227,15 @@
           </div>
 
           <div class="field full">
-            <label for="down">Down payment <span class="hint" id="downAlt">= 20%</span></label>
+            <label for="down">Down payment <span class="hint" id="downAlt"></span></label>
             <div class="dp-row">
-              <input id="down" type="number" inputmode="numeric" min="0" step="0.5" value="20">
+              <input id="down" type="number" inputmode="numeric" min="0" step="0.5" value="" aria-describedby="downAlt">
               <div class="dp-toggle" role="group" aria-label="Down payment unit">
                 <button type="button" id="dpPct" class="active" aria-pressed="true">%</button>
                 <button type="button" id="dpDol" aria-pressed="false">$</button>
               </div>
             </div>
-            <input id="downRange" type="range" min="0" max="1500000" step="2500" value="75000" aria-label="Down payment slider">
+            <input id="downRange" type="range" min="0" max="1500000" step="2500" value="0" aria-label="Down payment slider">
           </div>
 
           <div class="field">
@@ -247,7 +247,7 @@
           <div class="field">
             <label for="termLabel" id="termLabel">Loan term</label>
             <div class="seg" role="group" aria-labelledby="termLabel">
-              <button type="button" class="term active" data-term="30">30 yr</button>
+              <button type="button" class="term" data-term="30">30 yr</button>
               <button type="button" class="term" data-term="20">20 yr</button>
               <button type="button" class="term" data-term="15">15 yr</button>
               <button type="button" class="term" data-term="10">10 yr</button>
@@ -359,7 +359,15 @@
   </div>
 
   <script>
-    var S = { price:375000, downDollars:75000, dpMode:'%', rate:NaN, term:30, taxAnnual:3750, taxTouched:false, insAnnual:2400, hoaMonthly:0, extra:0 };
+    // downDollars and term start unset on purpose. Under 12 CFR 1026.24(d)(1) the
+    // amount or percentage of a downpayment and the number of payments or period of
+    // repayment are triggering terms: if this page states them, 1026.24(d)(2) requires
+    // the downpayment, the repayment terms and the APR to appear alongside. A
+    // calculator is defensible because the consumer supplies the figures - but on first
+    // paint nobody has supplied anything, so any pre-filled value is the advertiser
+    // stating it. Leaving these unset is also what makes the disclaimer's "the figures
+    // you enter" true. Do not give either one a default.
+    var S = { price:375000, downDollars:NaN, dpMode:'%', rate:NaN, term:null, taxAnnual:3750, taxTouched:false, insAnnual:2400, hoaMonthly:0, extra:0 };
     var COLORS = { pi:'#0a1f3c', tax:'#c5a059', ins:'#0f3366', pmi:'#cc2200', hoa:'#9ca3af' };
     function $(id){ return document.getElementById(id); }
     function commas(n){ return Math.round(n).toLocaleString('en-US'); }
@@ -377,10 +385,21 @@
       $('taxRange').max = Math.max(2000, Math.round(S.price * 0.04));
     }
     function renderDown(){
+      if (isNaN(S.downDollars)){
+        $('downRange').value = 0;
+        $('down').value = '';
+        $('downAlt').textContent = '';
+        return;
+      }
       $('downRange').value = S.downDollars;
       var pct = S.price > 0 ? (S.downDollars / S.price * 100) : 0;
       if (S.dpMode === '%'){ $('down').value = r1(pct); $('downAlt').textContent = '= ' + money(S.downDollars); }
       else { $('down').value = Math.round(S.downDollars); $('downAlt').textContent = '= ' + r1(pct) + '%'; }
+    }
+    // Joins what is still missing into readable prose for the prompt.
+    function listify(a){
+      if (a.length <= 1) return a[0] || '';
+      return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
     }
     function renderTax(){
       if (!S.taxTouched){ S.taxAnnual = Math.round(S.price * 0.01); }
@@ -416,12 +435,22 @@
       var underLtv = S.price > 0 && (S.downDollars / S.price) < 0.20 && loan > 0;
       var validRate = !isNaN(S.rate) && S.rate >= 0;
 
-      if (!validRate || loan <= 0){
+      if (!validRate || isNaN(loan) || loan <= 0 || S.term === null){
         $('total').style.display = 'none';
         $('resultFlex').style.display = 'none';
         $('prompt').style.display = 'block';
-        $('prompt').textContent = loan <= 0 ? 'Down payment can’t exceed the home price.' : 'Enter your interest rate above to see your payment ↑';
-        $('scPay').innerHTML = 'Estimate your payment<strong>Enter rate ↑</strong>';
+        var msg;
+        if (!isNaN(loan) && loan <= 0){
+          msg = 'Down payment can’t exceed the home price.';
+        } else {
+          var need = [];
+          if (isNaN(S.downDollars)) need.push('a down payment');
+          if (S.term === null) need.push('a loan term');
+          if (!validRate) need.push('your interest rate');
+          msg = 'Enter ' + listify(need) + ' above to see your payment ↑';
+        }
+        $('prompt').textContent = msg;
+        $('scPay').innerHTML = 'Estimate your payment<strong>Enter your details ↑</strong>';
         updateCTA();
         if (document.querySelector('.amort').open) buildAmort();
         return;
@@ -490,7 +519,7 @@
     function buildAmort(){
       var loan = Math.max(0, S.price - S.downDollars);
       var body = $('amortBody'), saved = $('savedNote');
-      if (isNaN(S.rate) || !(loan > 0)){
+      if (isNaN(S.rate) || !(loan > 0) || S.term === null){
         body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#4b5563;padding:14px;">Enter your price, down payment, and rate to see the schedule.</td></tr>';
         saved.style.display = 'none';
         return;
