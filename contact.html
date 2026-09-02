@@ -392,6 +392,17 @@
                 <input type="hidden" id="wbraid" name="wbraid" value="">
                 <input type="hidden" id="utm_term" name="utm_term" value="">
                 <input type="hidden" id="utm_content" name="utm_content" value="">
+                <!-- Google Ads ValueTrack — js/attribution.js already captures these on
+                     whatever page the ad click landed on, but this form had no inputs to
+                     carry them, so a paid click converting here arrived with a gclid and
+                     no keyword, campaign, ad group or creative. Matches prequal.html. -->
+                <input type="hidden" id="adkeyword" name="adkeyword" value="">
+                <input type="hidden" id="matchtype" name="matchtype" value="">
+                <input type="hidden" id="adnetwork" name="adnetwork" value="">
+                <input type="hidden" id="addevice" name="addevice" value="">
+                <input type="hidden" id="campaignid" name="campaignid" value="">
+                <input type="hidden" id="adgroupid" name="adgroupid" value="">
+                <input type="hidden" id="creativeid" name="creativeid" value="">
                 <!-- Turnstile injects its cf-turnstile-response input into this form
                      when the widget renders in #turnstile-slot (below the consent box). -->
 
@@ -488,7 +499,11 @@
       (function() {
         // gbraid/wbraid replace gclid on iOS ad clicks — see prequal.html.
         var keys = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium',
-                    'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referrer_source'];
+                    'utm_campaign', 'utm_term', 'utm_content', 'ref', 'referrer_source',
+                    // Google Ads ValueTrack — captured by js/attribution.js on whatever
+                    // page the ad click landed on; this list is what fills the inputs.
+                    'adkeyword', 'matchtype', 'adnetwork', 'addevice',
+                    'campaignid', 'adgroupid', 'creativeid'];
         try {
           var url = new URLSearchParams(window.location.search);
           keys.forEach(function(k) {
@@ -581,10 +596,21 @@
           render();
         }, 250);
 
+        // Both early returns below hand off to the native POST. Nothing disabled the
+        // button on that path, so a second tap during the Worker round-trip (siteverify
+        // + Resend, several seconds) sent the form twice: two lead emails, two HubSpot
+        // writes, and a 400 on the second because a Turnstile token is single-use —
+        // a failure page for a lead that actually landed. Released after 12s so a POST
+        // that never navigates does not strand them on a dead button.
+        function lockForNativePost() {
+          setSubmitting(true);
+          setTimeout(function() { setSubmitting(false); }, 12000);
+        }
+
         form.addEventListener('submit', function(e) {
-          if (form.dataset.tsDone) return;  // token already in hand — let it POST
+          if (form.dataset.tsDone) { lockForNativePost(); return; }  // token already in hand — let it POST
           var field = form.querySelector('input[name="cf-turnstile-response"]');
-          if (field && field.value) return; // widget already solved
+          if (field && field.value) { lockForNativePost(); return; } // widget already solved
           e.preventDefault();               // hold submit until the check finishes
           var vErr = document.getElementById('verify-error');
           if (vErr) vErr.hidden = true;     // clear a stale failure notice on retry

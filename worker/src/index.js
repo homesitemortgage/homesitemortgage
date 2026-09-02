@@ -169,10 +169,11 @@ export default {
     const phone = pickPhone(fields);
 
     if (!email || !name) {
-      return new Response('Missing required fields (name and email).', {
-        status: 400,
-        headers: { 'Content-Type': 'text/plain' },
-      });
+      return errorPage(
+        'Your submission is missing a name or an email address, so we could not send it. ' +
+        'Please go back and add them &mdash; or call and we will take everything over the phone.',
+        400
+      );
     }
 
     // ----- Turnstile verification (skipped if TURNSTILE_SECRET is unset) -----
@@ -182,9 +183,10 @@ export default {
     if (env.TURNSTILE_SECRET) {
       const turnstileToken = String(form.get('cf-turnstile-response') || '').trim();
       if (!turnstileToken) {
-        return new Response(
-          `We couldn't verify your submission. Please reload the page and try again — or call us at ${PHONE_FALLBACK}.`,
-          { status: 400, headers: { 'Content-Type': 'text/plain' } }
+        return errorPage(
+          'We could not finish the security check, so your information has not been sent. ' +
+          'Please go back, reload the page and try once more &mdash; or call and we will take it over the phone.',
+          400
         );
       }
       try {
@@ -204,9 +206,10 @@ export default {
             action: verifyData.action,
             hostname: verifyData.hostname,
           });
-          return new Response(
-            `We couldn't verify your submission. Please reload the page and try again — or call us at ${PHONE_FALLBACK}.`,
-            { status: 400, headers: { 'Content-Type': 'text/plain' } }
+          return errorPage(
+            'We could not finish the security check, so your information has not been sent. ' +
+            'Please go back, reload the page and try once more &mdash; or call and we will take it over the phone.',
+            400
           );
         }
       } catch (err) {
@@ -238,31 +241,46 @@ export default {
     // month of AI-sourced leads. Cheaper and more reliable than a dashboard.
     const sourceTag = fields.heard_about_us || fields.referrer_source || '';
     const subject = `[${lead_score.band}] New ${formSource === 'prequal' ? 'Prequalification' : 'Contact'} Lead — ${name}${sourceTag ? ` · via ${sourceTag}` : ''}`;
+    // One Resend call was the entire lead pipeline. Resend rate-limits at a couple
+    // of requests per second, so two visitors landing together — exactly what an ad
+    // burst produces — is enough for a 429, and any transient 5xx costs the same:
+    // the visitor gets a 502 and Tom gets nothing. Retry once on the failures a
+    // retry can actually fix. The idempotency key means a retry sent after a reply
+    // we never saw cannot deliver the same lead twice.
+    const resendPayload = {
+      from: FROM_EMAIL,
+      to: [TOM_EMAIL],
+      bcc: [BRANDON_EMAIL, LIZZIE_EMAIL],
+      reply_to: email,
+      subject,
+      html: buildEmailHtml(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
+      text: buildEmailText(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
+    };
+    const idempotencyKey = crypto.randomUUID();
     let resendOk = false;
-    try {
-      const r = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: FROM_EMAIL,
-          to: [TOM_EMAIL],
-          bcc: [BRANDON_EMAIL, LIZZIE_EMAIL],
-          reply_to: email,
-          subject,
-          html: buildEmailHtml(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
-          text: buildEmailText(fields, formSource, tcpaStatus, { name, email, phone, band: lead_score.band, score: lead_score.score }),
-        }),
-      });
-      resendOk = r.ok;
-      if (!r.ok) {
-        const errBody = await r.text();
-        console.error('Resend failed:', r.status, errBody);
+    for (let attempt = 1; attempt <= 2 && !resendOk; attempt++) {
+      if (attempt > 1) await new Promise((done) => setTimeout(done, 1200));
+      try {
+        const r = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+            'Idempotency-Key': idempotencyKey,
+          },
+          body: JSON.stringify(resendPayload),
+        });
+        resendOk = r.ok;
+        if (!r.ok) {
+          const errBody = await r.text();
+          console.error('Resend failed:', r.status, errBody, 'attempt', attempt);
+          // A 4xx that is not a rate limit (bad key, rejected address) fails the
+          // same way twice. Do not spend a second call or the visitor's wait on it.
+          if (r.status !== 429 && r.status < 500) break;
+        }
+      } catch (err) {
+        console.error('Resend exception:', err && err.message, 'attempt', attempt);
       }
-    } catch (err) {
-      console.error('Resend exception:', err && err.message);
     }
 
     // ----- SMS alert to Tom (best-effort; email alone gets missed) -----
@@ -290,17 +308,40 @@ export default {
 
     // ----- Response semantics -----
     if (!resendOk) {
-      // Surface the failure to the user with a phone fallback so the lead
-      // is never silently lost.
-      return new Response(
-        `We could not deliver your message right now. Please call us directly at ${PHONE_FALLBACK} — Tom will pick up.`,
-        { status: 502, headers: { 'Content-Type': 'text/plain' } }
+      // Both send attempts failed. Calling is the only path left, so make it one tap.
+      return errorPage(
+        'We could not get your message to our inbox just now. ' +
+        'Please call us directly so this does not sit &mdash; Tom will pick up.',
+        502
       );
     }
 
     return Response.redirect(THANK_YOU_URL, 303);
   },
 };
+
+// ---------- Visitor-facing failure page ----------
+// These responses used to be bare text/plain. Everyone who reaches one is a lead
+// about to walk, so the fallback number has to be one tap away rather than digits
+// to retype. Carries the NMLS IDs and the Equal Housing line like any other page.
+// Copy only — never interpolate anything the visitor submitted into `message`.
+function errorPage(message, status) {
+  const html =
+    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta name="robots" content="noindex">' +
+    '<title>We could not send that &mdash; Homesite Mortgage</title></head>' +
+    '<body style="margin:0;padding:32px 20px;background:#f9f9fb;color:#333;line-height:1.6;font-family:Lato,Arial,Helvetica,sans-serif;">' +
+    '<div style="max-width:520px;margin:0 auto;background:#ffffff;padding:28px;border-radius:16px;">' +
+    `<p style="margin:0 0 22px;font-size:1.05rem;">${message}</p>` +
+    `<a href="tel:3217514403" style="display:inline-block;background:#c5a059;color:#0a2540;text-decoration:none;font-weight:700;padding:15px 26px;border-radius:50px;">&#128222; Call ${PHONE_FALLBACK}</a>` +
+    '<p style="margin:26px 0 0;font-size:0.72rem;color:#777777;">Homesite Mortgage NMLS #353790 &middot; Tom Culpepper NMLS #353539 &middot; Tracy Cody NMLS #886861 &middot; Brandon Culpepper NMLS #1577726 &middot; Equal Housing Opportunity.</p>' +
+    '</div></body></html>';
+  return new Response(html, {
+    status,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
+}
 
 // ---------- Field helpers ----------
 function pickEmail(f) {
@@ -423,10 +464,14 @@ function buildEmailHtml(fields, source, tcpa, lead) {
     'Phone Number', 'phone', 'Phone',
   ]);
   // Fields worth surfacing high (when present).
+  // 'Loan Program' is the name prequal.html actually posts (hidden input, set from
+  // ?type=). It was missing here while four names no form posts were listed, so the
+  // one thing the visitor pre-selected landed in the bottom table instead of up top.
   const PRIORITY_KEYS = [
     'Property of Interest', 'Intent', 'Property State', 'property_state',
     'Target Loan Amount', 'Estimated Credit Score', 'Timeline', 'timeline',
-    'Property Type', 'Loan Purpose', 'loan_purpose', 'Loan Type', 'loan_type',
+    'Property Type', 'Loan Program',
+    'Loan Purpose', 'loan_purpose', 'Loan Type', 'loan_type',
   ];
   const priority = [];
   for (const k of PRIORITY_KEYS) {
@@ -445,7 +490,11 @@ function buildEmailHtml(fields, source, tcpa, lead) {
   for (const [k, v] of Object.entries(fields)) {
     if (SUMMARY_SKIP_KEYS.has(k) || TOP_KEYS.has(k) || shownKeys.has(k)) continue;
     if (!v) continue;
-    rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>${esc(k)}</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${esc(v)}</td></tr>`);
+    // The contact form's `message` is a textarea. esc() leaves its newlines as-is,
+    // which HTML collapses, so a message typed in paragraphs arrived as one
+    // run-on line. Escape first, then turn the newlines into breaks.
+    const cellHtml = esc(v).replace(/\r?\n/g, '<br>');
+    rows.push(`<tr><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;"><strong>${esc(k)}</strong></td><td style="padding:5px 10px;border-bottom:1px solid #eef0f3;">${cellHtml}</td></tr>`);
   }
 
   const callBtn = telDigits
