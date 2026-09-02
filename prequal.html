@@ -260,6 +260,10 @@
 
     .step { border: 0; padding: 0; margin: 0; }
     .step[hidden] { display: none; }
+    /* .radio-cards is display:grid and .step-q is display:block, and an author
+       display beats the UA [hidden] rule - so without these two the hidden
+       attribute set on them in JS would silently do nothing. */
+    .radio-cards[hidden], .step-q[hidden] { display: none; }
     .step-q {
         font-family: 'Playfair Display', serif;
         color: var(--primary-navy); font-weight: 700;
@@ -1095,7 +1099,24 @@
           if (intentValue) {
             var safe = (window.CSS && CSS.escape) ? CSS.escape(intentValue) : intentValue.replace(/"/g, '\\"');
             var radio = form.querySelector('input[name="Intent"][value="' + safe + '"]');
-            if (radio) radio.checked = true;
+            if (radio) {
+              radio.checked = true;
+              // They already answered this on the homepage, under a badge reading
+              // "Step 1 of 3". Re-displaying the identical question as the first
+              // thing on the page makes the tap look like it did nothing. Hide it;
+              // the banner above states what they chose and links back to change it.
+              //
+              // Deliberately NOT auto-advancing to step 2 instead: step 1 also asks
+              // what state the property is in, and Homesite is licensed in Florida
+              // only. Skipping it would default an out-of-state buyer to Florida
+              // without them ever seeing the question or the notice that we would
+              // hand them to a partner in their state. So step 1 stays - it just
+              // stops repeating itself, leaving the one question still unanswered.
+              var group = form.querySelector('.radio-cards[data-name="Intent"]');
+              var heading = group && group.previousElementSibling;
+              if (group) group.hidden = true;
+              if (heading && heading.classList.contains('step-q')) heading.hidden = true;
+            }
           }
         }
 
