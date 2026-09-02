@@ -4,67 +4,42 @@
 # READ THIS BEFORE EDITING. A crawler obeys exactly ONE group: the most specific
 # one whose token matches it (RFC 9309 s2.2.1). It does NOT fall through to
 # `User-agent: *` afterwards. Giving a crawler its own group therefore EXEMPTS it
-# from every rule in the `*` group. That is precisely how nineteen near-duplicate
-# city pages stayed open to every AI crawler for weeks while appearing blocked.
+# from every rule in the `*` group. That is how nineteen near-duplicate city
+# pages stayed open to every AI crawler for weeks while appearing blocked.
 #
-# So: any rule that must apply to a named crawler has to be repeated inside that
-# crawler's own group. Multiple User-agent lines may share one group, which is
-# why the tokens are stacked below instead of repeated nineteen times each.
+# Those nineteen pages have since been deleted rather than hidden, so the
+# Disallow block that used to live here is gone with them. If a rule ever needs
+# to apply to a named crawler again, it has to be repeated inside that crawler's
+# own group - multiple User-agent lines may share one group, which is why the
+# tokens below are stacked rather than repeated.
 # ---------------------------------------------------------------------------
 
-# Default - anything not named below.
 User-agent: *
 Allow: /
-Disallow: /first-time-home-buyer-bradenton-fl.html
-Disallow: /first-time-home-buyer-broward-county-fl.html
-Disallow: /first-time-home-buyer-fort-myers-fl.html
-Disallow: /first-time-home-buyer-gainesville-fl.html
-Disallow: /first-time-home-buyer-jacksonville-fl.html
-Disallow: /first-time-home-buyer-lake-county-fl.html
-Disallow: /first-time-home-buyer-lakeland-fl.html
-Disallow: /first-time-home-buyer-miami-dade-fl.html
-Disallow: /first-time-home-buyer-naples-fl.html
-Disallow: /first-time-home-buyer-ocala-fl.html
-Disallow: /first-time-home-buyer-palm-beach-county-fl.html
-Disallow: /first-time-home-buyer-pasco-county-fl.html
-Disallow: /first-time-home-buyer-pensacola-fl.html
-Disallow: /first-time-home-buyer-pinellas-county-fl.html
-Disallow: /first-time-home-buyer-port-st-lucie-fl.html
-Disallow: /first-time-home-buyer-sarasota-fl.html
-Disallow: /first-time-home-buyer-st-johns-county-fl.html
-Disallow: /first-time-home-buyer-tallahassee-fl.html
-Disallow: /first-time-home-buyer-tampa-fl.html
 
 # ---------------------------------------------------------------------------
-# Search engines.
+# AI crawlers - all explicitly welcomed.
 #
-# Deliberately NOT blocked from the city pages. Those pages carry a noindex meta
-# tag, and noindex only works if the crawler is allowed to FETCH the page and
-# read it. Disallowing Googlebot here would hide the noindex and strand any
-# already-indexed URL as a permanent title-less entry that cannot be removed.
-# Crawl is cheap; being unable to deindex is not.
+# The blanket Allow above already permits every one of these, so these groups
+# are documentation rather than mechanism. They exist so nobody "tidies up" this
+# file later by adding a Disallow and quietly cuts off a channel that already
+# produced a real lead: a prequalification arrived 2026-08-20 with
+# utm_source=chatgpt.com.
+#
+# The three tiers do genuinely different things and we want all three:
+#   TRAINING       - pages enter model training corpora. Slow, unattributable,
+#                    but it is how you become the default answer with no fetch.
+#   RETRIEVAL      - builds the live index an assistant queries while answering.
+#                    Blocking one of these removes you from answers today.
+#   USER-TRIGGERED - fetches this page right now because a human asked the
+#                    assistant about us by name. Never block these.
+#
+# Google-Extended and Applebot-Extended are robots.txt control tokens, not
+# crawlers. They govern whether already-crawled content may be used for Gemini /
+# Apple Intelligence grounding and training. Opt-out only, so allowing them is
+# what keeps us eligible.
 # ---------------------------------------------------------------------------
-User-agent: Googlebot
-User-agent: Bingbot
-Allow: /
 
-# ---------------------------------------------------------------------------
-# AI crawlers - all welcomed, except on the near-duplicate city pages.
-#
-# Welcomed because this channel already produced a real lead: a prequalification
-# arrived 2026-08-20 with utm_source=chatgpt.com. Do not "tidy up" this file by
-# adding a blanket Disallow.
-#
-# Blocked from the 19 city pages because noindex means nothing to these crawlers
-# - it is an indexing directive, not a fetching one. Without Disallow, an
-# assistant answering a question about Homesite can retrieve nineteen
-# near-identical copies of the same document. Measured: the Brevard and Orlando
-# pages differ by 144 word tokens out of ~2,969, about 2.4% unique.
-#
-# The pages stay served, so no links break, and this is reversible by deleting
-# the Disallow lines. The Brevard county page is deliberately absent from the
-# block - it is the one being kept and rewritten.
-# ---------------------------------------------------------------------------
 # --- Training corpora ---
 User-agent: GPTBot
 User-agent: ClaudeBot
@@ -73,10 +48,6 @@ User-agent: Meta-ExternalAgent
 User-agent: Amazonbot
 User-agent: cohere-ai
 User-agent: Google-CloudVertexBot
-# Google-Extended and Applebot-Extended are robots.txt control tokens, not
-# crawlers. They govern whether already-crawled content may be used for Gemini /
-# Apple Intelligence grounding and training. Opt-out only, so listing them here
-# with Allow is what keeps us eligible.
 User-agent: Google-Extended
 User-agent: Applebot-Extended
 # --- Retrieval / index crawlers (the tier that matters near-term) ---
@@ -90,24 +61,10 @@ User-agent: Perplexity-User
 User-agent: Claude-User
 User-agent: Claude-Web
 Allow: /
-Disallow: /first-time-home-buyer-bradenton-fl.html
-Disallow: /first-time-home-buyer-broward-county-fl.html
-Disallow: /first-time-home-buyer-fort-myers-fl.html
-Disallow: /first-time-home-buyer-gainesville-fl.html
-Disallow: /first-time-home-buyer-jacksonville-fl.html
-Disallow: /first-time-home-buyer-lake-county-fl.html
-Disallow: /first-time-home-buyer-lakeland-fl.html
-Disallow: /first-time-home-buyer-miami-dade-fl.html
-Disallow: /first-time-home-buyer-naples-fl.html
-Disallow: /first-time-home-buyer-ocala-fl.html
-Disallow: /first-time-home-buyer-palm-beach-county-fl.html
-Disallow: /first-time-home-buyer-pasco-county-fl.html
-Disallow: /first-time-home-buyer-pensacola-fl.html
-Disallow: /first-time-home-buyer-pinellas-county-fl.html
-Disallow: /first-time-home-buyer-port-st-lucie-fl.html
-Disallow: /first-time-home-buyer-sarasota-fl.html
-Disallow: /first-time-home-buyer-st-johns-county-fl.html
-Disallow: /first-time-home-buyer-tallahassee-fl.html
-Disallow: /first-time-home-buyer-tampa-fl.html
+
+# --- Search engines ---
+User-agent: Googlebot
+User-agent: Bingbot
+Allow: /
 
 Sitemap: https://homesitemortgage.online/sitemap.xml

@@ -14,6 +14,19 @@ Priority order is roughly by market size and likely lead value. Reorder freely.
 
 ## Local: First-Time Buyer county/metro guides
 
+
+> **2026-09-02 — nineteen of these pages were DELETED, deliberately.**
+> Brevard and Orlando measured 97.6% identical, Google had indexed 2 of 21 site
+> pages, and near-duplicate content is a plausible contributor to that. The six
+> kept are the ones in sitemap.xml: Brevard, Orlando, Volusia, Seminole,
+> Kissimmee and Vero Beach.
+>
+> **Do not re-add the deleted areas as `- [ ]` entries.** The engine generates
+> from `first-time-home-buyer-brevard-county-fl.html` as its template, so a new
+> entry produces another near-copy of the same document. If area coverage is
+> wanted again, the page has to be genuinely differentiated first — see how the
+> Brevard page was rewritten, and the condo page written from scratch.
+
 - [x] **Brevard County (Space Coast)** — `first-time-home-buyer-brevard-county-fl.html`
   - kw: "first time home buyer brevard county" · cities: Melbourne, Palm Bay, Titusville, Viera, Merritt Island, Satellite Beach, Rockledge
   - _Done — the proof-of-concept page._
