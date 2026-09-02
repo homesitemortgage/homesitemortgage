@@ -232,6 +232,48 @@
         .container { margin: 20px; padding: 25px; }
         .radio-card { padding: 14px 12px; }
     }
+    /* Measured on a 375x812 viewport: the capped cookie banner covers everything
+       from y=552 down, and every step's content began at y=466 - so on arrival a
+       visitor saw the first question and roughly one answer option, with the rest
+       of step 1, the state question and the Continue button all behind the banner.
+       On step 3 the Full Name field crossed it. The preamble above the form was
+       sized for a screen that did not have 260px taken off the bottom of it.
+       Trimming it moves every step up by about 100px. */
+    @media screen and (max-width: 600px) {
+      /* The header h1 already reads "Get Prequalified"; this h2 reads "Start Your
+         Prequalification" 60px below it. The same sentence twice, and the space
+         between them was the difference between seeing every answer option and
+         seeing one. Kept in the accessibility tree, taken out of the layout. */
+      .container > h2 {
+        position: absolute; width: 1px; height: 1px;
+        padding: 0; margin: -1px; overflow: hidden;
+        clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+      }
+      .container { margin: 12px; padding: 12px 18px 18px; }
+      .subtitle { margin-bottom: 6px; font-size: 1em; }
+      .trust-line { margin-top: 6px; }
+      .broker-row { margin-top: 6px; }
+      .progress { margin-bottom: 10px; }
+      /* The third option wraps to two lines, so it sits in row two of the grid
+         and was the one crossing the banner. Tightening the cards and the gap
+         brings the whole answer set clear of it.
+         Deliberately NOT touching the first question's margin-top: the existing
+         `.step .step-q:first-child { margin-top: 4px }` is already the tight
+         value, and an equal-specificity rule here overrode it back up to 18px
+         and pushed everything DOWN by 14px. Measured, then removed. */
+      .step-q { margin-bottom: 10px; }
+      .radio-cards { gap: 9px; }
+      .radio-card { padding: 11px 10px; }
+      /* In a two-column grid a group with an odd number of options leaves the
+         last one alone in the final row, squeezed to half width - which is what
+         made "Investment Property" wrap to two lines and grow to 74px, the one
+         thing still crossing the banner. Let a lone trailing card take the full
+         width: it fits on one line, drops to the 56px min-height, and reads as
+         deliberate rather than orphaned. Mobile only, where the grid is known to
+         be exactly two columns. */
+      .radio-cards .radio-card:nth-child(odd):last-child { grid-column: 1 / -1; }
+    }
+
     /* Below ~380px the logo leaves too little room beside the heading, so let
        it stack again rather than squeeze. */
     @media screen and (max-width: 380px) {
