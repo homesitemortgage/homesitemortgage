@@ -7,6 +7,7 @@
   <script src="/js/ga4.js" defer></script>
   <script src="/js/google-ads.js" defer></script>
 <script src="/js/attribution.js"></script>
+<script src="/js/sticky-cta.js" defer></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="A straight comparison of using a mortgage broker or a bank for a Florida home loan: how each is paid, when a bank is the better fit, and what to ask first." />
@@ -283,6 +284,31 @@
       body { padding-bottom: 80px; }
       .page-hero-actions .btn-xl { width: 100%; }
       .page-hero-actions .btn-lg { width: 100%; }
+
+      /* Measured on a 375x812 viewport. The cookie banner covers from y=552, and
+         while it is up the sticky bar is lifted to y=466 - so the hero owned only
+         the top 466px. The h1 ran to three lines (151px) and four on DSCR and
+         Purchase (188px), which pushed the opening paragraph under the bar: 18px
+         of it hidden on FHA, 45px on VA, 83px on Purchase, 111px on DSCR. The
+         hero's own buttons were covered outright.
+         Tightening the type gives the paragraph back. */
+      .page-hero { padding: 16px 20px 36px; }
+      .page-hero .section-eyebrow { margin-bottom: 6px; }
+      .page-hero h1 { font-size: 1.7rem; margin-bottom: 10px; }
+      .page-hero .lede { font-size: 1rem; line-height: 1.55; margin-bottom: 16px; }
+      /* The two buttons stack full width, so they cost 133px between them. 14px
+         padding keeps both well above a 44px touch target while giving the second
+         one back most of the room it was losing to the banner. */
+      .page-hero-actions { gap: 10px; }
+      .page-hero-actions .btn-xl, .page-hero-actions .btn-lg { padding: 14px 24px; }
+
+      /* The bar and the hero buttons are the same two actions with the same
+         destinations, so while the hero buttons are on screen the bar is only
+         covering them. See js/sticky-cta.js. Hidden with opacity and visibility,
+         not a transform: the bar sits at bottom:33vh while the banner is up, so a
+         translateY of its own height leaves it on screen, on top of the banner. */
+      .sticky-cta { transition: opacity 180ms ease, visibility 180ms ease; }
+      .sticky-cta.is-behind-hero { opacity: 0; visibility: hidden; pointer-events: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
