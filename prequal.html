@@ -1230,6 +1230,8 @@
         var turnstileWidgetId = null;
         var turnstilePendingSubmit = false;
         var turnstileErrored = false;
+        // Allows exactly one recovery attempt, so a wedged widget cannot loop.
+        var turnstileResetTried = false;
         var turnstileTimer = null;
         var turnstileRetryPending = false;
 
@@ -1400,6 +1402,23 @@
         // the Worker would 400 it and the visitor would lose everything they
         // typed. When no token can be obtained we surface #verify-error instead.
         form.addEventListener('submit', function(e) {
+          // Enter - or "Go" on a mobile keyboard - fires submit from any field on
+          // any step. On steps 1 and 2 that must never reach the submit path below:
+          // it arms a pending Turnstile submit and calls renderTurnstile() while
+          // step 3 is still hidden, and turnstile.render() into a hidden container
+          // produces a zero-size widget. renderTurnstile then refuses to re-render
+          // it (`if (turnstileWidgetId !== null) return`), so the visitor arrives on
+          // step 3 holding a widget that can never issue a token, and the form is
+          // dead for them. Treat Enter as "Continue", which is what they meant.
+          if (currentStep !== totalSteps) {
+            e.preventDefault();
+            if (!validateStep(currentStep)) return;
+            track('prequal_step_complete', { step: currentStep });
+            saveDraft();
+            showStep(currentStep + 1, true);
+            pushStepHistory();
+            return;
+          }
           if (!validateStep(currentStep)) {
             e.preventDefault();
             return;
@@ -1459,8 +1478,27 @@
               }
               return;
             }
-            // Script blocked, widget errored, or key not configured. Nothing will
-            // ever produce a token here.
+            // The widget rendered but errored. That is often transient - a dropped
+            // request, an expired challenge - and until now a single error was
+            // terminal: turnstileErrored stayed true, so every retry took the dead
+            // path below and the visitor could never submit no matter what they did.
+            // Give it one reset before telling them it failed.
+            if (turnstileErrored && turnstileWidgetId !== null && !turnstileResetTried &&
+                window.turnstile && typeof window.turnstile.reset === 'function') {
+              turnstileResetTried = true;
+              try {
+                window.turnstile.reset(turnstileWidgetId);
+                turnstileErrored = false;
+                turnstilePendingSubmit = true;
+                showAwaitingCheck();
+                if (turnstileTimer === null) {
+                  turnstileTimer = setTimeout(finishPendingSubmit, 6000);
+                }
+                return;
+              } catch (err) { /* fall through to the honest failure */ }
+            }
+            // Script blocked, key not configured, or the reset did not help.
+            // Nothing will ever produce a token here.
             setSubmitting(false);
             showVerifyError();
             return;
