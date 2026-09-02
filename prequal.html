@@ -842,6 +842,13 @@
             One last step &mdash; tap the security check above and we&rsquo;ll send this through.
           </p>
 
+          <div id="resending" role="status" hidden
+               style="margin-top:14px;padding:14px 16px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:10px;font-size:0.9rem;color:#1e3a5f;line-height:1.6;">
+            Still sending &mdash; hang on a moment.
+            If this page hasn't moved on shortly, call us and we'll take it over the phone:
+            <a href="tel:3217514403" style="color:#1e3a5f;font-weight:700;white-space:nowrap;">(321) 751-4403</a>.
+          </div>
+
           <div id="verify-error" role="alert" hidden
                style="margin-top:14px;padding:14px 16px;border:1px solid #fecaca;background:#fef2f2;border-radius:10px;font-size:0.9rem;color:#7f1d1d;line-height:1.6;">
             We couldn't finish the security check, so your information hasn't been sent yet.
@@ -1225,6 +1232,11 @@
           // token refresh. Never auto-POST from a step they navigated back to.
           if (currentStep !== 3) return;
           form.dataset.turnstileSubmitted = '1';
+          // form.submit() does not fire a submit event, so none of the locking in the
+          // submit handler runs. Without this the visitor is left looking at a live
+          // "Get My Options" button while the POST is already in flight, and a second
+          // tap dispatches a real submit carrying this same token.
+          setSubmitting(true);
           form.submit();
         }
 
@@ -1300,6 +1312,10 @@
         // The widget is alive and just needs a tap. Deliberately role="status",
         // not an error - this is the normal Managed-mode path, not a failure.
         function showAwaitingCheck() {
+          var err = document.getElementById('verify-error');
+          if (err) err.hidden = true;            // never stack the messages
+          var resend = document.getElementById('resending');
+          if (resend) resend.hidden = true;
           var box = document.getElementById('turnstile-wait');
           if (box) {
             box.hidden = false;
@@ -1308,10 +1324,28 @@
           track('prequal_turnstile_awaiting', {});
         }
 
+        // Shown when a submit is dispatched a second time while the first is still
+        // unresolved. Deliberately neutral: we do not know yet whether the first POST
+        // succeeded, so this must never say it failed.
+        function showResending() {
+          var wait = document.getElementById('turnstile-wait');
+          if (wait) wait.hidden = true;
+          var err = document.getElementById('verify-error');
+          if (err) err.hidden = true;
+          var box = document.getElementById('resending');
+          if (box) {
+            box.hidden = false;
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          track('prequal_resubmit_guarded', {});
+        }
+
         // Shown instead of POSTing a token we know the Worker will reject.
         function showVerifyError() {
           var wait = document.getElementById('turnstile-wait');
-          if (wait) wait.hidden = true;          // never stack the two messages
+          if (wait) wait.hidden = true;          // never stack the messages
+          var resend = document.getElementById('resending');
+          if (resend) resend.hidden = true;
           var box = document.getElementById('verify-error');
           if (box) {
             box.hidden = false;
@@ -1348,7 +1382,29 @@
           // Safety net: if navigation never happens (offline, blocked POST), hand the
           // button back rather than stranding the visitor on a dead control.
           setTimeout(function() { setSubmitting(false); }, 12000);
-          if (form.dataset.turnstileSubmitted) return; // second pass — already tokenized
+          if (form.dataset.turnstileSubmitted) {
+            // A POST carrying this token has already gone out from this page load.
+            // Turnstile tokens are single-use, so re-sending one makes siteverify
+            // return timeout-or-duplicate and the Worker render "your information has
+            // not been sent" - which would be a lie, because that first POST already
+            // emailed Tom. Showing a delivered lead a failure page is the worst
+            // outcome available here, so never re-send a spent token.
+            e.preventDefault();
+            form.dataset.turnstileSubmitted = '';
+            showResending();
+            // Reaching here means the first POST never navigated: either it died, or
+            // the 12s safety net handed the button back. Ask Turnstile for a fresh
+            // token and let its success callback finish this submit properly.
+            if (window.turnstile && turnstileWidgetId !== null) {
+              try {
+                window.turnstile.reset(turnstileWidgetId);
+                turnstilePendingSubmit = true;
+                return;
+              } catch (err) { /* widget gone - fall through to the manual path */ }
+            }
+            showVerifyError();
+            return;
+          }
           var tokenField = form.querySelector('input[name="cf-turnstile-response"]');
           var token = tokenField && tokenField.value;
           // No token means the POST cannot succeed — the Worker 400s it. So never
