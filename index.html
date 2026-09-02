@@ -641,6 +641,50 @@
       body:has(.cky-consent-container[style*="display:none"]) { padding-bottom: 80px; }
     }
 
+    /* --- Mobile first screen ---
+       Measured on a real 375x812 viewport: the cookie banner covers everything
+       from y=552 down, and the sticky call bar sat at 466-544. Between them the
+       entire hero widget - the "Step 1 of 3" question, all three tiles, and the
+       phone link - was painted over on arrival. elementFromPoint returned
+       STICKY-CTA or COOKIE-BANNER at every point where the tiles were, so a
+       visitor arriving from the Google Business Profile never saw the funnel
+       entry at all, only the two overlays covering it.
+
+       Trimming the stack and moving the widget above the subheadline lands the
+       question at 335, the tiles at 371-458 and the calculator/phone links at
+       470-528 - the whole funnel clear of the banner, verified by measurement. */
+    @media (max-width: 600px) {
+      .hero { padding-top: 18px; }
+      .hero-content { display: flex; flex-direction: column; }
+      .hero-eyebrow  { order: 1; margin-bottom: 12px; }
+      .hero-title    { order: 2; margin-bottom: 12px; }
+      .hero-proof    { order: 3; margin-bottom: 12px; }
+      .hero-start    { order: 4; margin-bottom: 14px; }
+      /* The subheadline reinforces the choice rather than being needed to make
+         it, and the 75px it occupied was the difference between the tiles being
+         visible on arrival and being behind the banner. It reads immediately
+         under the widget instead. */
+      .hero-sub      { order: 5; margin-bottom: 16px; }
+      .hero-reassure { order: 6; }
+      .hero-trust    { order: 7; }
+      /* These 22px text links are now the arrival-visible way to call. Padding
+         with an equal negative margin grows the touch target to 36px without
+         moving anything on the page. */
+      .hero-start-alt a { padding: 7px 0; margin: -7px 0; }
+
+      /* The bar and the widget are two competing calls to action, and the bar is
+         painted directly on top of the widget. Hide it while the widget is on
+         screen; it returns the moment the visitor scrolls past. Transition is
+         neutralised by the prefers-reduced-motion block above.
+
+         Hidden with opacity and visibility rather than a transform: while the
+         cookie banner is up the bar sits at bottom:33vh, so translateY(120%)
+         moved it only its own height - about 94px - and parked it on top of the
+         banner instead of clearing the screen. Measured, not assumed. */
+      .sticky-cta { transition: opacity 180ms ease, visibility 180ms ease; }
+      .sticky-cta.is-behind-hero { opacity: 0; visibility: hidden; pointer-events: none; }
+    }
+
     /* The nav is sticky and about 69px tall, so an in-page anchor used to land
        with its heading hidden underneath it. */
     [id] { scroll-margin-top: 88px; }
@@ -1639,6 +1683,27 @@
       s.src = '//js-na2.hs-scripts.com/246135299.js';
       document.body.appendChild(s);
     }
+  </script>
+
+  <script>
+    // Hide the sticky call bar while the hero widget is on screen. On a phone the
+    // bar is painted directly over the widget, so on arrival the visitor saw the
+    // bar instead of the three choices. See .is-behind-hero in the stylesheet;
+    // the rule is mobile-only, so adding the class is a no-op on desktop.
+    var heroBarObserver = null;
+    (function () {
+      var bar = document.querySelector('.sticky-cta');
+      var widget = document.querySelector('.hero-start');
+      if (!bar || !widget || !('IntersectionObserver' in window)) return;
+      // Held in a variable on purpose. An observer whose only reference is the
+      // temporary from `new IntersectionObserver(...).observe(x)` is reachable
+      // only through its target's internal state, and that is not somewhere to
+      // rely on across engines when the whole call-to-action depends on it.
+      heroBarObserver = new IntersectionObserver(function (entries) {
+        bar.classList.toggle('is-behind-hero', entries[0].isIntersecting);
+      }, { threshold: 0 });
+      heroBarObserver.observe(widget);
+    })();
   </script>
 
 </body>
