@@ -226,7 +226,7 @@
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 
     /* Hero form-start — step 1 of the prequal, asked right in the hero.
-       Answering a question is a far smaller ask than "Get Pre-Approved", and each
+       Answering a question is a far smaller ask than "Get Prequalified", and each
        choice deep-links into prequal.html with that intent already selected. */
     .hero-start { margin: 4px 0 18px; }
     .hero-start-q {
@@ -640,6 +640,10 @@
       body:has(.cky-consent-container[style*="display: none"]),
       body:has(.cky-consent-container[style*="display:none"]) { padding-bottom: 80px; }
     }
+
+    /* The nav is sticky and about 69px tall, so an in-page anchor used to land
+       with its heading hidden underneath it. */
+    [id] { scroll-margin-top: 88px; }
   </style>
 
   <script type="application/ld+json">
@@ -991,7 +995,7 @@
           </svg>
           <span>321-751-4403</span>
         </a>
-        <a href="prequal.html" class="btn btn-gold">Get Pre-Approved</a>
+        <a href="prequal.html" class="btn btn-gold">Get Prequalified</a>
       </div>
     </div>
   </nav>
@@ -1135,7 +1139,7 @@
         <div class="section-header">
           <div class="section-eyebrow">Loan Programs</div>
           <h2 class="section-title" id="loans-heading">What Are You Looking For?</h2>
-          <p class="section-sub">We originate all major loan types in Florida. Not sure which fits your situation? We'll tell you exactly what you qualify for on your first call.</p>
+          <p class="section-sub">We originate all major loan types in Florida. Not sure which fits your situation? Tell us what you are trying to do and we will walk you through the options that fit.</p>
         </div>
         <div class="loans-grid">
           <article class="loan-card">
@@ -1505,7 +1509,7 @@
         <div>
           <p class="footer-col-title">Quick Links</p>
           <ul class="footer-links">
-            <li><a href="prequal.html">Get Pre-Approved</a></li>
+            <li><a href="prequal.html">Get Prequalified</a></li>
             <li><a href="mortgage-calculator.html">Mortgage Calculator</a></li>
             <li><a href="contact.html">Contact Us</a></li>
             <li><a href="faq.html">Mortgage FAQ</a></li>
@@ -1560,7 +1564,7 @@
         <div class="footer-links-row">
           <a href="privacy-policy.html">Privacy Policy</a>
           <a href="accessibility.html">Accessibility</a>
-          <a href="prequal.html">Get Pre-Approved</a>
+          <a href="prequal.html">Get Prequalified</a>
           <a href="contact.html">Contact</a>
         </div>
         <div style="margin-top:16px;color:rgba(255,255,255,0.45);font-size:0.74rem;">
