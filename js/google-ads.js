@@ -27,9 +27,32 @@
    setup. Click-to-call is tracked below instead, from our own number. */
 (function () {
   var AW_ID      = 'AW-18333281422';      // Google Ads conversion ID
+  // Paste ONLY the label here, e.g. 'AbC-D_efGhIjKlMnOp'. Google's UI shows it as
+  // send_to: 'AW-18333281422/AbC-D_efGhIjKlMnOp' and the whole string usually gets
+  // copied, so normaliseLabel below strips a pasted AW-.../ prefix rather than
+  // building AW-18333281422/AW-18333281422/AbC... and failing silently.
   var CALL_LABEL = 'XXXXXXXXXXXXXXXXXXX'; // "Click to Call" — secondary/observation
 
   function isSet(v) { return v && v.indexOf('XXXX') === -1; }
+
+  // A wrong paste must be loud. The previous campaign spent $540 with calls
+  // uncounted; the failure mode to avoid is a label that looks set but is
+  // malformed, because that reports nothing and looks like it is working.
+  function normaliseLabel(v) {
+    if (!isSet(v)) return null;
+    var label = String(v).trim();
+    var slash = label.lastIndexOf('/');
+    if (slash !== -1) label = label.slice(slash + 1);   // 'AW-123.../AbC' -> 'AbC'
+    if (!/^[A-Za-z0-9_-]{8,}$/.test(label)) {
+      if (window.console && console.warn) {
+        console.warn('[google-ads] CALL_LABEL does not look like a Google Ads ' +
+                     'conversion label; click-to-call conversions are NOT being ' +
+                     'reported. Paste just the label, e.g. AbC-D_efGhIjKlMnOp.');
+      }
+      return null;
+    }
+    return label;
+  }
 
   function loadAds() {
     if (window.googleAdsLoaded) return;
@@ -68,12 +91,14 @@
   // where most borrowers call rather than fill in a form. Keep this one SECONDARY
   // in Google Ads so it never outvotes actual prequal submissions in bidding.
   document.addEventListener('click', function (e) {
-    if (!window.gtag || !window.googleAdsLoaded || !isSet(CALL_LABEL)) return;
+    if (!window.gtag || !window.googleAdsLoaded) return;
+    var label = normaliseLabel(CALL_LABEL);
+    if (!label) return;
     if (!e.target.closest) return;
     var a = e.target.closest('a[href^="tel:"]');
     if (!a) return;
     window.gtag('event', 'conversion', {
-      send_to: AW_ID + '/' + CALL_LABEL,
+      send_to: AW_ID + '/' + label,
       event_callback: function () {}
     });
   });
